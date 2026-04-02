@@ -1,0 +1,84 @@
+/* ═══════════════════════════════════════════════════════════
+   09 — ACTION BAR
+   Bottom action bar: collapsible toggle, checkbox consent,
+   position / reset / sign buttons, lock note.
+   ═══════════════════════════════════════════════════════════ */
+
+/* titles */
+.sign-pg-title { font-size: 16px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 3px; }
+.sign-pg-sub { font-family: var(--mono); font-size: 9px; color: var(--ghost); margin-bottom: 16px; }
+
+/* consent checkbox */
+.chk-wrap { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; margin-bottom: 16px; }
+.chk-box { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--brd-h); background: var(--sf); flex-shrink: 0; position: relative; transition: all .18s var(--ease); margin-top: 1px; }
+.chk-wrap input { display: none; }
+.chk-wrap input:checked + .chk-box { background: var(--ink); border-color: var(--ink); }
+.chk-wrap input:checked + .chk-box::after { content: ''; position: absolute; left: 5px; top: 2px; width: 5px; height: 10px; border: 2px solid #fff; border-top: none; border-left: none; transform: rotate(40deg); }
+.chk-text { font-size: 12px; color: var(--smoke); line-height: 1.5; }
+
+/* button row */
+.action-row { display: flex; gap: 10px; }
+.btn-pos { height: 46px; padding: 0 20px; border-radius: var(--r); border: 1.5px solid var(--brd-h); background: var(--sf); color: var(--smoke); font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 7px; transition: all .16s var(--ease); white-space: nowrap; }
+.btn-pos:hover { border-color: var(--ink); color: var(--ink); }
+.btn-pos.placing { border-color: var(--primary); color: var(--primary); background: var(--primary-l); }
+.btn-pos.placed  { border-color: var(--live); color: var(--live); background: rgba(22,163,74,.05); }
+.btn-assinar { flex: 1; height: 46px; border-radius: var(--r); background: var(--primary); color: #fff; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .18s var(--ease); }
+.btn-assinar:hover:not(:disabled) { background: #d95300; }
+.btn-assinar:disabled { background: var(--faint); color: var(--mist); cursor: default; }
+.btn-assinar:active:not(:disabled) { transform: scale(.99); }
+.lock-note { display: flex; align-items: center; gap: 6px; margin-top: 12px; font-family: var(--mono); font-size: 8px; color: var(--mist); }
+.lock-note i { font-size: 13px; }
+
+/* sign-bottom container with toggle */
+.sign-bottom {
+  flex-shrink: 0;
+  position: relative;
+  background: rgba(255,255,255,.98);
+  border-top: 1px solid var(--brd);
+  overflow: visible;
+  transition: border-top-color .38s var(--ease);
+}
+.sign-bottom.collapsed { border-top-color: transparent; }
+.sign-bottom-inner {
+  overflow: hidden;
+  max-height: 600px;
+  padding: 20px 28px calc(22px + var(--safe-bottom));
+  padding-right: calc(28px + var(--safe-right));
+  padding-left:  calc(28px + var(--safe-left));
+  transition:
+    max-height .38s var(--ease),
+    padding-top .38s var(--ease),
+    padding-bottom .38s var(--ease);
+}
+.sign-bottom.collapsed .sign-bottom-inner {
+  max-height: 0; padding-top: 0; padding-bottom: 0;
+}
+
+/* toggle pill */
+.sbottom-toggle {
+  position: absolute;
+  top: -22px; left: 50%; transform: translateX(-50%);
+  width: 72px; height: 30px;
+  background: #fff; border: 1.5px solid var(--brd-h); border-radius: var(--pill);
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  color: var(--smoke); font-size: 18px;
+  box-shadow: 0 -4px 12px rgba(0,0,0,.10);
+  transition: color .18s, box-shadow .18s;
+  z-index: 50; cursor: pointer;
+}
+.sbottom-toggle:active { background: var(--sf2); }
+.sbottom-toggle i { transition: transform .32s var(--ease); display: block; }
+.sbottom-toggle.collapsed-indicator i { transform: rotate(180deg); }
+
+/* reset button */
+.btn-reset-sig {
+  display: none;
+  height: 46px; width: 46px; border-radius: var(--r);
+  border: 1.5px solid rgba(244,95,0,.3);
+  background: var(--primary-l); color: var(--primary);
+  font-size: 16px;
+  align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all .16s var(--ease);
+}
+.btn-reset-sig:hover { background: var(--primary-m); border-color: var(--primary); }
+.btn-reset-sig.visible { display: flex; }

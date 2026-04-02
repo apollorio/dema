@@ -1,0 +1,886 @@
+﻿<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>Apollo Design System · Luxury Flat Open Kitchen</title>
+
+  <!-- Global Error Handler & Preloader Buster -->
+  <script>
+    window.onerror = function(message, source) {
+      if ((source && source.includes('apollo.rio.br')) || (message && (message.includes('outdated') || message.includes('#$')))) {
+        return true; 
+      }
+      return false;
+    };
+    window.addEventListener('error', function (event) {
+      if ((event.filename && event.filename.includes('apollo.rio.br')) || (event.message && (event.message.includes('outdated') || event.message.includes('#$')))) {
+        event.preventDefault();
+      }
+    }, true);
+  </script>
+
+  <!-- Mandatory Apollo Core Script -->
+  <script src="https://cdn.apollo.rio.br/v1.0.0/core.js?now=DEV" fetchpriority="high"></script>
+  
+  <!-- HTMX + Alpine.js (2025 Modern WP Standard) -->
+  <script src="https://unpkg.com/htmx.org@2/dist/htmx.min.js"></script>
+  <script src="https://unpkg.com/alpinejs@3/dist/cdn.min.js"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Syne:wght@400..700&display=swap">
+
+  <!-- Remix Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.min.css">
+
+  <style>
+/* ═══════════════════════════════════════════════
+   APOLLO UNIVERSAL DESIGN SYSTEM -- universal.css
+   v3.2.0 - Production | STRICT LUXURY FLAT UI
+   ═══════════════════════════════════════════════ */
+
+/* --- ANTI-FOUC GUARDS --- */
+html, body, .app-container { opacity: 1 !important; visibility: visible !important; display: flex !important; }
+#preloader, .preloader, [class*="loader"], [id*="loader"] { display: none !important; opacity: 0 !important; pointer-events: none !important; z-index: -999 !important; }
+
+/* TOKENS  */
+:root { 
+  block-size:100%; inline-size:100%; font-size:14px;
+  
+  /* Surfaces */
+  --bg:var(--white-1);
+  --card:var(--white-2);
+  --glass:var(--white-3);
+  --card-hover:var(--white-4);
+  --card-hover-darker:var(--white-5);
+  --border:var(--white-10) !important;
+  --border-hover:var(--white-13) !important;
+  
+  /* Text */
+  --muted-bg:var(--white-10);
+  --muted-txt:var(--white-18);
+  --muted:var(--gray-1);
+  --txt-color:var(--gray-19);
+  --txt-color-hover:var(--black-6);
+  --txt-color-heading:var(--txt-color-hover);
+  --txt-heading:var(--txt-color-heading); /* shorthand alias */
+  --txt-muted:var(--muted-txt); --bg-muted:var(--muted-bg);
+  
+  /* Brand Colors */
+  --primary:#FF9820;
+  --color-main:var(--primary);
+  --accent-violet:#651FFF;
+  --accent:var(--accent-acid);
+  --accent-acid:#D7FF00;
+  --alert-red:#e53935;
+  
+  /* Theme base (reversed in dark mode) */
+  --rgb-theme:255,255,255; --rgb-diff:5,5,5;
+  
+  --white:var(--white-1);
+  --white-1:rgba(var(--rgb-theme),1);
+  --white-2:rgba(var(--rgb-diff),.02);
+  --white-3:rgba(var(--rgb-diff),.04);
+  --white-4:rgba(var(--rgb-diff),.06);
+  --white-5:rgba(var(--rgb-diff),.08);
+  --white-6:rgba(var(--rgb-diff),.10);
+  --white-7:rgba(var(--rgb-diff),.12);
+  --white-8:rgba(var(--rgb-diff),.14);
+  --white-9:rgba(var(--rgb-diff),.16);
+  --white-10:rgba(var(--rgb-diff),.18);
+  --white-11:rgba(var(--rgb-diff),.20);
+  --white-12:rgba(var(--rgb-diff),.22);
+  --white-13:rgba(var(--rgb-diff),.24);
+  --white-14:rgba(var(--rgb-diff),.26);
+  --white-15:rgba(var(--rgb-diff),.28);
+  --white-16:rgba(var(--rgb-diff),.30);
+  --white-17:rgba(var(--rgb-diff),.32);
+  --white-18:rgba(var(--rgb-diff),.34);
+  --white-19:rgba(var(--rgb-diff),.36);
+  --white-20:rgba(var(--rgb-diff),.38);
+  --gray-1:rgba(var(--rgb-diff),.40);
+  --gray-2:rgba(var(--rgb-diff),.42);
+  --gray-3:rgba(var(--rgb-diff),.44);
+  --gray-4:rgba(var(--rgb-diff),.46);
+  --gray-5:rgba(var(--rgb-diff),.48);
+  --gray-6:rgba(var(--rgb-diff),.50);
+  --gray-7:rgba(var(--rgb-diff),.52);
+  --gray-8:rgba(var(--rgb-diff),.54);
+  --gray-9:rgba(var(--rgb-diff),.56);
+  --gray-10:rgba(var(--rgb-diff),.58);
+  --gray-11:rgba(var(--rgb-diff),.60);
+  --gray-12:rgba(var(--rgb-diff),.62);
+  --gray-13:rgba(var(--rgb-diff),.64);
+  --gray-14:rgba(var(--rgb-diff),.66);
+  --gray-15:rgba(var(--rgb-diff),.68);
+  --gray-16:rgba(var(--rgb-diff),.70);
+  --gray-17:rgba(var(--rgb-diff),.72);
+  --gray-18:rgba(var(--rgb-diff),.74);
+  --gray-19:rgba(var(--rgb-diff),.76);
+  --gray-20:rgba(var(--rgb-diff),.78);
+  --black-10:rgba(var(--rgb-diff),.8);
+  --black-9:rgba(var(--rgb-diff),.82);
+  --black-8:rgba(var(--rgb-diff),.84);
+  --black-7:rgba(var(--rgb-diff),.86);
+  --black-6:rgba(var(--rgb-diff),.88);
+  --black-5:rgba(var(--rgb-diff),.9);
+  --black-4:rgba(var(--rgb-diff),.92);
+  --black-3:rgba(var(--rgb-diff),.94);
+  --black-2:rgba(var(--rgb-diff),.96);
+  --black-1:rgba(var(--rgb-diff),.98);
+  --black:rgba(var(--rgb-diff),1);
+  
+  /* Fonts */
+  --ff-main:"Space Grotesk",system-ui,-apple-system,sans-serif;
+  --font-main:var(--ff-main);
+  --ff-mono:"Space Mono",monospace;
+  --font-heading:var(--ff-mono);
+  --ff-fun:Syne,sans-serif;
+  
+  /* Radii */
+  --r:20px;
+  --r-xs:6px;
+  --r-sm:10px;
+  --r-lg:24px;
+  --r-pill:100px;
+  --rad-down:14px;
+  
+  /* Spacing */
+  --s-1:4px; --s-2:8px; --s-3:16px; --s-4:24px; --s-5:32px; --s-6:48px;
+  --space-4:var(--s-4);
+  
+  /* Easing */
+  --ease-default:cubic-bezier(.16,1,.3,1);
+  --ease-snappy:cubic-bezier(.2,.9,.3,1);
+  
+  /* Z-Index Scale */
+  --z-base:1;      
+  --z-sticky:20;   
+  --z-ui:100;      
+  --z-popover:200; 
+  --z-modal:1000;  
+  --z-fab:9100;    
+  --z-sheet:9090;  
+  --z-nav:9900;    
+}
+
+/* DARK MODE */
+html.dark-mode {
+  --rgb-theme:0,0,0 !important;
+  --rgb-diff:255,255,255 !important;
+  color-scheme:dark;
+}
+
+html.dark-mode body { background-image:radial-gradient(circle at 10% 15%,rgba(255,152,32,.14),transparent 45%),radial-gradient(circle at 80% 0%,rgba(101,31,255,.14),transparent 40%),linear-gradient(180deg,rgba(0,0,0,1) 0%,rgba(0,0,0,.95) 100%); }
+@media (min-width:768px) and (prefers-reduced-motion:no-preference) { html.dark-mode body { background-attachment:fixed; } }
+html.dark-mode ::selection { background-color:rgba(255,152,32,.38); color:rgba(0,0,0,.9); }
+
+/* RESET & GLOBAL */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; corner-shape:squircle; outline: none; -webkit-tap-highlight-color: transparent; box-shadow: none !important; }
+html { font-size:14px; line-height:1.5; -webkit-text-size-adjust:100%; text-size-adjust:100%; cursor: crosshair; }
+@media (prefers-reduced-motion:no-preference) { html { scroll-behavior:smooth; } }
+
+body { background:var(--bg); color:var(--txt-color); font-family:var(--ff-main); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; text-rendering:optimizeLegibility; overflow-x:clip; transition:background .4s var(--ease-default),color .4s var(--ease-default); touch-action:none; }
+.enable-zoom,.enable-touch { touch-action:pan-y pinch-zoom; }
+
+a { text-decoration:none; color:inherit; }
+button { border:none; background:none; cursor:pointer; font-family:inherit; }
+input,textarea,select { border:none; background:none; font-family:inherit; resize:none; outline:none; }
+ul { list-style:none; }
+img { display:block; max-width:100%; }
+img,i,svg,path { will-change:transform; image-rendering:-webkit-optimize-contrast; image-rendering:crisp-edges; }
+::selection { background-color:rgba(244,95,0,.15); color:var(--black-1); }
+p,h1,h2,h3,h4,h5,h6 { margin-block:0; font-weight:700; /* MAX WEIGHT 700 */ }
+.selectnone,.userselectnone,.select-none,i,button,img { -webkit-user-select:none !important; -ms-user-select:none !important; user-select:none !important;}
+i { font-weight:100 !important; }
+
+/* TYPOGRAPHY */
+h1,h2,h3,h4,h5,h6 { font-family:var(--ff-mono); color:var(--txt-color-heading); letter-spacing:-.03em; font-weight:700; line-height:1.15; text-wrap:balance; }
+.txt-mono { font-family:var(--ff-mono); text-transform:uppercase; letter-spacing:.12em; color:var(--muted); }
+.label-section { font-family:var(--ff-mono); text-transform:uppercase; font-size:.65rem; letter-spacing:.14em; color:var(--muted); margin-bottom:16px; display:block;}
+
+
+/* ═══════════════════════════════════════════════
+   OPEN KITCHEN / ISLAND LAYOUT ARCHITECTURE
+   EXTREME AVOIDANCE OF BORDERS AND SHADOWS
+   ═══════════════════════════════════════════════ */
+.app-container {
+  width: 100%; height: 100vh; display: flex; flex-direction: column;
+  padding-top: 72px; background: var(--bg); /* unified background */
+}
+
+/* Off-Canvas Overlay */
+.panel-overlay {
+  position: fixed; inset: 0; background: rgba(var(--rgb-theme), 0.4); z-index: var(--z-sheet);
+  opacity: 0; visibility: hidden; transition: opacity 0.3s; backdrop-filter: blur(4px);
+}
+.panel-overlay.show { opacity: 1; visibility: visible; }
+html.dark-mode .panel-overlay { background: rgba(0,0,0,0.6); }
+
+/* Topbar (No borders, fluid) */
+.apollo-topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: var(--z-modal);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 24px; gap: 16px; height: 72px;
+  background: transparent; /* Fluid into the background */
+}
+.apollo-topbar .brand {
+  font-family: var(--ff-mono); font-size: 0.8rem; text-transform: uppercase;
+  letter-spacing: 0.16em; color: var(--txt-heading); font-weight: 700;
+  display: flex; align-items: center; gap: 12px;
+}
+.apollo-topbar .brand i { font-size: 1.5rem; color: var(--primary); }
+.topbar-actions { display: flex; align-items: center; gap: 12px; position: relative; }
+
+/* Icon Buttons (Flat, borderless) */
+.btn-icon {
+  width: 48px; height: 48px; padding: 0; border-radius: 50%;
+  background: transparent; color: var(--txt-color);
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, color 0.2s; position: relative;
+  box-shadow: none !important; border: none !important;
+}
+.btn-icon:hover, .btn-icon.active { background: var(--card); color: var(--txt-heading); }
+.btn-icon svg, .btn-icon i { width: 22px; height: 22px; font-size: 1.4rem; }
+
+.btn-profile-txt { font-family: var(--ff-mono); font-weight: 700; font-size: 0.9rem; background: var(--card); color: var(--txt-heading); }
+
+/* Pulse Badge */
+.pulse-badge { position: absolute; top: 12px; right: 12px; width: 6px; height: 6px; border-radius: 50%; background: var(--primary); pointer-events: none; }
+
+/* Toggle v2 Checkbox */
+.toggle-wrap { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; margin:0; padding:0; }
+.toggle-input { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
+.toggle-input + .toggle-track {
+  position: relative; width: 44px; height: 24px; background: rgba(var(--rgb-diff),.06);
+  border-radius: 24px; transition: background .35s var(--ease-default); flex-shrink: 0;
+  border: none !important; /* NO BORDERS */
+}
+.toggle-input + .toggle-track::after {
+  content: ''; position: absolute; left: 2px; top: 50%; transform: translateY(-50%);
+  width: 20px; height: 20px; border-radius: 50%; background: var(--bg); transition: transform .35s var(--ease-default), width .2s var(--ease-default), background .35s;
+  box-shadow: none !important;
+}
+.toggle-input:checked + .toggle-track { background: var(--primary); }
+.toggle-input:checked + .toggle-track::after { transform: translateY(-50%) translateX(20px); background: var(--bg); }
+html.dark-mode .toggle-input + .toggle-track { background: rgba(255,255,255,.12); }
+html.dark-mode .toggle-input + .toggle-track::after { background: var(--txt-heading); }
+html.dark-mode .toggle-input:checked + .toggle-track { background: var(--gray-5); }
+html.dark-mode .toggle-input:checked + .toggle-track::after { background: #fff; }
+
+/* Dropdown Menus (Glassy, Borderless) */
+.dropdown-menu {
+  position: absolute; top: calc(100% + 8px); right: 0;
+  width: calc(100vw - 32px); max-width: 340px;
+  background: rgba(var(--rgb-theme), 0.85); backdrop-filter: blur(32px) saturate(180%);
+  border-radius: var(--r-lg); padding: 8px; display: flex; flex-direction: column;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transform: translateY(-8px); transform-origin: top right;
+  transition: 0.25s var(--ease-snappy); z-index: var(--z-popover);
+  box-shadow: none !important; border: none !important;
+}
+html.dark-mode .dropdown-menu { background: rgba(var(--rgb-theme), 0.95); }
+.dropdown-menu.active { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0); }
+.dropdown-header { padding: 16px 12px 8px; display: flex; justify-content: space-between; align-items: center; }
+.dropdown-header .label-section { margin-bottom: 0; }
+
+.apps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 8px; }
+.app-item { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 0; border-radius: var(--r-sm); cursor: pointer; transition: background 0.2s; }
+.app-item:hover { background: var(--card-hover); }
+.app-icon { width: 56px; height: 56px; border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; font-family: var(--ff-mono); font-weight: 700; font-size: 1.2rem; background: var(--bg); color: var(--txt-heading); }
+.app-icon.accent { background: var(--primary); color: #fff; }
+.app-label { font-size: 0.8rem; color: var(--txt-heading); font-weight: 600; }
+
+.profile-link { display: flex; align-items: center; gap: 16px; padding: 14px; border-radius: var(--r-sm); font-size: 0.9rem; font-weight: 600; color: var(--txt-heading); cursor: pointer; transition: background 0.2s; }
+.profile-link i { color: var(--muted); font-size: 1.3rem; }
+.profile-link:hover { background: var(--card-hover); }
+.profile-link.danger { color: var(--alert-red); }
+.profile-link.danger i { color: var(--alert-red); }
+.menu-divider { height: 1px; background: var(--card); margin: 8px 0; }
+
+
+/* ─── HTMX + ALPINE TABS ─── */
+.tab-list { display: flex; gap: 24px; margin-bottom: 32px; border-bottom: 1px solid var(--card); overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+.tab-list::-webkit-scrollbar { display: none; }
+.tab-list button { font-family: var(--ff-mono); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; color: var(--muted); font-weight: 700; transition: color 0.2s; white-space: nowrap; padding-bottom: 12px; margin-bottom: -1px; border-bottom: 2px solid transparent; }
+.tab-list button.active { color: var(--primary); border-bottom-color: var(--primary); }
+.tab-list button:hover:not(.active) { color: var(--txt-heading); }
+
+/* Ensure Tab Content is 100% Width */
+.tab-content-wrapper { width: 100%; flex: 1; display: flex; flex-direction: column; }
+
+
+/* ─── ISLAND LAYOUT COMPONENTS ─── */
+
+/* Left Nav (Mobile Off-Canvas Glass) */
+.app-left {
+  position: fixed; left: -100%; top: 0; bottom: 0; width: 85%; max-width: 300px;
+  background: rgba(var(--rgb-theme), 0.85) !important;
+  backdrop-filter: blur(5px) saturate(120%); -webkit-backdrop-filter: blur(5px) saturate(120%);
+  z-index: var(--z-fab); padding: 40px 16px;
+  transition: left 0.3s var(--ease-snappy); overflow-y: auto;
+  border: none !important; box-shadow: none !important;
+}
+html.dark-mode .app-left, html.dark-mode .app-right { background: rgba(var(--rgb-theme), 0.95) !important; }
+.app-left.show { left: 0; }
+.nav-list { padding: 0; margin-top: 24px; }
+.nav-list-item { margin-bottom: 8px; }
+.nav-list-link {
+  font-weight: 600; font-size: 1rem; padding: 16px 20px; color: var(--muted);
+  display: flex; align-items: center; border-radius: var(--r-sm); transition: background 0.2s, color 0.2s;
+}
+.nav-list-link svg { margin-right: 16px; width: 22px; height: 22px; stroke: currentColor; }
+.nav-list-item:hover .nav-list-link, .nav-list-item.active .nav-list-link { background: var(--card); color: var(--txt-heading); }
+.nav-list-item.active svg { stroke: var(--primary); }
+
+/* Right Panel (Mobile Off-Canvas Glass) */
+.app-right {
+  position: fixed; right: -100%; top: 0; bottom: 0; width: 90%; max-width: 400px;
+  background: rgba(var(--rgb-theme), 0.85) !important;
+  backdrop-filter: blur(5px) saturate(120%); -webkit-backdrop-filter: blur(5px) saturate(120%);
+  z-index: var(--z-fab); padding: 40px 16px; display: flex; flex-direction: column;
+  transition: right 0.3s var(--ease-snappy); overflow-y: auto;
+  border: none !important; box-shadow: none !important;
+}
+.app-right.show { right: 0; }
+.profile-box { display: flex; flex-direction: column; align-items: center; margin-bottom: 40px; padding-top: 16px; }
+.profile-photo-wrapper { width: 96px; height: 96px; border-radius: 50%; overflow: hidden; margin-bottom: 16px; background: var(--card); }
+.profile-photo-wrapper img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.3s; }
+.profile-photo-wrapper:hover img { filter: grayscale(0%); }
+.profile-text { font-size: 1.25rem; font-weight: 700; color: var(--txt-heading); }
+.profile-subtext { font-size: 0.8rem; color: var(--muted); font-family: var(--ff-mono); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
+
+.app-right-section { margin-bottom: 40px; }
+.app-right-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding: 0 8px; }
+.app-right-section-header h2 { font-size: 0.8rem; font-family: var(--ff-mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 700; }
+
+.message-line, .activity-line {
+  display: flex; align-items: flex-start; padding: 8px 16px; margin-bottom: 8px;
+  border-radius: var(--r-sm); background: transparent; cursor: pointer; transition: background 0.2s;
+  border: none !important; box-shadow: none !important;
+}
+.message-line:hover, .activity-line:hover { background: var(--card-hover); }
+.message-line img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 16px; filter: grayscale(100%); }
+.message-text-wrapper, .activity-text-wrapper { flex: 1; }
+.message-text { font-size: 0.95rem; font-weight: 700; color: var(--txt-heading); }
+.message-subtext { font-size: 0.85rem; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+.activity-icon {
+  width: 36px; height: 36px; border-radius: var(--r-sm); margin-right: 16px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  background: var(--bg); color: var(--txt-heading);
+}
+.activity-icon svg { width: 18px; height: 18px; stroke: currentColor; }
+.activity-text { font-size: 0.9rem; color: var(--txt-color); line-height: 1.5; }
+.activity-text strong { color: var(--txt-heading); font-weight: 700; }
+.activity-link { font-size: 0.8rem; color: var(--primary); margin-top: 8px; display: inline-block; font-weight: 700; }
+
+/* Main Area (Fluid Island Base) */
+.app-main {
+  flex: 1; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden;
+  padding: 16px; background: transparent; /* Blends perfectly with --bg */
+}
+.main-header-line { display: flex; flex-direction: column; gap: 24px; align-items: flex-start; margin-bottom: 32px; }
+.main-header-line h1 { font-family: var(--ff-fun); font-size: 2.2rem; color: var(--txt-heading); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
+
+.search-wrap { position: relative; width: 100%; max-width: 100%; }
+.search-wrap input {
+  width: 100%; border-radius: var(--r-pill); background: var(--card);
+  border: none !important; box-shadow: none !important; color: var(--txt-heading); 
+  height: 48px; padding: 0 24px 0 48px; font-size: 0.85rem; font-family: var(--ff-main); font-weight: 500;
+  transition: background 0.2s;
+}
+.search-wrap input:focus { background: var(--card-hover); }
+.search-wrap svg { position: absolute; left: 18px; top: 14px; stroke: var(--muted); width: 20px; height: 20px; pointer-events: none; }
+
+/* Dashboard Cards & Charts (The Islands) */
+.chart-row { display: flex; flex-direction: column; gap: 16px; margin-bottom: 16px; }
+.chart-container {
+  background: var(--card); border-radius: var(--r-lg); padding: 24px;
+  flex: 1; display: flex; flex-direction: column; 
+  border: none !important; box-shadow: none !important; /* STRICT FLAT UI */
+}
+.chart-container-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.chart-container-header h2 { font-size: 0.95rem; color: var(--txt-heading); font-weight: 700; }
+.chart-container-header span { font-size: 0.75rem; font-family: var(--ff-mono); color: var(--muted); text-transform: uppercase; }
+
+.chart-info-wrapper h2 { font-size: 0.7rem; font-family: var(--ff-mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 4px; font-weight: 700; }
+.chart-info-wrapper span { font-size: 1.5rem; font-weight: 700; color: var(--txt-heading); font-family: var(--ff-main); letter-spacing:-0.02em; line-height: 1; }
+.circle-chart-wrap { display: flex; justify-content: space-between; align-items: center; }
+
+/* SVG Circular Chart */
+.chart-svg { max-width: 70px; flex: 1; }
+.circle-bg { fill: none; stroke: var(--bg); stroke-width: 3.5; }
+.circle { fill: none; stroke-width: 3.5; stroke-linecap: round; stroke: var(--primary); animation: progress 1s ease-out forwards; }
+.percentage { fill: var(--txt-heading); font-size: 0.65em; text-anchor: middle; font-family: var(--ff-mono); font-weight: 700; transform: translateY(2px); }
+@keyframes progress { 0% { stroke-dasharray: 0 100; } }
+
+/* Acquisitions Bar */
+.acquisitions-bar { width: 100%; height: 12px; border-radius: 12px; margin-bottom: 16px; display: flex; overflow: hidden; background: var(--bg); }
+.bar-progress { height: 100%; }
+.bar-progress.applications { background-color: var(--primary); }
+.bar-progress.shortlisted { background-color: var(--txt-heading); }
+.bar-progress.on-hold { background-color: var(--muted); }
+.bar-progress.rejected { background-color: var(--alert-red); }
+
+.progress-bar-info { display: flex; align-items: center; width: 100%; margin-bottom: 10px; }
+.progress-color { width: 10px; height: 10px; border-radius: 50%; margin-right: 12px; }
+.progress-color.applications { background-color: var(--primary); }
+.progress-color.shortlisted { background-color: var(--txt-heading); }
+.progress-color.on-hold { background-color: var(--muted); }
+.progress-color.rejected { background-color: var(--alert-red); }
+.progress-type { font-size: 0.8rem; color: var(--txt-color); font-weight: 600; }
+.progress-amount { font-size: 0.8rem; font-family: var(--ff-mono); color: var(--txt-heading); margin-left: auto; font-weight: 700; }
+
+/* Applicants List */
+.applicants-container { display: flex; flex-direction: column; gap: 4px; }
+.applicant-line { display: flex; align-items: center; background: transparent; padding: 8px 12px; border-radius: var(--r-sm); border: none !important; cursor: pointer; transition: background 0.2s; }
+.applicant-line:hover { background: var(--card-hover); }
+.applicant-line img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 16px; filter: grayscale(100%); }
+.applicant-info span { font-size: 0.95rem; font-weight: 700; color: var(--txt-heading); }
+.applicant-info p { margin-top: 2px; font-size: 0.8rem; color: var(--muted); }
+.applicant-info strong { color: var(--txt-heading); font-weight: 700; }
+
+/* Quick Link Button (View All) */
+.btn-ghost-sm { font-size: 0.75rem; padding: 0; font-family: var(--ff-main); text-transform: none; font-weight: 600; background: transparent; color: var(--muted); transition: color 0.2s; cursor: pointer; }
+.btn-ghost-sm:hover { color: var(--primary); background: transparent; }
+
+.line-chart-wrapper { width: 100%; height: 240px; position: relative; }
+
+/* ═══════════════════════════════════════════════
+   DESKTOP OVERRIDES (Progressive Enhancement)
+   ═══════════════════════════════════════════════ */
+@media (min-width: 768px) {
+  .app-main { padding: 24px; }
+  .main-header-line { flex-direction: row; align-items: center; gap: 32px; margin-bottom: 32px; }
+  .main-header-line h1 { font-size: 2.5rem; }
+  .search-wrap { max-width: 320px; }
+  
+  .chart-row { flex-direction: row; gap: 16px; margin-bottom: 16px; }
+  .line-chart-wrapper { height: 260px; }
+}
+
+@media (min-width: 1024px) {
+  .app-container { flex-direction: row; }
+  
+  /* Main area flows with padding */
+  .app-main { padding: 32px 40px; }
+
+  /* Panels remain off-screen — toggle via .show only */
+}
+
+/* Mobile Topbar Cleanup */
+@media (max-width: 500px) {
+  .apollo-topbar .brand span { display: none; }
+  #digital-clock { display: none; }
+}
+
+/* ═══════════════════════════════════════════════
+   ⛔ APOLLO CHART ENFORCEMENT — DESIGN REFERENCE
+   ALL charts: amber/orange/red/grayscale/black ONLY.
+   BLUE IS FORBIDDEN — ZERO TOLERANCE.
+   Colors MUST use :root vars (--primary, --alert-red,
+   --muted, --txt-color, --txt-heading, --bg, --card).
+   ═══════════════════════════════════════════════ */
+.am5-tooltip-container {
+  background: rgba(var(--rgb-diff), 0.92) !important;
+  border-radius: var(--r-sm) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+.am5-tooltip-container div {
+  color: rgba(var(--rgb-theme), 1) !important;
+  mix-blend-mode: difference !important;
+  font-family: var(--ff-mono) !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+}
+.circle { stroke: var(--primary) !important; }
+.bar-progress.applications { background-color: var(--primary) !important; }
+.bar-progress.shortlisted  { background-color: var(--txt-heading) !important; }
+.bar-progress.on-hold      { background-color: var(--muted) !important; }
+.bar-progress.rejected     { background-color: var(--alert-red) !important; }
+.progress-color.applications { background-color: var(--primary) !important; }
+.progress-color.shortlisted  { background-color: var(--txt-heading) !important; }
+.progress-color.on-hold      { background-color: var(--muted) !important; }
+.progress-color.rejected     { background-color: var(--alert-red) !important; }
+  </style>
+</head>
+
+<body>
+
+  <!-- MOBILE OVERLAY -->
+  <div class="panel-overlay" id="panel-overlay"></div>
+
+  <!-- TOP NAVIGATION (Fluid Island) -->
+  <header class="apollo-topbar">
+    <div class="brand">
+      <button class="btn-icon" id="btn-mobile-menu" aria-label="Menu">
+        <i class="ri-menu-line"></i>
+      </button>
+      <i class="ri-compass-3-line"></i>
+      <span>apollo::rio</span>
+    </div>
+
+    <div class="topbar-actions">
+      <span class="txt-mono" id="digital-clock" style="margin-right: 12px;">--:--:--</span>
+
+      <!-- Tower/Activity Trigger -->
+      <button id="btn-activity" class="btn-icon" aria-label="Activity Panel" aria-expanded="false">
+        <div class="pulse-badge" id="notif-badge" data-notif="true"></div>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-activity"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+      </button>
+
+      <!-- Apps Trigger -->
+      <button id="btn-apps" class="btn-icon" aria-label="Aplicativos" aria-expanded="false">
+        <i class="ri-apps-2-line"></i>
+      </button>
+
+      <!-- Profile Trigger -->
+      <button id="btn-profile" class="btn-icon btn-profile-txt" aria-expanded="false">M</button>
+
+      <!-- DROPDOWN: APPS -->
+      <div id="menu-app" class="dropdown-menu">
+        <div class="dropdown-header">
+          <span class="label-section">Aplicativos</span>
+        </div>
+        <div class="apps-grid">
+          <div class="app-item">
+            <div class="app-icon"><i class="ri-table-line"></i></div><span class="app-label">Excel</span>
+          </div>
+          <div class="app-item">
+            <div class="app-icon"><i class="ri-file-word-2-line"></i></div><span class="app-label">Word</span>
+          </div>
+          <div class="app-item">
+            <div class="app-icon"><i class="ri-presentation-line"></i></div><span class="app-label">Slide</span>
+          </div>
+          <div class="app-item">
+            <div class="app-icon"><i class="ri-team-line"></i></div><span class="app-label">Teams</span>
+          </div>
+          <div class="app-item">
+            <div class="app-icon"><i class="ri-file-pdf-2-line"></i></div><span class="app-label">Leitor</span>
+          </div>
+          <div class="app-item">
+            <div class="app-icon"><i class="ri-drive-line"></i></div><span class="app-label">Drive</span>
+          </div>
+          <div class="app-item">
+            <div class="app-icon"><i class="ri-vidicon-line"></i></div><span class="app-label">Meet</span>
+          </div>
+          <div class="app-item">
+            <div class="app-icon accent"><i class="ri-add-line"></i></div><span class="app-label">Add</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DROPDOWN: PROFILE (THEME TOGGLE INSIDE) -->
+      <div id="menu-profile" class="dropdown-menu" style="width: 280px;">
+        <a class="profile-link"><i class="ri-user-line"></i> Meu Perfil</a>
+        <a class="profile-link"><i class="ri-settings-3-line"></i> Configurações</a>
+        
+        <div class="menu-divider"></div>
+        
+        <!-- THEME TOGGLE ROW (Pure Flat UI) -->
+        <div class="profile-link theme-toggle-row" style="justify-content: space-between; cursor: default; padding-right: 12px;">
+          <span style="display:flex; align-items:center; gap:16px;">
+            <i class="ri-contrast-drop-2-line"></i> Tema Escuro
+          </span>
+          <label class="toggle-wrap dm-toggle" for="dm-toggle" title="Toggle dark mode">
+            <input type="checkbox" class="toggle-input" id="dm-toggle" role="switch" aria-label="Dark mode">
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+
+        <div class="menu-divider"></div>
+        <a class="profile-link danger"><i class="ri-logout-box-r-line"></i> Sair</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- DASHBOARD LAYOUT (The Unified Island Area) -->
+  <div class="app-container">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="app-left" id="sidebar">
+      <ul class="nav-list">
+        <li class="nav-list-item active">
+          <a class="nav-list-link" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-columns"><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7m0-18H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7m0-18v18"></path></svg>
+            Dashboard
+          </a>
+        </li>
+        <li class="nav-list-item">
+          <a class="nav-list-link" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-briefcase"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            Jobs
+          </a>
+        </li>
+        <li class="nav-list-item">
+          <a class="nav-list-link" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+            Applications
+          </a>
+        </li>
+        <li class="nav-list-item">
+          <a class="nav-list-link" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Team
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- MAIN DASHBOARD AREA -->
+    <main class="app-main">
+      <div class="main-header-line">
+        <h1>Applications Board</h1>
+        <div class="search-wrap">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" placeholder="Search candidates...">
+        </div>
+      </div>
+
+      <!-- HTMX + ALPINE TAB SYSTEM (2025 Standard) -->
+      <div x-data="{ activeTab: 'tab1' }" style="width: 100%; display: flex; flex-direction: column; flex: 1;">
+        <div role="tablist" class="tab-list">
+          <button @click="activeTab = 'tab1'" :class="{ 'active': activeTab === 'tab1' }">Overview</button>
+          
+          <!-- Tab 2: HTMX dynamic fetch stub -->
+          <button @click="activeTab = 'tab2'; $refs.content2.innerHTML = '<div style=\'padding:40px;text-align:center;width:100%;\'><i class=\'ri-loader-4-line ri-spin ri-2x\' style=\'color:var(--muted);\'></i><p style=\'margin-top:16px;font-family:var(--ff-mono);text-transform:uppercase;font-size:0.75rem;color:var(--muted);\'>Loading Data...</p></div>'" 
+                  hx-get="/wp-json/wp/v2/pages/456" hx-target="#content2" hx-swap="innerHTML" 
+                  :class="{ 'active': activeTab === 'tab2' }">Analytics</button>
+
+          <!-- Tab 3: HTMX dynamic fetch stub -->
+          <button @click="activeTab = 'tab3'; $refs.content3.innerHTML = '<div style=\'padding:40px;text-align:center;width:100%;\'><i class=\'ri-loader-4-line ri-spin ri-2x\' style=\'color:var(--muted);\'></i><p style=\'margin-top:16px;font-family:var(--ff-mono);text-transform:uppercase;font-size:0.75rem;color:var(--muted);\'>Loading Data...</p></div>'" 
+                  hx-get="/wp-json/wp/v2/pages/789" hx-target="#content3" hx-swap="innerHTML" 
+                  :class="{ 'active': activeTab === 'tab3' }">Reports</button>
+        </div>
+
+        <!-- TAB CONTENT 1 (Static Dashboard View) -->
+        <div id="content1" x-show="activeTab === 'tab1'" x-transition.opacity.duration.300ms x-ref="content1" class="tab-content-wrapper">
+          <!-- 3 Small Charts Row -->
+          <div class="chart-row">
+            <div class="chart-container">
+              <div class="circle-chart-wrap">
+                <div class="chart-info-wrapper">
+                  <h2>Applications</h2>
+                  <span>20.5K</span>
+                </div>
+                <div class="chart-svg">
+                  <svg viewBox="0 0 36 36" class="circular-chart">
+                    <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                    <path class="circle" stroke-dasharray="80, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                    <text x="18" y="20.35" class="percentage">80%</text>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="chart-container">
+              <div class="circle-chart-wrap">
+                <div class="chart-info-wrapper">
+                  <h2>Shortlisted</h2>
+                  <span>5.5K</span>
+                </div>
+                <div class="chart-svg">
+                  <svg viewBox="0 0 36 36" class="circular-chart">
+                    <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                    <path class="circle" style="stroke:var(--txt-heading)" stroke-dasharray="40, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                    <text x="18" y="20.35" class="percentage">40%</text>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="chart-container">
+              <div class="circle-chart-wrap">
+                <div class="chart-info-wrapper">
+                  <h2>On-hold</h2>
+                  <span>1.2K</span>
+                </div>
+                <div class="chart-svg">
+                  <svg viewBox="0 0 36 36" class="circular-chart">
+                    <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                    <path class="circle" style="stroke:var(--muted)" stroke-dasharray="15, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                    <text x="18" y="20.35" class="percentage">15%</text>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Chart & Acquisitions Row -->
+          <div class="chart-row">
+            <div class="chart-container" style="flex: 2; min-width: 300px;">
+              <div class="chart-container-header">
+                <h2>Top Active Jobs</h2>
+                <span>Last 30 days</span>
+              </div>
+              <div class="line-chart-wrapper">
+                <!-- amCharts 5 renders into a div, not canvas -->
+                <div id="mainChart" style="width:100%;height:100%;"></div>
+              </div>
+            </div>
+
+            <div style="flex: 1; display:flex; flex-direction: column; gap: 16px;">
+              <div class="chart-container" style="flex:none;">
+                <div class="chart-container-header">
+                  <h2>Acquisitions</h2>
+                  <span>This month</span>
+                </div>
+                <div class="acquisitions-bar">
+                  <span class="bar-progress rejected" style="width:8%;"></span>
+                  <span class="bar-progress on-hold" style="width:10%;"></span>
+                  <span class="bar-progress shortlisted" style="width:18%;"></span>
+                  <span class="bar-progress applications" style="width:64%;"></span>
+                </div>
+                <div class="progress-bar-info">
+                  <span class="progress-color applications"></span>
+                  <span class="progress-type">Applications</span>
+                  <span class="progress-amount">64%</span>
+                </div>
+                <div class="progress-bar-info">
+                  <span class="progress-color shortlisted"></span>
+                  <span class="progress-type">Shortlisted</span>
+                  <span class="progress-amount">18%</span>
+                </div>
+                <div class="progress-bar-info">
+                  <span class="progress-color on-hold"></span>
+                  <span class="progress-type">On-hold</span>
+                  <span class="progress-amount">10%</span>
+                </div>
+                <div class="progress-bar-info">
+                  <span class="progress-color rejected"></span>
+                  <span class="progress-type">Rejected</span>
+                  <span class="progress-amount">8%</span>
+                </div>
+              </div>
+
+              <div class="chart-container">
+                <div class="chart-container-header" style="margin-bottom: 12px;">
+                  <div style="display:flex; flex-direction:column; gap:4px;">
+                    <h2>New Applicants</h2>
+                    <span>Today</span>
+                  </div>
+                  <button class="btn-ghost-sm">View All</button>
+                </div>
+                <div class="applicants-container">
+                  <div class="applicant-line">
+                    <img src="https://images.unsplash.com/photo-1587628604439-3b9a0aa7a163?auto=format&fit=crop&w=150&q=80" alt="profile">
+                    <div class="applicant-info">
+                      <span>Emma Ray</span>
+                      <p>Applied for <strong>Product Designer</strong></p>
+                    </div>
+                  </div>
+                  <div class="applicant-line">
+                    <img src="https://images.unsplash.com/photo-1583195764036-6dc248ac07d9?auto=format&fit=crop&w=150&q=80" alt="profile">
+                    <div class="applicant-info">
+                      <span>Ricky James</span>
+                      <p>Applied for <strong>IOS Developer</strong></p>
+                    </div>
+                  </div>
+                  <div class="applicant-line">
+                    <img src="https://images.unsplash.com/photo-1450297350677-623de575f31c?auto=format&fit=crop&w=150&q=80" alt="profile">
+                    <div class="applicant-info">
+                      <span>Julia Wilson</span>
+                      <p>Applied for <strong>UI Developer</strong></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- HTMX Target Containers -->
+        <div id="content2" x-show="activeTab === 'tab2'" x-transition.opacity.duration.300ms x-ref="content2" class="tab-content-wrapper" style="display: none;"></div>
+        <div id="content3" x-show="activeTab === 'tab3'" x-transition.opacity.duration.300ms x-ref="content3" class="tab-content-wrapper" style="display: none;"></div>
+
+      </div>
+    </main>
+
+    <!-- RIGHT PANEL: ACTIVITY & MESSAGES -->
+    <aside class="app-right" id="activity-panel">
+      <div class="profile-box">
+        <div class="profile-photo-wrapper">
+          <img src="https://images.unsplash.com/photo-1551292831-023188e78222?auto=format&fit=crop&w=250&q=80" alt="profile">
+        </div>
+        <p class="profile-text">Julia Pellegrini</p>
+        <p class="profile-subtext">Recruiting Manager</p>
+      </div>
+      
+      <div class="app-right-section">
+        <div class="app-right-section-header">
+          <h2>Messages</h2>
+          <i class="ri-message-3-line" style="color:var(--muted)"></i>
+        </div>
+        <div class="message-line">
+          <img src="https://images.unsplash.com/photo-1562159278-1253a58da141?auto=format&fit=crop&w=150&q=80" alt="profile">
+          <div class="message-text-wrapper">
+            <p class="message-text">Eric Clampton</p>
+            <p class="message-subtext">Have you planned any deadline for this?</p>
+          </div>
+        </div>
+        <div class="message-line">
+          <img src="https://images.unsplash.com/photo-1604004555489-723a93d6ce74?auto=format&fit=crop&w=150&q=80" alt="profile">
+          <div class="message-text-wrapper">
+            <p class="message-text">Jess Flax</p>
+            <p class="message-subtext">Can we schedule another meeting for next thursday?</p>
+          </div>
+        </div>
+        <div class="message-line">
+          <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80" alt="profile">
+          <div class="message-text-wrapper">
+            <p class="message-text">Pam Halpert</p>
+            <p class="message-subtext">The candidate has been shorlisted.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-right-section">
+        <div class="app-right-section-header">
+          <h2>Activity</h2>
+          <i class="ri-history-line" style="color:var(--muted)"></i>
+        </div>
+        <div class="activity-line">
+          <div class="activity-icon"><i class="ri-error-warning-line" style="color:var(--alert-red)"></i></div>
+          <div class="activity-text-wrapper">
+            <p class="activity-text">Your plan expires in <strong>3 days.</strong></p>
+            <a class="activity-link" href="#">Renew Now</a>
+          </div>
+        </div>
+        <div class="activity-line">
+          <div class="activity-icon"><i class="ri-file-add-line" style="color:var(--primary)"></i></div>
+          <div class="activity-text-wrapper">
+            <p class="activity-text">There are <strong>3 new applications</strong> for <strong>UI Developer</strong></p>
+          </div>
+        </div>
+        <div class="activity-line">
+          <div class="activity-icon"><i class="ri-close-circle-line" style="color:var(--muted)"></i></div>
+          <div class="activity-text-wrapper">
+            <p class="activity-text">Your teammate, Wade Wilson closed the job post of <strong>IOS Developer</strong></p>
+          </div>
+        </div>
+        <div class="activity-line">
+          <div class="activity-icon"><i class="ri-draft-line" style="color:var(--txt-heading)"></i></div>
+          <div class="activity-text-wrapper">
+            <p class="activity-text">You have drafted a job post for <strong>HR Specialist</strong></p>
+            <a class="activity-link" href="#">Complete Now</a>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- amCharts 5 — Apollo production standard (used by apollo-statistics, apollo-events, apollo-gestor) -->
+  <script src="https://cdn.amcharts.com/lib/5/index.js" defer></script>
+  <script src="https://cdn.amcharts.com/lib/5/xy.js" defer></script>
+  <script src="https://cdn.amcharts.com/lib/5/percent.js" defer></script>
+  <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js" defer></script>
+
+  <!-- Simulated dashboard data -->
+  <script src="simulated.data4.dashboard.js" defer></script>
+
+  <!-- ULTRA PRO MODULAR KERNEL LOGIC -->
+  <script src="dashboard.apollo.js" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+/* ═══════════════════════════════════════════════════════
+   02 · BASE — Resets, selection, scrollbar, grain
+   ═══════════════════════════════════════════════════════ */
+
+html, body {
+  background-color: #ffffff;
+  color: var(--dj-txt);
+}
+
+body { background-image: none; }
+
+::selection {
+  background-color: var(--dj-selection-bg);
+  color: #fff;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar       { width: 8px; }
+::-webkit-scrollbar-track { background: var(--dj-bg); }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--dj-primary); }
+
+/* ── Glass Panel (utility) ── */
+.glass-panel {
+  background: var(--dj-glass-bg);
+  backdrop-filter: blur(var(--dj-glass-blur));
+  -webkit-backdrop-filter: blur(var(--dj-glass-blur));
+  border: 1px solid var(--dj-glass-border);
+}
+
+/* ── Grain Overlay ── */
+.noise {
+  position: fixed; top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none; z-index: 9999; opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}

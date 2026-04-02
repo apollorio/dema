@@ -1,0 +1,654 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apollo Hub | Gerenciador de Eventos</title>
+    <!-- Apollo CDN Core -->
+    <script src="https://cdn.apollo.rio.br/v1.0.0/hub.js" fetchpriority="high"></script>
+    
+    
+    <!-- Apollo CDN Core -->
+    <script src="https://cdn.apollo.rio.br/v1.0.0/hub.js" fetchpriority="high"></script>
+    
+    <!-- Mandatory Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Space+Grotesk:wght@300..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    
+    <!-- Remix Icon -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* --- BRAND THEME --- */
+        :root {
+            --ff-fun: "Shrikhand", cursive;
+            --ff-mono: "Space Mono", monospace;
+            --ff-main: "Space Grotesk", system-ui, -apple-system, sans-serif;
+            --primary: #f45f00;
+            --bg: #ffffff;
+            --border: #e4e4e7;
+            --black-1: #121214;
+            --black-9: #999;
+            --radius: 12px;
+            --radius-sm: 6px;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--black-1);
+            font-family: var(--ff-main);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        .font-mono { font-family: var(--ff-mono); letter-spacing: -0.05em; }
+        .font-fun { font-family: var(--ff-fun); }
+        .text-primary { color: var(--primary); }
+
+        /* --- STAT STRIP (4 COLS ROW) --- */
+        .stat-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            width: 100%;
+            margin-bottom: 24px;
+        }
+
+        .stat-mini-item {
+            text-align: center;
+            padding: 12px 8px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 70px;
+        }
+        
+        .stat-mini-label {
+            font-family: var(--ff-mono);
+            font-size: 9px;
+            text-transform: uppercase;
+            color: var(--black-9);
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+            white-space: nowrap;
+        }
+
+        .stat-mini-value {
+            font-size: clamp(20px, 4vw, 28px);
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -0.04em;
+            color: var(--black-1);
+        }
+
+        /* --- GRID DE EVENTOS (2 COLS MOBILE) --- */
+        .smart-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            width: 100%;
+        }
+
+        @media (min-width: 1024px) {
+            .smart-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+            .stat-strip { gap: 20px; }
+            .stat-mini-item { padding: 16px; align-items: flex-start; text-align: left; }
+            .stat-mini-value { font-size: 32px; }
+        }
+
+        /* --- EVENT CARD --- */
+        .event-card {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            transition: 0.2s all;
+            overflow: hidden;
+        }
+        
+        .event-thumb {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: 0.3s;
+        }
+        
+        .event-card:hover { border-color: var(--black-1); }
+        .event-card:hover .event-thumb { filter: grayscale(0%); }
+
+        .event-body {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        /* --- CO-AUTHORS AVATARS --- */
+        .coauthor-list {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .coauthor-avatar {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid white;
+            background: #e4e4e7;
+            object-fit: cover;
+        }
+
+        .coauthor-add {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 1px dashed var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: var(--black-9);
+            cursor: pointer;
+            background: white;
+            transition: 0.2s;
+        }
+
+        .coauthor-add:hover {
+            border-color: var(--black-1);
+            color: var(--black-1);
+        }
+
+        /* --- STATUS BADGES --- */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .status-published { background: #000; color: #fff; }
+        .status-draft { background: #f4f4f5; color: var(--black-9); border: 1px solid var(--border); }
+        .status-scheduled { background: #fff3e0; color: #f45f00; border: 1px solid #ffe0b2; }
+
+        /* --- FILTER PILLS --- */
+        .filter-pills {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-pill {
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            background: white;
+            transition: 0.2s;
+        }
+
+        .filter-pill:hover, .filter-pill.active {
+            background: var(--black-1);
+            color: white;
+            border-color: var(--black-1);
+        }
+
+        /* --- CO-AUTHOR DROPDOWN --- */
+        .coauthor-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 4px;
+            width: 200px;
+            max-height: 180px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            z-index: 100;
+            display: none;
+        }
+
+        .coauthor-dropdown.active {
+            display: block;
+        }
+
+        .coauthor-option {
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 11px;
+            border-bottom: 1px solid #f4f4f5;
+        }
+
+        .coauthor-option:hover {
+            background: #f8f8f8;
+        }
+
+        .coauthor-option img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .scroll-area::-webkit-scrollbar { width: 4px; }
+        .scroll-area::-webkit-scrollbar-thumb { background: #e4e4e7; border-radius: 4px; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden bg-white text-black">
+
+    <!-- PHP: apollo-events/templates/partials/sidebar.php — SIDEBAR REMOVED (mobile-first: all nav in FAB sheet) -->
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 flex flex-col h-full relative">
+        
+        <!-- HEADER -->
+        <header class="h-16 border-b border-[#e4e4e7] flex items-center justify-between px-5 bg-white shrink-0 sticky top-0 z-30">
+            <div class="flex items-center gap-3">
+                <div class="lg:hidden w-8 h-8 bg-black text-white rounded-md flex items-center justify-center font-fun">A</div>
+                <h1 class="font-bold text-lg tracking-tight uppercase">Eventos Manager</h1>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="hidden md:block text-xs font-mono text-gray-400">RODRIGO APOLLO</span>
+                <div class="w-8 h-8 rounded-full bg-gray-100 border border-[#e4e4e7] overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </header>
+
+        <!-- SCROLLABLE CANVAS -->
+        <div class="flex-1 overflow-y-auto scroll-area p-3 lg:p-8 bg-white">
+            <div class="max-w-7xl mx-auto">
+
+                <!-- 1. STATS ROW -->
+                <div class="mb-2 px-1">
+                    <h2 class="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest">Visão Geral</h2>
+                </div>
+                
+                <div class="stat-strip">
+                    <div class="stat-mini-item">
+                        <span class="stat-mini-label">Total</span>
+                        <span class="stat-mini-value">18</span>
+                    </div>
+                    <div class="stat-mini-item">
+                        <span class="stat-mini-label">Publicados</span>
+                        <span class="stat-mini-value">12</span>
+                    </div>
+                    <div class="stat-mini-item">
+                        <span class="stat-mini-label">Rascunhos</span>
+                        <span class="stat-mini-value">04</span>
+                    </div>
+                    <div class="stat-mini-item">
+                        <span class="stat-mini-label">Agendados</span>
+                        <span class="stat-mini-value">02</span>
+                    </div>
+                </div>
+
+                <!-- 2. FILTERS & NEW EVENT -->
+                <div class="flex items-center justify-between mb-4 px-1 mt-6 flex-wrap gap-3">
+                    <div class="filter-pills">
+                        <div class="filter-pill active">Todos</div>
+                        <div class="filter-pill">Publicados</div>
+                        <div class="filter-pill">Rascunhos</div>
+                        <div class="filter-pill">Agendados</div>
+                    </div>
+                    <button class="px-4 py-2 bg-black text-white rounded font-bold text-xs uppercase hover:bg-[var(--primary)] transition flex items-center gap-2">
+                        <i class="ri-add-line"></i>
+                        <span class="hidden sm:inline">Novo Evento</span>
+                    </button>
+                </div>
+
+                <!-- 3. EVENTS GRID -->
+                <div class="smart-grid">
+                    
+                    <!-- Event 1: Published -->
+                    <div class="event-card">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=400" class="event-thumb">
+                            <div class="absolute top-2 left-2">
+                                <span class="status-badge status-published">Publicado</span>
+                            </div>
+                        </div>
+                        <div class="event-body">
+                            <div class="flex flex-col gap-1">
+                                <h3 class="font-bold text-sm leading-tight">Sunset Theory 04</h3>
+                                <span class="font-mono text-[9px] text-gray-500 uppercase">24 FEV • Fabrika, Rio</span>
+                            </div>
+                            
+                            <!-- Co-authors -->
+                            <div class="flex items-center justify-between mt-1">
+                                <div class="coauthor-list relative">
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" class="coauthor-avatar" title="Rodrigo Apollo">
+                                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80" class="coauthor-avatar" title="Ana Silva">
+                                    <div class="coauthor-add" onclick="toggleDropdown(this)">
+                                        <i class="ri-add-line"></i>
+                                    </div>
+                                    
+                                    <!-- Dropdown -->
+                                    <div class="coauthor-dropdown">
+                                        <div class="coauthor-option">
+                                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80">
+                                            <span>Maria Costa</span>
+                                        </div>
+                                        <div class="coauthor-option">
+                                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80">
+                                            <span>Pedro Santos</span>
+                                        </div>
+                                        <div class="coauthor-option">
+                                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80">
+                                            <span>Lucas Mendes</span>
+                                        </div>
+                                        <div class="coauthor-option">
+                                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80">
+                                            <span>Julia Oliveira</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="font-mono text-[8px] text-gray-400">2 CO-AUTORES</span>
+                            </div>
+                            
+                            <!-- Actions -->
+                            <div class="grid grid-cols-2 gap-2 mt-2">
+                                <button class="py-2 border border-[#e4e4e7] rounded text-[10px] font-bold uppercase hover:bg-black hover:text-white transition flex items-center justify-center gap-1">
+                                    <i class="ri-edit-line text-xs"></i>
+                                    Editar
+                                </button>
+                                <button class="py-2 border border-[#e4e4e7] rounded text-[10px] font-bold uppercase hover:bg-black hover:text-white transition flex items-center justify-center gap-1">
+                                    <i class="ri-eye-line text-xs"></i>
+                                    Ver
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event 2: Draft -->
+                    <div class="event-card">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400" class="event-thumb">
+                            <div class="absolute top-2 left-2">
+                                <span class="status-badge status-draft">Rascunho</span>
+                            </div>
+                        </div>
+                        <div class="event-body">
+                            <div class="flex flex-col gap-1">
+                                <h3 class="font-bold text-sm leading-tight">Industrial Complex</h3>
+                                <span class="font-mono text-[9px] text-gray-500 uppercase">12 MAR • BCo. Makers</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between mt-1">
+                                <div class="coauthor-list relative">
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" class="coauthor-avatar">
+                                    <div class="coauthor-add" onclick="toggleDropdown(this)">
+                                        <i class="ri-add-line"></i>
+                                    </div>
+                                    
+                                    <div class="coauthor-dropdown">
+                                        <div class="coauthor-option">
+                                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80">
+                                            <span>Maria Costa</span>
+                                        </div>
+                                        <div class="coauthor-option">
+                                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80">
+                                            <span>Pedro Santos</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="font-mono text-[8px] text-gray-400">1 CO-AUTOR</span>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-2 mt-2">
+                                <button class="py-2 border border-[#e4e4e7] rounded text-[10px] font-bold uppercase hover:bg-black hover:text-white transition flex items-center justify-center gap-1">
+                                    <i class="ri-edit-line text-xs"></i>
+                                    Editar
+                                </button>
+                                <button class="py-2 bg-[var(--primary)] text-white rounded text-[10px] font-bold uppercase hover:bg-black transition flex items-center justify-center gap-1">
+                                    <i class="ri-send-plane-line text-xs"></i>
+                                    Publicar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event 3: Scheduled -->
+                    <div class="event-card">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1571266028243-d220c6ce7faa?w=400" class="event-thumb">
+                            <div class="absolute top-2 left-2">
+                                <span class="status-badge status-scheduled">Agendado</span>
+                            </div>
+                        </div>
+                        <div class="event-body">
+                            <div class="flex flex-col gap-1">
+                                <h3 class="font-bold text-sm leading-tight">Frequency Shift</h3>
+                                <span class="font-mono text-[9px] text-gray-500 uppercase">05 ABR • Warehouse 44</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between mt-1">
+                                <div class="coauthor-list relative">
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" class="coauthor-avatar">
+                                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80" class="coauthor-avatar">
+                                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80" class="coauthor-avatar">
+                                    <div class="coauthor-add" onclick="toggleDropdown(this)">
+                                        <i class="ri-add-line"></i>
+                                    </div>
+                                    
+                                    <div class="coauthor-dropdown">
+                                        <div class="coauthor-option">
+                                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80">
+                                            <span>Pedro Santos</span>
+                                        </div>
+                                        <div class="coauthor-option">
+                                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80">
+                                            <span>Lucas Mendes</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="font-mono text-[8px] text-gray-400">3 CO-AUTORES</span>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-2 mt-2">
+                                <button class="py-2 border border-[#e4e4e7] rounded text-[10px] font-bold uppercase hover:bg-black hover:text-white transition flex items-center justify-center gap-1">
+                                    <i class="ri-edit-line text-xs"></i>
+                                    Editar
+                                </button>
+                                <button class="py-2 border border-[#e4e4e7] rounded text-[10px] font-bold uppercase hover:bg-black hover:text-white transition flex items-center justify-center gap-1">
+                                    <i class="ri-calendar-line text-xs"></i>
+                                    Agenda
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event 4 -->
+                    <div class="event-card">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400" class="event-thumb">
+                            <div class="absolute top-2 left-2">
+                                <span class="status-badge status-published">Publicado</span>
+                            </div>
+                        </div>
+                        <div class="event-body">
+                            <div class="flex flex-col gap-1">
+                                <h3 class="font-bold text-sm leading-tight">Eletric Dreams</h3>
+                                <span class="font-mono text-[9px] text-gray-500 uppercase">18 MAR • Club Matrix</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between mt-1">
+                                <div class="coauthor-list relative">
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" class="coauthor-avatar">
+                                    <div class="coauthor-add" onclick="toggleDropdown(this)">
+                                        <i class="ri-add-line"></i>
+                                    </div>
+                                    
+                                    <div class="coauthor-dropdown">
+                                        <div class="coauthor-option">
+                                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80">
+                                            <span>Maria Costa</span>
+                                        </div>
+                                        <div class="coauthor-option">
+                                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80">
+                                            <span>Pedro Santos</span>
+                                        </div>
+                                        <div class="coauthor-option">
+                                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80">
+                                            <span>Lucas Mendes</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="font-mono text-[8px] text-gray-400">1 CO-AUTOR</span>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-2 mt-2">
+                                <button class="py-2 border border-[#e4e4e7] rounded text-[10px] font-bold uppercase hover:bg-black hover:text-white transition flex items-center justify-center gap-1">
+                                    <i class="ri-edit-line text-xs"></i>
+                                    Editar
+                                </button>
+                                <button class="py-2 border border-[#e4e4e7] rounded text-[10px] font-bold uppercase hover:bg-black hover:text-white transition flex items-center justify-center gap-1">
+                                    <i class="ri-eye-line text-xs"></i>
+                                    Ver
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <div class="h-10"></div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Toggle co-author dropdown
+        function toggleDropdown(btn) {
+            const dropdown = btn.nextElementSibling;
+            const allDropdowns = document.querySelectorAll('.coauthor-dropdown');
+            
+            allDropdowns.forEach(d => {
+                if (d !== dropdown) d.classList.remove('active');
+            });
+            
+            dropdown.classList.toggle('active');
+        }
+
+        // Close dropdowns on outside click
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.coauthor-list')) {
+                document.querySelectorAll('.coauthor-dropdown').forEach(d => {
+                    d.classList.remove('active');
+                });
+            }
+        });
+
+        // Filter pills interaction
+        document.querySelectorAll('.filter-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+            });
+        });
+
+        // Co-author selection
+        document.querySelectorAll('.coauthor-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const userName = this.querySelector('span').textContent;
+                const userImg = this.querySelector('img').src;
+                
+                // Add new avatar to list
+                const coauthorList = this.closest('.coauthor-list');
+                const addBtn = coauthorList.querySelector('.coauthor-add');
+                
+                const newAvatar = document.createElement('img');
+                newAvatar.src = userImg;
+                newAvatar.className = 'coauthor-avatar';
+                newAvatar.title = userName;
+                
+                coauthorList.insertBefore(newAvatar, addBtn);
+                
+                // Update count
+                const countEl = coauthorList.closest('.event-body').querySelector('.font-mono');
+                const currentCount = coauthorList.querySelectorAll('.coauthor-avatar').length;
+                countEl.textContent = `${currentCount} CO-${currentCount === 1 ? 'AUTOR' : 'AUTORES'}`;
+                
+                // Close dropdown
+                this.closest('.coauthor-dropdown').classList.remove('active');
+            });
+        });
+    </script>
+
+
+<!-- PHP: apollo-events/templates/partials/fab-menu.php -->
+<button class="nh-menu-fab" id="nhMenuFab" aria-label="Menu Apollo" aria-expanded="false" aria-haspopup="true">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="20" height="20" style="display:block;flex-shrink:0;pointer-events:none"><path d="M21 17C21 19.2091 19.2091 21 17 21C14.7909 21 13 19.2091 13 17C13 14.7909 14.7909 13 17 13C19.2091 13 21 14.7909 21 17ZM11 7C11 9.20914 9.20914 11 7 11C4.79086 11 3 9.20914 3 7C3 4.79086 4.79086 3 7 3C9.20914 3 11 4.79086 11 7ZM21 7C21 9.20914 19.2091 11 17 11C16.2584 11 15.5634 10.7972 14.9678 10.4453L10.4453 14.9678C10.7972 15.5634 11 16.2584 11 17C11 19.2091 9.20914 21 7 21C4.79086 21 3 19.2091 3 17C3 14.7909 4.79086 13 7 13C7.74116 13 8.43593 13.2022 9.03125 13.5537L13.5537 9.03125C13.2022 8.43593 13 7.74116 13 7C13 4.79086 14.7909 3 17 3C19.2091 3 21 4.79086 21 7Z"/></svg>
+</button>
+<div class="nh-menu-sheet" id="nhMenuSheet" role="menu" aria-label="Menu Apollo">
+  <span class="nh-sheet-label" style="display:block;padding:12px 20px 4px;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,0,0,.35);pointer-events:none">Nesta página</span>
+  <a href="#" class="nh-sheet-item" role="menuitem"><i class="ri-calendar-event-line"></i>Eventos</a>
+  <a href="#" class="nh-sheet-item" role="menuitem"><i class="ri-dashboard-line"></i>Painel</a>
+  <a href="#" class="nh-sheet-item" role="menuitem"><i class="ri-bar-chart-box-line"></i>Dados</a>
+  <div class="nh-sheet-divider" aria-hidden="true"></div>
+  <span class="nh-sheet-label" style="display:block;padding:12px 20px 4px;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,0,0,.35);pointer-events:none">Apollo</span>
+  <a href="/eventos" class="nh-sheet-item" role="menuitem"><i class="ri-calendar-event-line"></i>Eventos</a>
+  <a href="/djs" class="nh-sheet-item" role="menuitem"><i class="ri-music-2-line"></i>DJs &amp; Artistas</a>
+  <a href="/criativo" class="nh-sheet-item" role="menuitem"><i class="ri-map-pin-2-line"></i>Espaços</a>
+  <a href="/classificados" class="nh-sheet-item" role="menuitem"><i class="ri-price-tag-3-line"></i>Classificados</a>
+  <a href="/acomoda" class="nh-sheet-item" role="menuitem"><i class="ri-home-heart-line"></i>Acomoda::Rio</a>
+  <div class="nh-sheet-divider" aria-hidden="true"></div>
+  <a href="/acesso" class="nh-sheet-item nh-sheet-item--cta" role="menuitem"><i class="ri-login-circle-line"></i>Entrar / Cadastrar</a>
+</div>
+<script>
+(function(){
+  var fab=document.getElementById('nhMenuFab'),
+      sheet=document.getElementById('nhMenuSheet');
+  if(!fab||!sheet)return;
+  fab.addEventListener('click',function(e){
+    e.stopPropagation();
+    var open=sheet.classList.toggle('is-open');
+    fab.setAttribute('aria-expanded',open);
+    if(open&&typeof gsap!=='undefined'){
+      gsap.fromTo(sheet.querySelectorAll('.nh-sheet-item'),
+        {opacity:0,y:16},{opacity:1,y:0,stagger:.04,duration:.3,ease:'power2.out'});
+    }
+  });
+  document.addEventListener('click',function(e){
+    if(!sheet.contains(e.target)&&!fab.contains(e.target)){
+      sheet.classList.remove('is-open');fab.setAttribute('aria-expanded','false');
+    }
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){sheet.classList.remove('is-open');fab.setAttribute('aria-expanded','false');}
+  });
+  sheet.querySelectorAll('.nh-sheet-item').forEach(function(it){
+    it.addEventListener('click',function(){
+      sheet.classList.remove('is-open');fab.setAttribute('aria-expanded','false');
+    });
+  });
+})();
+</script>
+</body>
+</html>
+
+

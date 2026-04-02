@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <title>Apollo Classifieds | Rio</title>
+
+    <script src="https://cdn.apollo.rio.br/v1.0.0/core.js" fetchpriority="high"></script>
+    <script src="https://cdn.apollo.rio.br/v1.0.0/js/gsap.min.js" fetchpriority="high"></script>
+    <link rel="stylesheet" href="adverts.css">
+</head>
+<body>
+
+    <main class="container">
+
+        <!-- HEADER -->
+        <div class="hero-title" style="padding: 60px 0 40px 0;">
+            <h1 style="font-size: clamp(40px, 6vw, 80px); font-weight: 800; line-height: 0.9; letter-spacing: -0.04em;">
+                MARKET<span style="color: var(--primary)">::</span>PLACE
+            </h1>
+        </div>
+
+        <!-- INFO BOX -->
+        <div class="info-box reveal-up">
+            <i class="ri-shield-check-line"></i>
+            <div class="info-content">
+                <h3>Transações Seguras</h3>
+                <p>O Apollo é uma ponte. Para sua segurança, verifique sempre o perfil do vendedor antes de transferir qualquer valor. <a href="#">Ver dicas de segurança.</a></p>
+            </div>
+        </div>
+
+        <!-- SECTION: TICKETS -->
+        <div class="section-header reveal-up">
+            <h2 class="section-title" style="position: relative;"><i class="i-apollo-ticket-s" style="color: #d5d5d5; z-index:-8!important; position: absolute; transform: translate(9px, 10px) rotate(35deg);"></i><i class="i-apollo-ticket-s" style="z-index:25!important;filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.5));"></i> Repasses</h2>
+            <span class="section-count">5 Active</span>
+            <!-- VIEW TOGGLE -->
+            <div class="filters-row" id="filterPills">
+                <button class="filter-pill active" data-filter="all" title="Enfileirado"><i class="ri-layout-row-fill"></i></button>
+                <button class="filter-pill" data-filter="grid" title="Grade"><i class="ri-layout-grid-2-fill"></i></button>
+            </div>
+        </div>
+
+     
+        <!-- CAROUSEL WRAPPER -->
+        <div class="carousel reveal-up" id="ticketCarousel">
+            
+            <!-- TICKET 1 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Marcos Silva</span>
+                            <span class="ticket-tourname">@marcos_silva</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">Sunset Theory</div>
+                            <div class="ticket-date">24 Fev • 23:00</div>
+                            <div class="ticket-location">Pista Premium</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 149</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 2 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Julia V.</span>
+                            <span class="ticket-tourname">@julia_v</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">Industrial C.</div>
+                            <div class="ticket-date">12 Mar • 22:00</div>
+                            <div class="ticket-location">Backstage</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 320</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 3 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Lucas Art</span>
+                            <span class="ticket-tourname">@lucas_art</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">Rara Festival</div>
+                            <div class="ticket-date">01 Abr • 18:00</div>
+                            <div class="ticket-location">Area VIP</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 250</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 4 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Pedro Silva</span>
+                            <span class="ticket-tourname">@pedro_beats</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">Dismantle</div>
+                            <div class="ticket-date">15 Abr • 23:00</div>
+                            <div class="ticket-location">Mainstage</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 110</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 5 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Ana Costa</span>
+                            <span class="ticket-tourname">@ana_costa</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1504898770365-14faca6a7320?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">O/NDA</div>
+                            <div class="ticket-date">29 Abr • 16:00</div>
+                            <div class="ticket-location">Pista</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 90</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 1 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Marcos Silva</span>
+                            <span class="ticket-tourname">@marcos_silva</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">Sunset Theory</div>
+                            <div class="ticket-date">24 Fev • 23:00</div>
+                            <div class="ticket-location">Pista Premium</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 149</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 2 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Julia V.</span>
+                            <span class="ticket-tourname">@julia_v</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">Industrial C.</div>
+                            <div class="ticket-date">12 Mar • 22:00</div>
+                            <div class="ticket-location">Backstage</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 320</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 3 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Lucas Art</span>
+                            <span class="ticket-tourname">@lucas_art</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">Rara Festival</div>
+                            <div class="ticket-date">01 Abr • 18:00</div>
+                            <div class="ticket-location">Area VIP</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 250</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 4 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Pedro Silva</span>
+                            <span class="ticket-tourname">@pedro_beats</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">Dismantle</div>
+                            <div class="ticket-date">15 Abr • 23:00</div>
+                            <div class="ticket-location">Mainstage</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 110</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 5 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Ana Costa</span>
+                            <span class="ticket-tourname">@ana_costa</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1504898770365-14faca6a7320?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">O/NDA</div>
+                            <div class="ticket-date">29 Abr • 16:00</div>
+                            <div class="ticket-location">Pista</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 90</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 1 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Marcos Silva</span>
+                            <span class="ticket-tourname">@marcos_silva</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">Sunset Theory</div>
+                            <div class="ticket-date">24 Fev • 23:00</div>
+                            <div class="ticket-location">Pista Premium</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 149</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 2 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Julia V.</span>
+                            <span class="ticket-tourname">@julia_v</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">Industrial C.</div>
+                            <div class="ticket-date">12 Mar • 22:00</div>
+                            <div class="ticket-location">Backstage</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 320</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 3 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Lucas Art</span>
+                            <span class="ticket-tourname">@lucas_art</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">Rara Festival</div>
+                            <div class="ticket-date">01 Abr • 18:00</div>
+                            <div class="ticket-location">Area VIP</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 250</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 4 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Pedro Silva</span>
+                            <span class="ticket-tourname">@pedro_beats</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">Dismantle</div>
+                            <div class="ticket-date">15 Abr • 23:00</div>
+                            <div class="ticket-location">Mainstage</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 110</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 5 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Ana Costa</span>
+                            <span class="ticket-tourname">@ana_costa</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1504898770365-14faca6a7320?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">O/NDA</div>
+                            <div class="ticket-date">29 Abr • 16:00</div>
+                            <div class="ticket-location">Pista</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 90</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 1 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Marcos Silva</span>
+                            <span class="ticket-tourname">@marcos_silva</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">Sunset Theory</div>
+                            <div class="ticket-date">24 Fev • 23:00</div>
+                            <div class="ticket-location">Pista Premium</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 149</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 2 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Julia V.</span>
+                            <span class="ticket-tourname">@julia_v</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">Industrial C.</div>
+                            <div class="ticket-date">12 Mar • 22:00</div>
+                            <div class="ticket-location">Backstage</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 320</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 3 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Lucas Art</span>
+                            <span class="ticket-tourname">@lucas_art</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">Rara Festival</div>
+                            <div class="ticket-date">01 Abr • 18:00</div>
+                            <div class="ticket-location">Area VIP</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 250</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 4 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Pedro Silva</span>
+                            <span class="ticket-tourname">@pedro_beats</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">Dismantle</div>
+                            <div class="ticket-date">15 Abr • 23:00</div>
+                            <div class="ticket-location">Mainstage</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 110</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 5 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Ana Costa</span>
+                            <span class="ticket-tourname">@ana_costa</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1504898770365-14faca6a7320?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">O/NDA</div>
+                            <div class="ticket-date">29 Abr • 16:00</div>
+                            <div class="ticket-location">Pista</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 90</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 1 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Marcos Silva</span>
+                            <span class="ticket-tourname">@marcos_silva</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">Sunset Theory</div>
+                            <div class="ticket-date">24 Fev • 23:00</div>
+                            <div class="ticket-location">Pista Premium</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 149</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 2 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Julia V.</span>
+                            <span class="ticket-tourname">@julia_v</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">Industrial C.</div>
+                            <div class="ticket-date">12 Mar • 22:00</div>
+                            <div class="ticket-location">Backstage</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 320</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 3 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Lucas Art</span>
+                            <span class="ticket-tourname">@lucas_art</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">Rara Festival</div>
+                            <div class="ticket-date">01 Abr • 18:00</div>
+                            <div class="ticket-location">Area VIP</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 250</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 4 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Pedro Silva</span>
+                            <span class="ticket-tourname">@pedro_beats</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">Dismantle</div>
+                            <div class="ticket-date">15 Abr • 23:00</div>
+                            <div class="ticket-location">Mainstage</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 110</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- TICKET 5 -->
+            <article type="ticket" class="carousel-item">
+                <div class="ticket-header-block">REPASSE ▪ RE-SELL ▪ REVENTA </div>
+                <div class="top">
+                    <div class="ticket-user-info">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100" class="ticket-avatar">
+                        <div class="ticket-user-meta">
+                            <span class="ticket-bandname">Ana Costa</span>
+                            <span class="ticket-tourname">@ana_costa</span>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1504898770365-14faca6a7320?w=600" class="ticket-img" alt="Event">
+                    <div class="ticket-deetz">
+                        <div class="ticket-meta-row">
+                            <div class="ticket-event-title">O/NDA</div>
+                            <div class="ticket-date">29 Abr • 16:00</div>
+                            <div class="ticket-location">Pista</div>
+                        </div>
+                        <div class="ticket-price-tag">R$ 90</div>
+                    </div> 
+                </div>
+                <div class="rip"><div class="rip-line"></div></div>
+                <div class="bottom">
+                    <div class="barcode"></div>
+                    <button class="btn-chat-ticket btn-open-modal">
+                        <i class="ri-message-3-line"></i>
+                    </button>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- SECTION: ACCOMMODATION -->
+        <div class="section-header acomoda-box reveal-up">
+            <h2 class="section-title"><i class="ri-hotel-bed-fill"></i> Acomodações</h2>
+            <span class="section-count">12 Spots</span>
+        </div>
+
+        <div class="grid-layout">
+            <!-- ACCOM 1 -->
+            <div class="accom-card reveal-up">
+                <div class="accom-img-wrap">
+                    <span class="accom-badge">Superhost</span>
+                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600" class="accom-img">
+                </div>
+                <div class="accom-content">
+                    <div class="accom-header">
+                        <h3 class="accom-title">Selina Lapa</h3>
+                        <div class="accom-rating"><i class="ri-star-fill"></i> 4.8</div>
+                    </div>
+                    <div class="accom-loc"><i class="ri-map-pin-line"></i> Lapa, Rio de Janeiro</div>
+                    <div class="accom-footer">
+                        <div class="accom-price">R$ 280<span>/noite</span></div>
+                        <button class="btn-accom btn-open-modal">Ver</button>
+                    </div>
+                </div>
+            </div>
+            <!-- ACCOM 2 -->
+            <div class="accom-card reveal-up">
+                <div class="accom-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600" class="accom-img">
+                </div>
+                <div class="accom-content">
+                    <div class="accom-header">
+                        <h3 class="accom-title">Vila Santa Teresa</h3>
+                        <div class="accom-rating"><i class="ri-star-fill"></i> 4.9</div>
+                    </div>
+                    <div class="accom-loc"><i class="ri-map-pin-line"></i> Santa Teresa, RJ</div>
+                    <div class="accom-footer">
+                        <div class="accom-price">R$ 450<span>/noite</span></div>
+                        <button class="btn-accom btn-open-modal">Ver</button>
+                    </div>
+                </div>
+            </div>
+            <!-- ACCOM 3 -->
+            <div class="accom-card reveal-up">
+                <div class="accom-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=600" class="accom-img">
+                </div>
+                <div class="accom-content">
+                    <div class="accom-header">
+                        <h3 class="accom-title">Ibis Centro</h3>
+                        <div class="accom-rating"><i class="ri-star-fill"></i> 4.2</div>
+                    </div>
+                    <div class="accom-loc"><i class="ri-map-pin-line"></i> Centro, Rio</div>
+                    <div class="accom-footer">
+                        <div class="accom-price">R$ 180<span>/noite</span></div>
+                        <button class="btn-accom btn-open-modal">Ver</button>
+                    </div>
+                </div>
+            </div>
+            <!-- ACCOM 4 -->
+            <div class="accom-card reveal-up">
+                <div class="accom-img-wrap">
+                    <span class="accom-badge">Novo</span>
+                    <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600" class="accom-img">
+                </div>
+                <div class="accom-content">
+                    <div class="accom-header">
+                        <h3 class="accom-title">Loft Industrial</h3>
+                        <div class="accom-rating"><i class="ri-star-fill"></i> 5.0</div>
+                    </div>
+                    <div class="accom-loc"><i class="ri-map-pin-line"></i> Gamboa, RJ</div>
+                    <div class="accom-footer">
+                        <div class="accom-price">R$ 200<span>/noite</span></div>
+                        <button class="btn-accom btn-open-modal">Ver</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- NEW REDESIGNED MODAL -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header-warning">
+                <i class="ri-alarm-warning-fill"></i>
+                <h2>AVISO IMPORTANTE</h2>
+            </div>
+            
+            <div class="legal-text">
+                <p>O apollo::rio existe apenas para <b>conectar pessoas</b>. Não vendemos ingressos, não processamos pagamentos e não garantimos reservas. Somos o mural de avisos, mas a negociação é 100% entre você e a outra pessoa.</p>
+                
+                <p><b>Lembre-se sempre:</b></p>
+                <ul class="safety-list">
+                    <li>
+                        <i class="ri-number-1"></i> 
+                        <div><b>Chat Interno:</b> Embora utilizemos um chat interno no Apollo, não monitoramos ou lemos o conteúdo. Assim que a conversa inicia, a responsabilidade é sua.</div>
+                    </li>
+                    <li>
+                        <i class="ri-number-2"></i> 
+                        <div><b>Investigue:</b> Use o filtro de "Amigos em Comum" nas redes sociais ou verifique se o usuário possui o selo "<i class="ri-verified-badge-line"></i> Confiável" no Apollo.</div>
+                    </li>
+                    <li>
+                        <i class="ri-number-3"></i> 
+                        <div><b>Segurança em 1º lugar:</b> Evite pagamentos antecipados para desconhecidos.</div>
+                    </li>
+                </ul>
+
+                <p class="warning-highlight">Atenção: O apollo::rio não se responsabiliza por golpes, ingressos falsos ou desistências. Ao clicar abaixo, você declara que é o único responsável por sua negociação.</p>
+            </div>
+
+            <div class="modal-consent">
+                <div class="checkbox-wrapper-modal">
+                    <input type="checkbox" id="modal-consent-check">
+                    <label for="modal-consent-check">
+                        <div class="custom-check-box"></div>
+                        <span>Entendo que o apollo::rio não participa da venda e assumo total responsabilidade pela negociação.</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button id="btn-proceed-chat" class="btn-modal-main">INICIAR CHAT</button>
+                <button class="btn-text-only" onclick="closeModal()">Cancelar e voltar</button>
+            </div>
+        </div>
+    </div>
+    <script src="adverts.js"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "name": "Apollo BPM MAX",
+  "short_name": "BPM MAX",
+  "description": "Ultra-secure BPM detector with WebAssembly protection",
+  "version": "1.0.0",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#f45f00",
+  "orientation": "portrait",
+  "scope": "./",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9Ijk2IiBjeT0iOTYiIHI9Ijk2IiBmaWxsPSIjMDAwIi8+CjxwYXRoIGQ9Ik05NiA2NFY0OEwxMjggODB2MTZMMzIgOTZ2MTZsOTYtMTZ2MTZaIiBmaWxsPSIjZjQ1ZjAwIi8+CjxjaXJjbGUgY3g9IjY0IiBjeT0iMTI4IiByPSI4IiBmaWxsPSIjMDBmNDVmIi8+CjxjaXJjbGUgY3g9IjEyOCIgY3k9IjEyOCIgciI4IiBmaWxsPSIjMDBmNDVmIi8+Cjwvc3ZnPg==",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["music", "productivity", "utilities"],
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "security": {
+    "csp": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline';",
+    "permissions": ["microphone"],
+    "isolation": "strict"
+  }
+}

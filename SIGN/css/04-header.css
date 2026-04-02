@@ -1,0 +1,72 @@
+/* ═══════════════════════════════════════════════════════════
+   04 — HEADER
+   Global header bar: branding, doc info, pills, breadcrumbs,
+   icon buttons, and toolbar strip.
+   Shared by all 4 sign panels (preview, sign, done, signed-file).
+   ═══════════════════════════════════════════════════════════ */
+
+/* header bar */
+.doc-hd {
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 28px; height: 52px;
+  padding-top: max(0px, var(--safe-top));
+  height: calc(52px + max(0px, var(--safe-top)));
+  background: rgba(255,255,255,.97);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--brd);
+  position: relative; z-index: 40;
+}
+.dh-brand { display: flex; align-items: baseline; gap: 4px; flex-shrink: 0; }
+.dh-brand .gl { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: -.02em; color: var(--ink); }
+.dh-brand .ga { font-size: 9px; font-weight: 700; font-family: var(--mono); color: var(--primary); letter-spacing: .02em; }
+.dh-sep { width: 1px; height: 18px; background: var(--brd); flex-shrink: 0; }
+.dh-doc { display: flex; align-items: baseline; gap: 8px; overflow: hidden; }
+.dh-title { font-size: 13px; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px; }
+.dh-id { font-family: var(--mono); font-size: 9px; color: var(--ghost); white-space: nowrap; }
+.dh-right { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-shrink: 0; }
+
+/* status pill */
+.pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 12px; border-radius: var(--pill);
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .04em;
+  border: 1px solid var(--brd); color: var(--ghost);
+  transition: all .5s var(--ease);
+}
+.pill.pending { color: var(--prep); border-color: rgba(217,119,6,.24); background: rgba(217,119,6,.04); }
+.pill.signed  { color: var(--live); border-color: rgba(22,163,74,.26); background: rgba(22,163,74,.05); }
+.sdot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; animation: blink 2.2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.18} }
+
+/* icon button */
+.icon-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 10px;
+  color: var(--ghost); font-size: 16px;
+  border: 1px solid var(--brd); transition: all .14s var(--ease);
+}
+.icon-btn:hover { background: var(--sf3); color: var(--ink); border-color: var(--brd-h); }
+.icon-btn:active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+/* breadcrumb */
+.breadcrumb { display: flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--ghost); }
+.breadcrumb i { font-size: 13px; color: var(--mist); }
+.breadcrumb .sep { color: var(--faint); font-weight: 400; }
+
+/* toolbar strip */
+.doc-tb {
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 20px;
+  background: var(--sf); border-bottom: 1px solid var(--brd);
+}
+.doc-tb-meta { flex: 1; display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 9px; color: var(--ghost); text-transform: uppercase; letter-spacing: .05em; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; min-width: 0; }
+.doc-tb-meta i { font-size: 14px; color: var(--smoke); flex-shrink: 0; }
+.doc-tb-right { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.tb-btn { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--ghost); border: 1px solid var(--brd); transition: all .14s var(--ease); }
+.tb-btn i { font-size: 13px; }
+.tb-btn:hover { background: var(--sf3); color: var(--ink); }
+.tb-btn:active { background: var(--ink); color: #fff; border-color: var(--ink); }
+.tb-sep { width: 1px; height: 16px; background: var(--brd); margin: 0 2px; flex-shrink: 0; }

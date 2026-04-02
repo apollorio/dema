@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0">
+  <title>Apollo :: Loc EDITAR | Arpoador Club</title>
+
+  <!-- ═══ Apollo CDN ═══ -->
+  <script src="https://cdn.apollo.rio.br/v1.0.0/hub.js" fetchpriority="high"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.min.css">
+  <link rel="stylesheet" href="https://cdn.apollo.rio.br/v1.0.0/css/uni.css?x=1.0.1">
+  <script src="https://cdn.apollo.rio.br/v1.0.0/js/theme.1.js" fetchpriority="high"></script>
+
+  <!-- ═══ Leaflet (mapa interativo) ═══ -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    /* ── Force light mode ── */
+    html.dark-mode {
+      --rgb-theme: 255,255,255 !important; --rgb-diff: 0,0,0 !important;
+      --bg: #ffffff !important; --surface: var(--white-2) !important;
+      --card: var(--white-3) !important; --border: rgba(0,0,0,0.18) !important;
+      --txt-color: rgba(19,21,23,0.77) !important;
+      --txt-color-heading: rgba(19,21,23,0.9) !important;
+      --muted: rgba(19,21,23,0.45) !important; --black-1: #121214 !important;
+    }
+    html.dark-mode body { background-image: none !important; background-color: #fff !important; }
+
+    :root { --max-w: 1280px; --ease-out: cubic-bezier(0.16,1,0.3,1); }
+
+    .container { width: 100%; max-width: var(--max-w); padding: 0 20px; margin: 0 auto; }
+
+    /* ═════════════════════════════════════
+       MODO EDIÇÃO — BARRA FLUTUANTE
+    ═════════════════════════════════════ */
+    #edit-toolbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+      background: var(--black-1); color: #fff;
+      display: flex; align-items: center; gap: 10px; padding: 0 20px;
+      height: 46px; font-family: var(--ff-mono); font-size: 11px;
+    }
+    #edit-toolbar .et-label {
+      display: flex; align-items: center; gap: 7px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      padding-right: 12px; border-right: 1px solid rgba(255,255,255,0.15);
+    }
+    #edit-toolbar .et-dot {
+      width: 8px; height: 8px; background: var(--primary); border-radius: 50%;
+      animation: blink 1.2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    #edit-toolbar .et-info { font-size: 10px; color: rgba(255,255,255,0.45); flex: 1; }
+    #edit-toolbar button {
+      padding: 7px 16px; border-radius: 100px; border: none; cursor: pointer;
+      font-family: var(--ff-mono); font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em; transition: opacity 0.2s;
+    }
+    #edit-toolbar button:hover { opacity: 0.8; }
+    #btn-export { background: var(--primary); color: #fff; }
+    #btn-preview { background: rgba(255,255,255,0.12); color: #fff; }
+
+    /* Page offset for toolbar */
+    body { padding-top: 46px; }
+
+    /* ═════════════════════════════════════
+       CONTENTEDITABLE VISUAL HINTS
+    ═════════════════════════════════════ */
+    [contenteditable="true"] {
+      outline: none;
+      transition: background 0.2s, box-shadow 0.2s;
+      border-radius: 4px;
+    }
+    [contenteditable="true"]:hover {
+      background: rgba(244,95,0,0.06);
+      box-shadow: 0 0 0 2px rgba(244,95,0,0.2);
+    }
+    [contenteditable="true"]:focus {
+      background: rgba(244,95,0,0.08);
+      box-shadow: 0 0 0 2px var(--primary);
+    }
+
+    /* ═════════════════════════════════════
+       IMAGE REPLACE OVERLAY
+    ═════════════════════════════════════ */
+    .editable-img-wrap {
+      position: relative; display: block; line-height: 0;
+    }
+    .editable-img-wrap::after {
+      content: '\F5BD  Trocar foto';
+      font-family: 'remixicon', var(--ff-mono); /* icon via CSS */
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.5); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.05em;
+      opacity: 0; transition: opacity 0.25s; cursor: pointer;
+      border-radius: 4px;
+    }
+    .editable-img-wrap:hover::after { opacity: 1; }
+    .editable-img-wrap img { cursor: pointer; }
+
+    /* Gallery add button */
+    .gallery-add-btn {
+      aspect-ratio: 1; border: 2px dashed var(--border);
+      border-radius: 12px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 8px;
+      cursor: pointer; transition: border-color 0.25s, background 0.25s;
+      font-family: var(--ff-mono); font-size: 10px; font-weight: 700;
+      color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .gallery-add-btn:hover { border-color: var(--primary); background: rgba(244,95,0,0.04); color: var(--primary); }
+    .gallery-add-btn i { font-size: 28px; }
+
+    /* Gallery item delete button */
+    .gallery-item {
+      aspect-ratio: 1; overflow: hidden; cursor: pointer;
+      position: relative;
+    }
+    .gallery-item img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: grayscale(50%);
+      transition: filter 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+    }
+    .gallery-item:hover img { filter: grayscale(0%); transform: scale(1.05); }
+    .gallery-delete {
+      position: absolute; top: 6px; right: 6px;
+      width: 26px; height: 26px; border-radius: 50%;
+      background: rgba(0,0,0,0.68); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; cursor: pointer; opacity: 0;
+      transition: opacity 0.2s; border: none; z-index: 2;
+    }
+    .gallery-item:hover .gallery-delete { opacity: 1; }
+
+    /* Stars picker */
+    .stars-picker {
+      display: flex; gap: 4px; cursor: pointer;
+    }
+    .stars-picker i { font-size: 18px; color: var(--primary); transition: transform 0.15s; }
+    .stars-picker i:hover { transform: scale(1.25); }
+    .stars-picker i.empty { color: var(--border); }
+
+    /* Image URL input prompt */
+    .img-url-bar {
+      display: none; position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.85); padding: 8px; z-index: 5;
+      gap: 6px; flex-direction: row; align-items: center;
+    }
+    .img-url-bar.active { display: flex; }
+    .img-url-bar input {
+      flex: 1; padding: 6px 10px; border-radius: 6px; border: none;
+      font-size: 11px; outline: none;
+    }
+    .img-url-bar button {
+      padding: 6px 12px; border-radius: 6px; background: var(--primary);
+      color: #fff; border: none; font-size: 11px; cursor: pointer;
+      font-weight: 700;
+    }
+
+    /* ── Shared layout (copied from loc.html) ── */
+    .page-loader {
+      position: fixed; inset: 0; background: var(--black-1); z-index: 9990;
+      transform-origin: bottom;
+    }
+
+    .site-header {
+      position: fixed; top: 46px; left: 0; right: 0; z-index: 1000;
+      padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .site-header::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.9) 0%, transparent 100%);
+      backdrop-filter: blur(14px); z-index: -1;
+    }
+    .header-brand {
+      font-family: var(--ff-mono); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      display: flex; align-items: center; gap: 8px; color: var(--black-1);
+    }
+    .header-brand .dot { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; }
+    .header-nav { display: flex; align-items: center; gap: 10px; }
+    .header-nav a {
+      font-size: 12px; font-weight: 600; color: var(--muted);
+      transition: color 0.25s; text-decoration: none;
+    }
+    .header-nav a:hover { color: var(--txt-color-heading); }
+    .btn-login {
+      background: var(--black-1); color: #fff !important;
+      padding: 8px 18px; border-radius: 100px; font-size: 11px; font-weight: 700;
+    }
+
+    .venue-hero { position: relative; height: 68vh; min-height: 480px; overflow: hidden; }
+    .venue-hero-bg { position: absolute; inset: 0; }
+    .venue-hero-bg img {
+      width: 100%; height: 100%; object-fit: cover; filter: grayscale(55%);
+      transition: filter 1s;
+    }
+    .venue-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.2) 45%, transparent 72%);
+    }
+    .venue-hero-content {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 40px 20px; color: #fff; z-index: 2;
+    }
+    .venue-hero-content .container {
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 20px;
+    }
+    .venue-hero-pills { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+    .venue-pill {
+      padding: 4px 12px; border-radius: 100px;
+      font-family: var(--ff-mono); font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .venue-pill.type  { background: rgba(255,255,255,0.14); color: #fff; backdrop-filter: blur(8px); }
+    .venue-pill.rating{ background: rgba(255,255,255,0.14); color: #fff; backdrop-filter: blur(8px); }
+    .venue-pill.open  { background: var(--primary); color: #fff; }
+    .venue-hero-title {
+      font-family: var(--ff-mono); font-size: clamp(36px,8vw,80px);
+      font-weight: 900; line-height: 0.9; letter-spacing: -0.04em;
+      text-transform: uppercase; color: #fff; margin-bottom: 10px;
+    }
+    .venue-hero-location {
+      font-size: 13px; color: rgba(255,255,255,0.68);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .venue-hero-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .venue-action-btn {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,0.14); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 18px; transition: background 0.25s; border: none; cursor: pointer;
+    }
+    .venue-action-btn:hover { background: var(--primary); }
+    .gallery-counter {
+      position: absolute; bottom: 20px; right: 20px; padding: 5px 14px;
+      background: rgba(0,0,0,0.55); backdrop-filter: blur(8px);
+      border-radius: 100px; color: #fff; font-size: 11px; font-weight: 600;
+      z-index: 3; display: flex; align-items: center; gap: 6px;
+    }
+
+    .venue-main { padding: 48px 0 64px; }
+    .venue-grid { display: grid; grid-template-columns: 1fr 360px; gap: 40px; }
+
+    .section-title {
+      font-family: var(--ff-mono); font-size: 10px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--txt-color-heading); margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-title i { color: var(--primary); font-size: 14px; }
+
+    .venue-about { margin-bottom: 36px; }
+    .venue-description { font-size: 15px; line-height: 1.78; color: var(--txt-color); margin-bottom: 14px; }
+    .venue-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+    .venue-tag {
+      padding: 4px 12px; border-radius: 100px;
+      background: var(--surface); border: 1px solid var(--border);
+      font-family: var(--ff-mono); font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em; color: var(--txt-color);
+    }
+
+    .venue-quick-stats {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 1px; background: var(--border); border-radius: var(--radius);
+      overflow: hidden; margin-bottom: 36px;
+    }
+    .venue-stat { background: var(--bg); padding: 20px; text-align: center; }
+    .venue-stat-number {
+      font-family: var(--ff-mono); font-size: 24px; font-weight: 900;
+      letter-spacing: -0.03em; line-height: 1; margin-bottom: 4px; color: var(--txt-color-heading);
+    }
+    .venue-stat-label {
+      font-family: var(--ff-mono); font-size: 9px;
+      text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
+    }
+
+    .amenities-grid {
+      display: grid; grid-template-columns: repeat(auto-fill,minmax(148px,1fr));
+      gap: 10px; margin-bottom: 36px;
+    }
+    .amenity-item {
+      display: flex; align-items: center; gap: 10px; padding: 14px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; font-size: 12px; font-weight: 600; color: var(--txt-color);
+    }
+    .amenity-item i { font-size: 18px; color: var(--primary); flex-shrink: 0; }
+
+    .venue-events-list { margin-bottom: 36px; }
+    .venue-event-card {
+      display: flex; gap: 14px; padding: 14px;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      margin-bottom: 10px; align-items: center;
+      transition: border-color 0.25s, transform 0.25s var(--ease-out);
+    }
+    .venue-event-card:hover { border-color: var(--primary); transform: translateX(4px); }
+    .venue-event-date {
+      width: 52px; height: 52px; background: var(--surface);
+      border-radius: 12px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .venue-event-date .month {
+      font-family: var(--ff-mono); font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em; color: var(--primary); line-height: 1;
+    }
+    .venue-event-date .day {
+      font-family: var(--ff-mono); font-size: 20px; font-weight: 900;
+      line-height: 1.1; color: var(--txt-color-heading);
+    }
+    .venue-event-info { flex: 1; min-width: 0; }
+    .venue-event-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: var(--txt-color-heading); }
+    .venue-event-meta { font-size: 11px; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap; }
+    .venue-event-tickets {
+      padding: 8px 16px; background: var(--black-1); color: #fff;
+      border-radius: 100px; font-size: 11px; font-weight: 700;
+      transition: opacity 0.2s; flex-shrink: 0; white-space: nowrap;
+    }
+    .venue-event-tickets:hover { opacity: 0.78; }
+
+    .review-card {
+      padding: 18px; border: 1px solid var(--border);
+      border-radius: var(--radius); margin-bottom: 10px;
+    }
+    .review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .review-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+    .review-name { font-size: 13px; font-weight: 700; color: var(--txt-color-heading); }
+    .review-date { font-size: 10px; color: var(--muted); }
+    .review-text { font-size: 13px; line-height: 1.65; color: var(--txt-color); margin-top: 8px; }
+
+    .venue-sidebar { position: sticky; top: 120px; }
+    .venue-map-card { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; }
+    .venue-map { height: 220px; }
+    .venue-map-info { padding: 14px 16px; }
+    .venue-address { font-size: 13px; font-weight: 600; margin-bottom: 2px; color: var(--txt-color-heading); }
+    .venue-address-detail { font-size: 11px; color: var(--muted); }
+
+    .venue-contact-card, .venue-hours-card {
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 16px;
+    }
+    .contact-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+    }
+    .contact-row:last-child { border-bottom: none; }
+    .contact-row i { font-size: 18px; color: var(--primary); width: 22px; text-align: center; }
+    .contact-row span { font-size: 13px; color: var(--txt-color); }
+
+    .hours-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 12px; }
+    .hours-day { font-weight: 600; color: var(--txt-color-heading); }
+    .hours-time { color: var(--muted); }
+    .hours-row.today .hours-day,
+    .hours-row.today .hours-time { color: var(--primary); font-weight: 700; }
+
+    .resident-dj {
+      display: flex; align-items: center; gap: 10px; padding: 8px;
+      border-radius: 12px; transition: background 0.2s; cursor: pointer; margin-bottom: 2px;
+    }
+    .resident-dj:hover { background: var(--surface); }
+    .resident-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+    .resident-name { font-size: 13px; font-weight: 700; color: var(--txt-color-heading); }
+    .resident-genre { font-size: 10px; color: var(--muted); }
+
+    .photo-gallery { padding: 48px 0; border-top: 1px solid var(--border); }
+    .gallery-grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 8px; margin-top: 16px;
+      border-radius: var(--radius); overflow: hidden;
+    }
+
+    .site-footer { border-top: 1px solid var(--border); padding: 28px 0; }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; }
+    .footer-copy { font-family: var(--ff-mono); font-size: 10px; color: var(--muted); }
+    .footer-links { display: flex; gap: 18px; }
+    .footer-links a { font-size: 11px; color: var(--muted); transition: color 0.25s; }
+    .footer-links a:hover { color: var(--txt-color-heading); }
+
+    @media (max-width: 900px) {
+      .venue-grid { grid-template-columns: 1fr; }
+      .venue-sidebar { position: static; }
+      .venue-quick-stats { grid-template-columns: repeat(2,1fr); }
+      .venue-hero { height: 52vh; min-height: 360px; }
+      .venue-hero-content .container { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 600px) {
+      .venue-hero-title { font-size: 40px; }
+      .gallery-grid { grid-template-columns: repeat(2,1fr); }
+      .footer-inner { flex-direction: column; gap: 14px; text-align: center; }
+      .header-nav a:not(.btn-login) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ TOOLBAR DE EDIÇÃO ═══ -->
+  <div id="edit-toolbar">
+    <div class="et-label"><span class="et-dot"></span> Modo Edição</div>
+    <span class="et-info">Clique em qualquer texto para editar · Clique em fotos para trocar</span>
+    <button id="btn-preview" onclick="togglePreview()">Pré-visualizar</button>
+    <button id="btn-export" onclick="exportHTML()"><i class="ri-download-2-line"></i> Exportar HTML</button>
+  </div>
+
+  <div class="page-loader"></div>
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="site-header">
+    <div class="header-brand"><span class="dot"></span>Apollo::Rio</div>
+    <nav class="header-nav">
+      <a href="#">Eventos</a>
+      <a href="#">DJs</a>
+      <a href="#">Espaços</a>
+      <a href="#" class="btn-login">Entrar</a>
+    </nav>
+  </header>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="venue-hero">
+    <div class="venue-hero-bg">
+      <label class="editable-img-wrap" style="position:absolute;inset:0;display:block;">
+        <img id="img-hero"
+             src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1400&h=900&fit=crop"
+             alt="Foto de capa">
+        <input type="file" accept="image/*" style="display:none" onchange="replaceImgFile(this,'img-hero')">
+      </label>
+    </div>
+    <div class="venue-hero-overlay"></div>
+    <div class="venue-hero-content">
+      <div class="container">
+        <div>
+          <div class="venue-hero-pills">
+            <span class="venue-pill type" contenteditable="true">Club / Underground</span>
+            <span class="venue-pill rating"><i class="ri-star-fill" style="margin-right:3px;font-size:8px;"></i> <span contenteditable="true">4.8</span></span>
+            <span class="venue-pill open" contenteditable="true">Aberto Agora</span>
+          </div>
+          <h1 class="venue-hero-title" contenteditable="true">Arpoador<br>Club</h1>
+          <div class="venue-hero-location">
+            <i class="ri-map-pin-2-fill"></i>
+            <span contenteditable="true">Rua Francisco Otaviano, 67 — Arpoador, Rio de Janeiro</span>
+          </div>
+        </div>
+        <div class="venue-hero-actions">
+          <button class="venue-action-btn" title="Favoritar"><i class="ri-heart-line"></i></button>
+          <button class="venue-action-btn" title="Compartilhar"><i class="ri-share-forward-line"></i></button>
+          <button class="venue-action-btn" title="Direções"><i class="ri-route-line"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="gallery-counter" id="gallery-counter"><i class="ri-image-line"></i> <span id="gallery-count">6</span> fotos</div>
+  </section>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="venue-main">
+    <div class="container">
+      <div class="venue-grid">
+
+        <!-- Col Principal -->
+        <div class="venue-details">
+
+          <!-- Stats -->
+          <div class="venue-quick-stats">
+            <div class="venue-stat">
+              <div class="venue-stat-number" contenteditable="true">4.8</div>
+              <div class="venue-stat-label" contenteditable="true">Rating</div>
+            </div>
+            <div class="venue-stat">
+              <div class="venue-stat-number" contenteditable="true">324</div>
+              <div class="venue-stat-label" contenteditable="true">Depoimentos</div>
+            </div>
+            <div class="venue-stat">
+              <div class="venue-stat-number" contenteditable="true">89</div>
+              <div class="venue-stat-label" contenteditable="true">Eventos</div>
+            </div>
+            <div class="venue-stat">
+              <div class="venue-stat-number" contenteditable="true">1.2k</div>
+              <div class="venue-stat-label" contenteditable="true">Favs</div>
+            </div>
+          </div>
+
+          <!-- About -->
+          <div class="venue-about">
+            <div class="section-title"><i class="ri-information-line"></i> Sobre</div>
+            <p class="venue-description" contenteditable="true">
+              O Arpoador Club nasceu da fusão entre a energia do mar e a pulsação eletrônica do Rio. Localizado a poucos passos da icônica Pedra do Arpoador, o espaço é referência em música underground, abrigando DJs residentes e artistas internacionais em uma experiência sonora que transcende o convencional.
+            </p>
+            <p class="venue-description" contenteditable="true">
+              Com capacidade para 800 pessoas, o club opera com sistema de som Funktion-One e iluminação imersiva, criando uma atmosfera única onde a arquitetura brutalista encontra a vibe tropical.
+            </p>
+            <div class="venue-tags">
+              <span class="venue-tag" contenteditable="true">Techno</span>
+              <span class="venue-tag" contenteditable="true">House</span>
+              <span class="venue-tag" contenteditable="true">Underground</span>
+              <span class="venue-tag" contenteditable="true">Minimal</span>
+              <span class="venue-tag" contenteditable="true">Drum &amp; Bass</span>
+              <span class="venue-tag" contenteditable="true">Experimental</span>
+            </div>
+          </div>
+
+          <!-- Amenities -->
+          <div>
+            <div class="section-title"><i class="ri-service-line"></i> Estrutura</div>
+            <div class="amenities-grid">
+              <div class="amenity-item"><i class="ri-volume-up-line"></i><span contenteditable="true">Funktion-One</span></div>
+              <div class="amenity-item"><i class="ri-parking-box-line"></i><span contenteditable="true">Estacionamento</span></div>
+              <div class="amenity-item"><i class="ri-goblet-fill"></i><span contenteditable="true">3 Bars</span></div>
+              <div class="amenity-item"><i class="ri-shield-check-line"></i><span contenteditable="true">Segurança 24h</span></div>
+              <div class="amenity-item"><i class="ri-vip-crown-line"></i><span contenteditable="true">Área VIP</span></div>
+              <div class="amenity-item"><i class="ri-camera-off-line"></i><span contenteditable="true">No Photo Policy</span></div>
+              <div class="amenity-item"><i class="ri-temp-cold-line"></i><span contenteditable="true">Ar Condicionado</span></div>
+              <div class="amenity-item"><i class="ri-wheelchair-line"></i><span contenteditable="true">Acessibilidade</span></div>
+            </div>
+          </div>
+
+          <!-- Events -->
+          <div class="venue-events-list">
+            <div class="section-title"><i class="ri-calendar-event-fill"></i> Próximos Eventos</div>
+            <div class="venue-event-card">
+              <div class="venue-event-date">
+                <span class="month" contenteditable="true">Mar</span>
+                <span class="day" contenteditable="true">22</span>
+              </div>
+              <div class="venue-event-info">
+                <div class="venue-event-name" contenteditable="true">Sunset Theory #04</div>
+                <div class="venue-event-meta">
+                  <span contenteditable="true">16h – 04h</span>
+                  <span contenteditable="true">800 cap.</span>
+                </div>
+              </div>
+              <a href="#" class="venue-event-tickets" contenteditable="true">Ingressos</a>
+            </div>
+            <div class="venue-event-card">
+              <div class="venue-event-date">
+                <span class="month" contenteditable="true">Mar</span>
+                <span class="day" contenteditable="true">29</span>
+              </div>
+              <div class="venue-event-info">
+                <div class="venue-event-name" contenteditable="true">Acid Pauli (DE) + Residents</div>
+                <div class="venue-event-meta">
+                  <span contenteditable="true">23h – 08h</span>
+                  <span contenteditable="true">800 cap.</span>
+                </div>
+              </div>
+              <a href="#" class="venue-event-tickets" contenteditable="true">Ingressos</a>
+            </div>
+            <div class="venue-event-card">
+              <div class="venue-event-date">
+                <span class="month" contenteditable="true">Abr</span>
+                <span class="day" contenteditable="true">05</span>
+              </div>
+              <div class="venue-event-info">
+                <div class="venue-event-name" contenteditable="true">Warehouse Collective</div>
+                <div class="venue-event-meta">
+                  <span contenteditable="true">22h – 06h</span>
+                  <span contenteditable="true">600 cap.</span>
+                </div>
+              </div>
+              <a href="#" class="venue-event-tickets" contenteditable="true">Ingressos</a>
+            </div>
+          </div>
+
+          <!-- Reviews -->
+          <div>
+            <div class="section-title"><i class="ri-star-fill"></i> Depoimentos</div>
+
+            <div class="review-card">
+              <div class="review-header">
+                <label class="editable-img-wrap">
+                  <img class="review-avatar" id="review-av-1"
+                       src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=72&fit=crop" alt="">
+                  <input type="file" accept="image/*" style="display:none" onchange="replaceImgFile(this,'review-av-1')">
+                </label>
+                <div>
+                  <div class="review-name" contenteditable="true">Rafael Valle</div>
+                  <div class="review-date" contenteditable="true">2 semanas atrás</div>
+                </div>
+              </div>
+              <div class="stars-picker" data-value="5" onclick="setStars(this,event)">
+                <i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i>
+              </div>
+              <p class="review-text" contenteditable="true">Som impecável. Funktion-One entregando o que promete. A vibe underground que o Rio precisava. Voltarei sempre.</p>
+            </div>
+
+            <div class="review-card">
+              <div class="review-header">
+                <label class="editable-img-wrap">
+                  <img class="review-avatar" id="review-av-2"
+                       src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=72&fit=crop" alt="">
+                  <input type="file" accept="image/*" style="display:none" onchange="replaceImgFile(this,'review-av-2')">
+                </label>
+                <div>
+                  <div class="review-name" contenteditable="true">Marina Luna</div>
+                  <div class="review-date" contenteditable="true">1 mês atrás</div>
+                </div>
+              </div>
+              <div class="stars-picker" data-value="4" onclick="setStars(this,event)">
+                <i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill empty"></i>
+              </div>
+              <p class="review-text" contenteditable="true">Espaço incrível, mas pode melhorar a circulação na pista. Drinks bem feitos e staff atencioso.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="venue-sidebar">
+
+          <!-- Map -->
+          <div class="venue-map-card">
+            <div class="venue-map" id="venueMap"></div>
+            <div class="venue-map-info">
+              <div class="venue-address" contenteditable="true">Rua Francisco Otaviano, 67</div>
+              <div class="venue-address-detail" contenteditable="true">Arpoador, Rio de Janeiro — RJ, 22080-040</div>
+            </div>
+          </div>
+
+          <!-- Contact -->
+          <div class="venue-contact-card">
+            <div class="section-title" style="margin-bottom:12px;"><i class="ri-phone-line"></i> Contato</div>
+            <div class="contact-row"><i class="ri-global-line"></i><span contenteditable="true">arpoadorclub.com.br</span></div>
+            <div class="contact-row"><i class="ri-instagram-line"></i><span contenteditable="true">@arpoadorclub</span></div>
+            <div class="contact-row"><i class="ri-whatsapp-line"></i><span contenteditable="true">+55 21 99999-0000</span></div>
+            <div class="contact-row"><i class="ri-mail-line"></i><span contenteditable="true">contato@arpoadorclub.com.br</span></div>
+          </div>
+
+          <!-- Hours -->
+          <div class="venue-hours-card">
+            <div class="section-title" style="margin-bottom:12px;"><i class="ri-time-line"></i> Horários</div>
+            <div class="hours-row"><span class="hours-day" contenteditable="true">Segunda</span><span class="hours-time" contenteditable="true">Fechado</span></div>
+            <div class="hours-row"><span class="hours-day" contenteditable="true">Terça</span><span class="hours-time" contenteditable="true">Fechado</span></div>
+            <div class="hours-row"><span class="hours-day" contenteditable="true">Quarta</span><span class="hours-time" contenteditable="true">22h – 04h</span></div>
+            <div class="hours-row"><span class="hours-day" contenteditable="true">Quinta</span><span class="hours-time" contenteditable="true">22h – 04h</span></div>
+            <div class="hours-row"><span class="hours-day" contenteditable="true">Sexta</span><span class="hours-time" contenteditable="true">23h – 06h</span></div>
+            <div class="hours-row today"><span class="hours-day" contenteditable="true">Sábado</span><span class="hours-time" contenteditable="true">23h – 08h</span></div>
+            <div class="hours-row"><span class="hours-day" contenteditable="true">Domingo</span><span class="hours-time" contenteditable="true">16h – 00h</span></div>
+          </div>
+
+          <!-- Residents -->
+          <div>
+            <div class="section-title" style="margin-bottom:10px;"><i class="ri-disc-line"></i> DJs Residentes</div>
+            <div class="resident-dj">
+              <label class="editable-img-wrap">
+                <img class="resident-avatar" id="res-av-1"
+                     src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&fit=crop" alt="">
+                <input type="file" accept="image/*" style="display:none" onchange="replaceImgFile(this,'res-av-1')">
+              </label>
+              <div><div class="resident-name" contenteditable="true">DJ Kauã</div><div class="resident-genre" contenteditable="true">Techno / Minimal</div></div>
+            </div>
+            <div class="resident-dj">
+              <label class="editable-img-wrap">
+                <img class="resident-avatar" id="res-av-2"
+                     src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&fit=crop" alt="">
+                <input type="file" accept="image/*" style="display:none" onchange="replaceImgFile(this,'res-av-2')">
+              </label>
+              <div><div class="resident-name" contenteditable="true">Nina Azevedo</div><div class="resident-genre" contenteditable="true">Deep House / Afro</div></div>
+            </div>
+            <div class="resident-dj">
+              <label class="editable-img-wrap">
+                <img class="resident-avatar" id="res-av-3"
+                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&fit=crop" alt="">
+                <input type="file" accept="image/*" style="display:none" onchange="replaceImgFile(this,'res-av-3')">
+              </label>
+              <div><div class="resident-name" contenteditable="true">Luiz Degas</div><div class="resident-genre" contenteditable="true">Progressive / Melodic</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══ GALLERY ═══ -->
+  <section class="photo-gallery">
+    <div class="container">
+      <div class="section-title"><i class="ri-camera-line"></i> Galeria (máx. 6)</div>
+      <div class="gallery-grid" id="gallery-grid">
+        <!-- Gallery items rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-copy" contenteditable="true">© 2026 Apollo::Rio — Cultura &amp; Noite</span>
+        <div class="footer-links">
+          <a href="#" contenteditable="true">Termos</a>
+          <a href="#" contenteditable="true">Privacidade</a>
+          <a href="#" contenteditable="true">Contato</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══ SCRIPTS ═══ -->
+  <script>
+    /* ──────────────────────────────────────
+       GALLERY — max 6 images
+    ────────────────────────────────────── */
+    var MAX_GALLERY = 6;
+    var galleryImages = [
+      'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500&h=500&fit=crop',
+      'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=500&h=500&fit=crop',
+      'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500&h=500&fit=crop',
+      'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=500&h=500&fit=crop',
+      'https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=500&h=500&fit=crop',
+      'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&h=500&fit=crop'
+    ];
+
+    function renderGallery() {
+      var grid = document.getElementById('gallery-grid');
+      grid.innerHTML = '';
+      galleryImages.forEach(function (src, idx) {
+        var item = document.createElement('div');
+        item.className = 'gallery-item';
+        item.innerHTML = '<img src="' + src + '" alt="Foto ' + (idx+1) + '">'
+          + '<button class="gallery-delete" title="Remover" onclick="galleryDelete(' + idx + ')"><i class="ri-close-line"></i></button>';
+        item.querySelector('img').addEventListener('click', function () {
+          galleryReplacePrompt(idx, this);
+        });
+        grid.appendChild(item);
+      });
+      if (galleryImages.length < MAX_GALLERY) {
+        var addBtn = document.createElement('div');
+        addBtn.className = 'gallery-add-btn';
+        addBtn.innerHTML = '<i class="ri-add-circle-line"></i>Adicionar foto';
+        addBtn.addEventListener('click', function () {
+          var fi = document.createElement('input');
+          fi.type = 'file'; fi.accept = 'image/*';
+          fi.addEventListener('change', function () {
+            if (fi.files[0] && galleryImages.length < MAX_GALLERY) {
+              galleryImages.push(URL.createObjectURL(fi.files[0]));
+              renderGallery();
+            }
+          });
+          fi.click();
+        });
+        grid.appendChild(addBtn);
+      }
+      document.getElementById('gallery-count').textContent = galleryImages.length;
+    }
+
+    function galleryDelete(idx) {
+      galleryImages.splice(idx, 1);
+      renderGallery();
+    }
+
+    function galleryReplacePrompt(idx, imgEl) {
+      var fi = document.createElement('input');
+      fi.type = 'file'; fi.accept = 'image/*';
+      fi.addEventListener('change', function () {
+        if (fi.files[0]) {
+          galleryImages[idx] = URL.createObjectURL(fi.files[0]);
+          imgEl.src = galleryImages[idx];
+        }
+      });
+      fi.click();
+    }
+
+    renderGallery();
+
+    /* ──────────────────────────────────────
+       REPLACE IMAGE (non-gallery)
+    ────────────────────────────────────── */
+    function replaceImgFile(input, imgId) {
+      if (input.files && input.files[0]) {
+        document.getElementById(imgId).src = URL.createObjectURL(input.files[0]);
+      }
+    }
+
+    /* ──────────────────────────────────────
+       STAR PICKER
+    ────────────────────────────────────── */
+    function setStars(picker, e) {
+      var stars = picker.querySelectorAll('i');
+      var rect = picker.getBoundingClientRect();
+      var x = e.clientX - rect.left;
+      var val = Math.ceil((x / rect.width) * 5);
+      val = Math.max(1, Math.min(5, val));
+      picker.dataset.value = val;
+      stars.forEach(function (s, i) {
+        s.className = i < val ? 'ri-star-fill' : 'ri-star-fill empty';
+      });
+    }
+
+    /* ──────────────────────────────────────
+       PREVIEW TOGGLE — hides edit chrome
+    ────────────────────────────────────── */
+    var previewMode = false;
+    function togglePreview() {
+      previewMode = !previewMode;
+      document.getElementById('btn-preview').textContent = previewMode ? 'Sair do Preview' : 'Pré-visualizar';
+      document.querySelectorAll('[contenteditable]').forEach(function (el) {
+        el.contentEditable = previewMode ? 'false' : 'true';
+      });
+      document.querySelectorAll('.gallery-delete, .gallery-add-btn').forEach(function (el) {
+        el.style.display = previewMode ? 'none' : '';
+      });
+    }
+
+    /* ──────────────────────────────────────
+       EXPORT
+    ────────────────────────────────────── */
+    function exportHTML() {
+      var clone = document.documentElement.cloneNode(true);
+
+      // Remove toolbar and page-loader from export
+      var tb = clone.querySelector('#edit-toolbar');
+      var pl = clone.querySelector('.page-loader');
+      if (tb) tb.remove();
+      if (pl) pl.remove();
+
+      // Remove contenteditable attributes
+      clone.querySelectorAll('[contenteditable]').forEach(function (el) {
+        el.removeAttribute('contenteditable');
+      });
+
+      // Remove delete buttons and add btn
+      clone.querySelectorAll('.gallery-delete, .gallery-add-btn').forEach(function (el) {
+        el.remove();
+      });
+
+      // Remove file inputs in editable-img-wrap
+      clone.querySelectorAll('.editable-img-wrap input[type="file"]').forEach(function (el) {
+        el.remove();
+      });
+
+      // Update gallery src to match current state
+      var liveGalleryItems = document.querySelectorAll('#gallery-grid .gallery-item img');
+      var cloneGalleryItems = clone.querySelectorAll('#gallery-grid .gallery-item img');
+      liveGalleryItems.forEach(function (img, i) {
+        if (cloneGalleryItems[i]) cloneGalleryItems[i].src = img.src;
+      });
+
+      // Remove body padding-top from edit bar
+      var bodyEl = clone.querySelector('body');
+      if (bodyEl) bodyEl.style.paddingTop = '';
+
+      var html = '<!DOCTYPE html>\n' + clone.outerHTML;
+      var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'loc-export.html';
+      a.click();
+    }
+
+    /* ──────────────────────────────────────
+       PAGE LOADER + SCROLL REVEAL
+    ────────────────────────────────────── */
+    window.addEventListener('load', function () {
+      gsap.to('.page-loader', { scaleY: 0, duration: 0.75, ease: 'power4.inOut', delay: 0.15 });
+    });
+    gsap.registerPlugin(ScrollTrigger);
+
+    /* ──────────────────────────────────────
+       LEAFLET MAP
+    ────────────────────────────────────── */
+    var map = L.map('venueMap', { zoomControl: false, scrollWheelZoom: false, dragging: false })
+      .setView([-22.9882, -43.1916], 16);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '' }).addTo(map);
+    L.marker([-22.9882, -43.1916]).addTo(map)
+      .bindPopup('<strong>Arpoador Club</strong><br>Rua Francisco Otaviano, 67');
+  </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+/* ═══════════════════════════════════════════════════════
+   11 · TIMELINE — Bio timeline nodes
+   ═══════════════════════════════════════════════════════ */
+
+.dj-timeline {
+  border-left: 1px solid var(--dj-border);
+  padding-left: 28px;
+  display: flex; flex-direction: column; gap: 36px;
+}
+
+/* ── Node ── */
+.dj-timeline-node { position: relative; }
+
+.dj-timeline-node::before {
+  content: '';
+  position: absolute; left: -35px; top: 7px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--dj-bg); border: 2px solid var(--dj-border);
+  transition: border-color 0.3s;
+}
+
+.dj-timeline-node:first-child::before {
+  border-color: var(--dj-primary); background: var(--dj-primary);
+}
+
+/* ── Date ── */
+.dj-timeline-date {
+  font-family: var(--dj-ff-mono); font-size: 0.7rem;
+  color: var(--dj-txt-muted); margin-bottom: 8px; text-transform: uppercase;
+}
+
+.dj-timeline-node:first-child .dj-timeline-date { color: var(--dj-primary); }
+
+/* ── Content ── */
+.dj-timeline-node h3 {
+  font-size: 1.25rem; font-weight: 700;
+  margin: 0 0 8px; color: var(--dj-txt-heading);
+}
+
+.dj-timeline-node p {
+  color: var(--dj-txt-muted); line-height: 1.65; font-size: 0.93rem;
+}
+
+/* ── Quote ── */
+.dj-timeline-quote {
+  margin-top: 14px; padding: 12px 16px;
+  border-left: 2px solid var(--dj-primary);
+  background: var(--dj-surface);
+  font-style: italic; font-size: 0.88rem; color: var(--dj-txt-muted);
+  border-radius: 0 var(--dj-radius-xs) var(--dj-radius-xs) 0;
+}

@@ -1,0 +1,56 @@
+/* ═══════════════════════════════════════════════════════
+   01 · TOKENS — DJ Page Design Tokens
+   CPT: dj | Taxonomy: sound | REST: apollo/v1/djs
+   ═══════════════════════════════════════════════════════ */
+
+:root {
+  /* ── DJ Primary ── */
+  --dj-primary:          var(--primary, #f45f00);
+  --dj-primary-soft:     rgba(244, 95, 0, 0.05);
+  --dj-primary-border:   rgba(244, 95, 0, 0.3);
+  --dj-primary-glow:     rgba(244, 95, 0, 0.04);
+
+  /* ── Typography ── */
+  --dj-ff-main:          var(--ff-main, "Space Grotesk", sans-serif);
+  --dj-ff-mono:          var(--ff-mono, "Space Mono", monospace);
+  --dj-ff-fun:           var(--ff-fun, "Syne", sans-serif);
+
+  /* ── Surfaces ── */
+  --dj-bg:               var(--bg, #ffffff);
+  --dj-surface:          var(--surface);
+  --dj-surface-hover:    var(--surface-hover);
+  --dj-bg-neutral:       var(--bg-neutral, var(--surface));
+
+  /* ── Borders ── */
+  --dj-border:           var(--border);
+  --dj-border-hover:     var(--border-hover);
+  --dj-border-soft:      rgba(0, 0, 0, 0.05);
+  --dj-border-softer:    rgba(0, 0, 0, 0.06);
+
+  /* ── Text ── */
+  --dj-txt:              var(--txt-color);
+  --dj-txt-heading:      var(--txt-color-heading);
+  --dj-txt-muted:        var(--muted);
+  --dj-black:            var(--black-1);
+
+  /* ── Radius ── */
+  --dj-radius:           var(--radius);
+  --dj-radius-sm:        var(--radius-sm);
+  --dj-radius-xs:        var(--radius-xs);
+
+  /* ── Easing ── */
+  --dj-ease:             var(--ease-default);
+
+  /* ── Layout ── */
+  --dj-max-width:        1120px;
+  --dj-pad-x:            24px;
+  --dj-pad-x-md:         48px;
+
+  /* ── Glass ── */
+  --dj-glass-bg:         rgba(255, 255, 255, 0.02);
+  --dj-glass-border:     rgba(255, 255, 255, 0.05);
+  --dj-glass-blur:       16px;
+
+  /* ── Selection ── */
+  --dj-selection-bg:     rgba(255, 139, 60, 0.38);
+}

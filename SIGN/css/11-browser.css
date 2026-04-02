@@ -1,0 +1,132 @@
+/* ═══════════════════════════════════════════════════════════
+   11 — BROWSER FRAME (Panel 4 — Signed-File)
+   macOS-style desktop browser preview: OS bar, chrome,
+   URL bar, paper wrap, verified banner, confetti canvas.
+   ═══════════════════════════════════════════════════════════ */
+
+/* panel background */
+[data-panel="signed-file"] {
+  background: #0d0e14;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-start;
+  overflow-y: auto; overflow-x: hidden;
+}
+
+/* ── OS top-bar ── */
+.sf-os-bar {
+  width: 100%; flex-shrink: 0;
+  height: 28px; background: rgba(255,255,255,.06);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; padding: 0 16px;
+}
+.sf-os-dot { width: 11px; height: 11px; border-radius: 50%; }
+.sf-os-dot:nth-child(1) { background: #ff5f57; }
+.sf-os-dot:nth-child(2) { background: #febc2e; }
+.sf-os-dot:nth-child(3) { background: #28c840; }
+.sf-os-title {
+  font-family: var(--mono); font-size: 10px; color: rgba(255,255,255,.35);
+  letter-spacing: .06em; text-transform: uppercase;
+  position: absolute;
+}
+.sf-os-dots { display: flex; gap: 5px; }
+.sf-os-back {
+  position: absolute; left: 14px;
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 10px;
+  color: rgba(255,255,255,.45); text-transform: uppercase; letter-spacing: .06em;
+  cursor: pointer; padding: 4px 8px; border-radius: 6px;
+  transition: background .14s, color .14s;
+  min-height: unset; min-width: unset;
+}
+.sf-os-back:hover { background: rgba(255,255,255,.08); color: rgba(255,255,255,.8); }
+.sf-os-back i { font-size: 14px; }
+
+/* ── browser window chrome ── */
+.sf-browser {
+  width: 96%; max-width: 900px; flex: 1;
+  margin: 18px auto 28px;
+  background: #17181f;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.06);
+  display: flex; flex-direction: column; min-height: 0;
+}
+.sf-chrome {
+  flex-shrink: 0; height: 44px;
+  background: #1c1d26;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  display: flex; align-items: center; padding: 0 14px; gap: 10px;
+}
+.sf-chrome-dots { display: flex; gap: 5px; flex-shrink: 0; }
+.sf-chrome-dot  { width: 11px; height: 11px; border-radius: 50%; }
+.sf-chrome-dot:nth-child(1) { background: #ff5f57; }
+.sf-chrome-dot:nth-child(2) { background: #febc2e; }
+.sf-chrome-dot:nth-child(3) { background: #28c840; }
+
+/* URL bar */
+.sf-url-bar {
+  flex: 1; height: 26px; background: rgba(255,255,255,.07);
+  border-radius: 6px; display: flex; align-items: center; gap: 6px;
+  padding: 0 10px; min-width: 0;
+}
+.sf-url-bar i    { font-size: 11px; color: var(--live); flex-shrink: 0; }
+.sf-url-bar span {
+  font-family: var(--mono); font-size: 10px;
+  color: rgba(255,255,255,.45); white-space: nowrap; overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sf-url-bar span b { color: rgba(255,255,255,.75); font-weight: 400; }
+.sf-chrome-badge {
+  flex-shrink: 0; font-family: var(--mono); font-size: 9px;
+  color: var(--live); background: rgba(22,163,74,.15);
+  border: 1px solid rgba(22,163,74,.3);
+  border-radius: 4px; padding: 2px 7px; text-transform: uppercase; letter-spacing: .05em;
+  white-space: nowrap;
+}
+
+/* ── browser body ── */
+.sf-body {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  background: #f5f5f7;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 32px 20px;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── paper inside signed-file ── */
+.sf-paper-wrap {
+  width: 100%; max-width: 794px;
+  background: #fff;
+  box-shadow: 0 4px 32px rgba(0,0,0,.14);
+  position: relative;
+}
+.sf-paper-wrap .paper-sheet {
+  position: relative; overflow: hidden;
+  transform-origin: top left;
+}
+
+/* ── verified banner ── */
+.sf-verified-banner {
+  width: 100%; max-width: 900px;
+  margin: 0 auto 12px; padding: 8px 16px;
+  background: rgba(22,163,74,.12); border: 1px solid rgba(22,163,74,.25);
+  border-radius: 8px;
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 10px;
+  color: var(--live); text-transform: uppercase; letter-spacing: .05em;
+}
+.sf-verified-banner i { font-size: 14px; flex-shrink: 0; }
+
+/* mobile adaptation */
+@media (max-width: 860px) {
+  .sf-browser { width: 100%; max-width: 100%; margin: 0; border-radius: 0; flex: 1; }
+  .sf-os-bar  { display: none; }
+  .sf-body    { padding: 18px 10px 28px; }
+}
+
+/* ── confetti canvas ── */
+#confetti-canvas {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 99999;
+}

@@ -1,0 +1,414 @@
+﻿<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>Apollo Design System · Luxury Flat Open Kitchen</title>
+
+  <!-- Global Error Handler & Preloader Buster -->
+  <script>
+    window.onerror = function(message, source) {
+      if ((source && source.includes('apollo.rio.br')) || (message && (message.includes('outdated') || message.includes('#$')))) {
+        return true; 
+      }
+      return false;
+    };
+    window.addEventListener('error', function (event) {
+      if ((event.filename && event.filename.includes('apollo.rio.br')) || (event.message && (event.message.includes('outdated') || event.message.includes('#$')))) {
+        event.preventDefault();
+      }
+    }, true);
+  </script>
+
+  <!-- Mandatory Apollo Core Script (+ GSAP.Bundlev3.14.2+RemixIcon+Popper+ more -->
+  <script src="https://cdn.apollo.rio.br/v1.0.0/core.js?now=Dev" fetchpriority="high"></script>
+  
+  <!-- HTMX + Alpine.js (2025 Modern WP Standard) -->
+  <script src="https://cdn.apollo.rio.br/v1.0.0/js/htmx.v2.0.8.js"></script>
+  <script src="https://cdn.apollo.rio.br/v1.0.0/js/alpine.v.3.15.8.js"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Syne:wght@400..700&display=swap">
+
+ <!-- Dashboard.apollo stylesheet -->
+  <link rel="stylesheet" href="dashboard.apollo.css">
+
+</head>
+
+<body>
+
+  <!-- MOBILE OVERLAY -->
+  <div class="panel-overlay" id="panel-overlay"></div>
+
+  <!-- TOP NAVIGATION (Fluid Island) -->
+  <header class="apollo-topbar">
+    <div class="brand">
+      <button class="btn-icon" id="btn-mobile-menu" aria-label="Menu">
+        <i class="ri-menu-line"></i>
+      </button>
+      <i id="logo_apollo_rio" class="apollo"></i>
+      <span>apollo::rio</span>
+    </div>
+
+    <div class="topbar-actions">
+      <span class="txt-mono" id="digital-clock" style="margin-right: 12px;">--:--:--</span>
+
+      <!-- Tower/Activity Trigger -->
+      <button id="btn-activity" class="btn-icon" aria-label="Activity Panel" aria-expanded="false">
+        <div class="pulse-badge" id="notif-badge" data-notif="true"></div>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-activity"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+      </button>
+
+      <!-- Apps Trigger -->
+      <button id="btn-apps" class="btn-icon" aria-label="Aplicativos" aria-expanded="false">
+        <i class="ri-apps-2-line"></i>
+      </button>
+
+      <!-- Profile Trigger -->
+      <button id="btn-profile" class="btn-icon btn-profile-txt" aria-expanded="false">M</button>
+
+      <!-- DROPDOWN: APPS -->
+      <div id="menu-app" class="dropdown-menu">
+        <div class="dropdown-header">
+          <span class="label-section">Aplicativos</span>
+        </div>
+        <div class="apps-grid">
+          <div class="app-item">
+            <div class="app-icon"><i class="ri-table-line"></i></div><span class="app-label">Excel</span>
+          </div>
+          <div class="app-item">
+            <div class="app-icon"><i class="ri-file-word-2-line"></i></div><span class="app-label">Word</span>
+          </div>
+          <div class="app-item">
+            <div class="app-icon"><i class="ri-presentation-line"></i></div><span class="app-label">Slide</span>
+          </div>
+          <div class="app-item">
+            <div class="app-icon"><i class="ri-team-line"></i></div><span class="app-label">Teams</span>
+          </div>
+          <div class="app-item">
+            <div class="app-icon"><i class="ri-file-pdf-2-line"></i></div><span class="app-label">Leitor</span>
+          </div>
+          <div class="app-item">
+            <div class="app-icon"><i class="ri-drive-line"></i></div><span class="app-label">Drive</span>
+          </div>
+          <div class="app-item">
+            <div class="app-icon"><i class="ri-vidicon-line"></i></div><span class="app-label">Meet</span>
+          </div>
+          <div class="app-item">
+            <div class="app-icon accent"><i class="ri-add-line"></i></div><span class="app-label">Add</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DROPDOWN: PROFILE (THEME TOGGLE INSIDE) -->
+      <div id="menu-profile" class="dropdown-menu" style="width: 280px;">
+        <a class="profile-link"><i class="ri-user-line"></i> Meu Perfil</a>
+        <a class="profile-link"><i class="ri-settings-3-line"></i> Configurações</a>
+        
+        <div class="menu-divider"></div>
+        
+        <!-- THEME TOGGLE ROW (Pure Flat UI) -->
+        <div class="profile-link theme-toggle-row" style="justify-content: space-between; cursor: default; padding-right: 12px;">
+          <span style="display:flex; align-items:center; gap:16px;">
+            <i class="ri-contrast-drop-2-line"></i> Tema Escuro
+          </span>
+          <label class="toggle-wrap dm-toggle" for="dm-toggle" title="Toggle dark mode">
+            <input type="checkbox" class="toggle-input" id="dm-toggle" role="switch" aria-label="Dark mode">
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+
+        <div class="menu-divider"></div>
+        <a class="profile-link danger"><i class="ri-logout-box-r-line"></i> Sair</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- DASHBOARD LAYOUT (The Unified Island Area) -->
+  <div class="app-container">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="app-left" id="sidebar">
+      <ul class="nav-list">
+        <li class="nav-list-item active">
+          <a class="nav-list-link" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-columns"><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7m0-18H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7m0-18v18"></path></svg>
+            Dashboard
+          </a>
+        </li>
+        <li class="nav-list-item">
+          <a class="nav-list-link" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-briefcase"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            Jobs
+          </a>
+        </li>
+        <li class="nav-list-item">
+          <a class="nav-list-link" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+            Applications
+          </a>
+        </li>
+        <li class="nav-list-item">
+          <a class="nav-list-link" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Team
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- MAIN DASHBOARD AREA -->
+    <main class="app-main">
+      <div class="main-header-line">
+        <h1>Applications Board</h1>
+        <div class="search-wrap">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" placeholder="Search candidates...">
+        </div>
+      </div>
+
+      <!-- HTMX + ALPINE TAB SYSTEM (2025 Standard) -->
+      <div x-data="{ activeTab: 'tab1' }" style="width: 100%; display: flex; flex-direction: column; flex: 1;">
+        <div role="tablist" class="tab-list">
+          <button @click="activeTab = 'tab1'" :class="{ 'active': activeTab === 'tab1' }">Overview</button>
+          
+          <!-- Tab 2: HTMX dynamic fetch stub -->
+          <button @click="activeTab = 'tab2'; $refs.content2.innerHTML = '<div style=\'padding:40px;text-align:center;width:100%;\'><i class=\'ri-loader-4-line ri-spin ri-2x\' style=\'color:var(--muted);\'></i><p style=\'margin-top:16px;font-family:var(--ff-mono);text-transform:uppercase;font-size:0.75rem;color:var(--muted);\'>Loading Data...</p></div>'" 
+                  hx-get="/wp-json/wp/v2/pages/456" hx-target="#content2" hx-swap="innerHTML" 
+                  :class="{ 'active': activeTab === 'tab2' }">Analytics</button>
+
+          <!-- Tab 3: HTMX dynamic fetch stub -->
+          <button @click="activeTab = 'tab3'; $refs.content3.innerHTML = '<div style=\'padding:40px;text-align:center;width:100%;\'><i class=\'ri-loader-4-line ri-spin ri-2x\' style=\'color:var(--muted);\'></i><p style=\'margin-top:16px;font-family:var(--ff-mono);text-transform:uppercase;font-size:0.75rem;color:var(--muted);\'>Loading Data...</p></div>'" 
+                  hx-get="/wp-json/wp/v2/pages/789" hx-target="#content3" hx-swap="innerHTML" 
+                  :class="{ 'active': activeTab === 'tab3' }">Reports</button>
+        </div>
+
+        <!-- TAB CONTENT 1 (Static Dashboard View) -->
+        <div id="content1" x-show="activeTab === 'tab1'" x-transition.opacity.duration.300ms x-ref="content1" class="tab-content-wrapper">
+          <!-- 3 Small Charts Row -->
+          <div class="chart-row">
+            <div class="chart-container">
+              <div class="circle-chart-wrap">
+                <div class="chart-info-wrapper">
+                  <h2>Applications</h2>
+                  <span>20.5K</span>
+                </div>
+                <div class="chart-svg">
+                  <svg viewBox="0 0 36 36" class="circular-chart">
+                    <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                    <path class="circle" stroke-dasharray="80, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                    <text x="18" y="20.35" class="percentage">80%</text>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="chart-container">
+              <div class="circle-chart-wrap">
+                <div class="chart-info-wrapper">
+                  <h2>Shortlisted</h2>
+                  <span>5.5K</span>
+                </div>
+                <div class="chart-svg">
+                  <svg viewBox="0 0 36 36" class="circular-chart">
+                    <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                    <path class="circle" style="stroke:var(--black-2)!important" stroke-dasharray="40, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                    <text x="18" y="20.35" class="percentage">40%</text>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="chart-container">
+              <div class="circle-chart-wrap">
+                <div class="chart-info-wrapper">
+                  <h2>On-hold</h2>
+                  <span>1.2K</span>
+                </div>
+                <div class="chart-svg">
+                  <svg viewBox="0 0 36 36" class="circular-chart">
+                    <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                    <path class="circle" style="stroke:var(--muted-bg)!important;" stroke-dasharray="15, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                    <text x="18" y="20.35" class="percentage">15%</text>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Chart & Acquisitions Row -->
+          <div class="chart-row">
+            <div class="chart-container" style="flex: 2; min-width: 300px;">
+              <div class="chart-container-header">
+                <h2>Top Active Jobs</h2>
+                <span>Last 30 days</span>
+              </div>
+              <div class="line-chart-wrapper">
+                <!-- amCharts 5 renders into a div, not canvas -->
+                <div id="mainChart" style="width:100%;height:100%;"></div>
+              </div>
+            </div>
+
+            <div style="flex: 1; display:flex; flex-direction: column; gap: 16px;">
+              <div class="chart-container" style="flex:none;">
+                <div class="chart-container-header">
+                  <h2>Acquisitions</h2>
+                  <span>This month</span>
+                </div>
+                <div class="acquisitions-bar">
+                  <span class="bar-progress rejected" style="width:8%;"></span>
+                  <span class="bar-progress on-hold" style="width:10%;"></span>
+                  <span class="bar-progress shortlisted" style="width:18%;"></span>
+                  <span class="bar-progress applications" style="width:64%;"></span>
+                </div>
+                <div class="progress-bar-info">
+                  <span class="progress-color applications"></span>
+                  <span class="progress-type">Applications</span>
+                  <span class="progress-amount">64%</span>
+                </div>
+                <div class="progress-bar-info">
+                  <span class="progress-color shortlisted"></span>
+                  <span class="progress-type">Shortlisted</span>
+                  <span class="progress-amount">18%</span>
+                </div>
+                <div class="progress-bar-info">
+                  <span class="progress-color on-hold"></span>
+                  <span class="progress-type">On-hold</span>
+                  <span class="progress-amount">10%</span>
+                </div>
+                <div class="progress-bar-info">
+                  <span class="progress-color rejected"></span>
+                  <span class="progress-type">Rejected</span>
+                  <span class="progress-amount">8%</span>
+                </div>
+              </div>
+
+              <div class="chart-container">
+                <div class="chart-container-header" style="margin-bottom: 12px;">
+                  <div style="display:flex; flex-direction:column; gap:4px;">
+                    <h2>New Applicants</h2>
+                    <span>Today</span>
+                  </div>
+                  <button class="btn-ghost-sm">View All</button>
+                </div>
+                <div class="applicants-container">
+                  <div class="applicant-line">
+                    <img src="https://images.unsplash.com/photo-1587628604439-3b9a0aa7a163?auto=format&fit=crop&w=150&q=80" alt="profile">
+                    <div class="applicant-info">
+                      <span>Emma Ray</span>
+                      <p>Applied for <strong>Product Designer</strong></p>
+                    </div>
+                  </div>
+                  <div class="applicant-line">
+                    <img src="https://images.unsplash.com/photo-1583195764036-6dc248ac07d9?auto=format&fit=crop&w=150&q=80" alt="profile">
+                    <div class="applicant-info">
+                      <span>Ricky James</span>
+                      <p>Applied for <strong>IOS Developer</strong></p>
+                    </div>
+                  </div>
+                  <div class="applicant-line">
+                    <img src="https://images.unsplash.com/photo-1450297350677-623de575f31c?auto=format&fit=crop&w=150&q=80" alt="profile">
+                    <div class="applicant-info">
+                      <span>Julia Wilson</span>
+                      <p>Applied for <strong>UI Developer</strong></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- HTMX Target Containers -->
+        <div id="content2" x-show="activeTab === 'tab2'" x-transition.opacity.duration.300ms x-ref="content2" class="tab-content-wrapper" style="display: none;"></div>
+        <div id="content3" x-show="activeTab === 'tab3'" x-transition.opacity.duration.300ms x-ref="content3" class="tab-content-wrapper" style="display: none;"></div>
+
+      </div>
+    </main>
+
+    <!-- RIGHT PANEL: ACTIVITY & MESSAGES -->
+    <aside class="app-right" id="activity-panel">
+      <div class="profile-box">
+        <div class="profile-photo-wrapper">
+          <img src="https://images.unsplash.com/photo-1551292831-023188e78222?auto=format&fit=crop&w=250&q=80" alt="profile">
+        </div>
+        <p class="profile-text">Julia Pellegrini</p>
+        <p class="profile-subtext">Recruiting Manager</p>
+      </div>
+      
+      <div class="app-right-section">
+        <div class="app-right-section-header">
+          <h2>Messages</h2>
+          <i class="ri-message-3-line" style="color:var(--muted)"></i>
+        </div>
+        <div class="message-line">
+          <img src="https://images.unsplash.com/photo-1562159278-1253a58da141?auto=format&fit=crop&w=150&q=80" alt="profile">
+          <div class="message-text-wrapper">
+            <p class="message-text">Eric Clampton</p>
+            <p class="message-subtext">Have you planned any deadline for this?</p>
+          </div>
+        </div>
+        <div class="message-line">
+          <img src="https://images.unsplash.com/photo-1604004555489-723a93d6ce74?auto=format&fit=crop&w=150&q=80" alt="profile">
+          <div class="message-text-wrapper">
+            <p class="message-text">Jess Flax</p>
+            <p class="message-subtext">Can we schedule another meeting for next thursday?</p>
+          </div>
+        </div>
+        <div class="message-line">
+          <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80" alt="profile">
+          <div class="message-text-wrapper">
+            <p class="message-text">Pam Halpert</p>
+            <p class="message-subtext">The candidate has been shorlisted.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-right-section">
+        <div class="app-right-section-header">
+          <h2>Activity</h2>
+          <i class="ri-history-line" style="color:var(--muted)"></i>
+        </div>
+        <div class="activity-line">
+          <div class="activity-icon"><i class="ri-error-warning-line" style="color:var(--alert-red)"></i></div>
+          <div class="activity-text-wrapper">
+            <p class="activity-text">Your plan expires in <strong>3 days.</strong></p>
+            <a class="activity-link" href="#">Renew Now</a>
+          </div>
+        </div>
+        <div class="activity-line">
+          <div class="activity-icon"><i class="ri-file-add-line" style="color:var(--primary)"></i></div>
+          <div class="activity-text-wrapper">
+            <p class="activity-text">There are <strong>3 new applications</strong> for <strong>UI Developer</strong></p>
+          </div>
+        </div>
+        <div class="activity-line">
+          <div class="activity-icon"><i class="ri-close-circle-line" style="color:var(--muted)"></i></div>
+          <div class="activity-text-wrapper">
+            <p class="activity-text">Your teammate, Wade Wilson closed the job post of <strong>IOS Developer</strong></p>
+          </div>
+        </div>
+        <div class="activity-line">
+          <div class="activity-icon"><i class="ri-draft-line" style="color:var(--txt-heading)"></i></div>
+          <div class="activity-text-wrapper">
+            <p class="activity-text">You have drafted a job post for <strong>HR Specialist</strong></p>
+            <a class="activity-link" href="#">Complete Now</a>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- amCharts 5 — Apollo production standard (used by apollo-statistics, apollo-events, apollo-gestor) -->
+  <script src="https://cdn.amcharts.com/lib/5/index.js" defer></script>
+  <script src="https://cdn.amcharts.com/lib/5/xy.js" defer></script>
+  <script src="https://cdn.amcharts.com/lib/5/percent.js" defer></script>
+  <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js" defer></script>
+
+  <!-- Simulated dashboard data -->
+  <script src="simulated.data4.dashboard.js" defer></script>
+
+  <!-- ULTRA PRO MODULAR KERNEL LOGIC -->
+  <script src="dashboard.apollo.js" defer></script>
+
+</body>
+</html>

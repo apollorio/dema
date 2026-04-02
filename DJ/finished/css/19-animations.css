@@ -1,0 +1,26 @@
+/* ═══════════════════════════════════════════════════════
+   19 · ANIMATIONS — GSAP reveal states + reduced motion
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Hero AI Reveal — start hidden, GSAP animates to visible ── */
+.dj-hero .ai {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .dj-progress         { transition: none !important; }
+  .dj-marquee-track    { animation: none !important; }
+  .dj-nav-logo-dot     { animation: none !important; }
+
+  .nh-track-artwork img,
+  .dj-bio-photo img,
+  .dj-epk-photo img,
+  .dj-gallery-item img { transition: none !important; }
+
+  .dj-hero .ai {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

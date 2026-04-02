@@ -1,0 +1,1458 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<!--
+  ══════════════════════════════════════════════════════════
+  APOLLO COMUNA INTERNA — Painel de Grupo · v1.0
+  Design: Apollo Monochrome · CDN uni.css · RemixIcon 4.6
+  ══════════════════════════════════════════════════════════
+-->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>Underground Carioca — Apollo::Rio</title>
+
+<!-- Apollo CDN Core -->
+<script src="https://cdn.apollo.rio.br/v1.0.0/hub.js" fetchpriority="high"></script>
+
+<!-- Icons & Fonts (loaded by hub.js but ensuring availability) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.min.css">
+<link rel="stylesheet" href="https://cdn.apollo.rio.br/v1.0.0/css/uni.css?x=1.0.1">
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<style>
+/* ═══════════════════════════════════════
+   COMUNA INTERNA — Apollo Design System
+   Ultra Luxury · Monochrome · No Shadows
+════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--white-1, #fff);
+  color: var(--black-1, #121214);
+  font-family: var(--ff-main, "Space Grotesk", sans-serif);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+a { text-decoration: none; color: inherit; }
+button { border: none; background: none; cursor: pointer; font-family: inherit; }
+img { display: block; max-width: 100%; object-fit: cover; }
+ul, ol { list-style: none; }
+::selection { background: rgba(244,95,0,.12); }
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,.1); border-radius: 3px; }
+
+/* ═══ LAYOUT ═══ */
+.shell { min-height: 100vh; }
+.wrap { max-width: 1100px; margin: 0 auto; padding: 0 28px; }
+
+/* ═══ LOADER ═══ */
+.loader {
+  position: fixed; inset: 0; background: var(--black-1, #121214);
+  z-index: 9999; display: flex; align-items: center; justify-content: center;
+}
+.loader span {
+  font-family: var(--ff-mono, "Space Mono", monospace);
+  font-size: 10px; text-transform: uppercase;
+  letter-spacing: .25em; color: rgba(255,255,255,.25);
+}
+
+/* ═══ BACK NAV ═══ */
+.back-nav {
+  padding: 24px 0 0;
+  display: flex; align-items: center; gap: 12px;
+}
+.back-link {
+  font-family: var(--ff-mono); font-size: 10px;
+  text-transform: uppercase; letter-spacing: .15em;
+  color: var(--gray-1, #0006);
+  display: flex; align-items: center; gap: 6px;
+  transition: color .25s;
+}
+.back-link:hover { color: var(--black-1); }
+.back-link i { font-size: 14px; }
+
+/* ═══ GROUP HEADER ═══ */
+.group-header {
+  padding: 40px 0 0;
+  position: relative;
+}
+.group-cover {
+  width: 100%; height: 220px;
+  border-radius: var(--radius, 20px);
+  overflow: hidden; position: relative;
+}
+.group-cover img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: grayscale(100%) contrast(1.05);
+  transition: filter .6s var(--ease-default, cubic-bezier(.16,1,.3,1));
+}
+.group-cover:hover img { filter: grayscale(60%); }
+.group-cover::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 30%, rgba(0,0,0,.55) 100%);
+}
+
+.group-info {
+  position: relative;
+  margin-top: -48px;
+  padding: 0 24px;
+  z-index: 2;
+}
+.group-avatar {
+  width: 80px; height: 80px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--white-3);
+  border: 3px solid var(--white-1, #fff);
+}
+.group-avatar img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: grayscale(100%);
+}
+.group-meta { margin-top: 16px; }
+.group-type-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--ff-mono); font-size: 9px;
+  text-transform: uppercase; letter-spacing: .14em;
+  padding: 4px 12px; border-radius: 99px;
+  background: var(--white-4, rgba(0,0,0,.06));
+  color: var(--gray-1);
+  margin-bottom: 10px;
+}
+.group-type-pill i { font-size: 10px; }
+.group-name {
+  font-size: clamp(28px, 7vw, 44px);
+  font-weight: 800; letter-spacing: -.04em;
+  line-height: .92; margin-bottom: 8px;
+}
+.group-desc {
+  font-size: 14px; color: var(--gray-1);
+  max-width: 560px; line-height: 1.65;
+  margin-bottom: 20px;
+}
+
+/* Group stats row */
+.group-stats {
+  display: flex; gap: 28px; padding: 18px 0;
+  border-top: 1px solid var(--white-8, rgba(0,0,0,.14));
+  border-bottom: 1px solid var(--white-8);
+  margin-bottom: 32px;
+}
+.g-stat { display: flex; flex-direction: column; }
+.g-stat-num {
+  font-family: var(--ff-mono); font-size: 22px;
+  font-weight: 700; letter-spacing: -.02em; line-height: 1;
+}
+.g-stat-label {
+  font-family: var(--ff-mono); font-size: 9px;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--gray-1); margin-top: 3px;
+}
+
+/* ═══ TAB NAVIGATION ═══ */
+.tabs {
+  display: flex; gap: 0; overflow-x: auto;
+  border-bottom: 1px solid var(--white-8);
+  margin-bottom: 32px;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  font-family: var(--ff-mono); font-size: 10px;
+  text-transform: uppercase; letter-spacing: .1em;
+  padding: 14px 20px; color: var(--gray-1);
+  border-bottom: 2px solid transparent;
+  transition: all .25s; white-space: nowrap;
+  display: flex; align-items: center; gap: 6px;
+}
+.tab i { font-size: 13px; }
+.tab:hover { color: var(--black-1); }
+.tab.active { color: var(--black-1); border-bottom-color: var(--black-1); }
+.tab .badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 18px; height: 16px; padding: 0 5px;
+  border-radius: 99px; font-size: 8px; font-weight: 700;
+  background: var(--white-5, rgba(0,0,0,.08));
+}
+.tab.active .badge { background: var(--black-1); color: #fff; }
+
+/* ═══ PANELS ═══ */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ═══ SECTION TITLE ═══ */
+.section-title {
+  font-family: var(--ff-mono); font-size: 10px;
+  text-transform: uppercase; letter-spacing: .14em;
+  color: var(--gray-1); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-title::before {
+  content: ''; width: 16px; height: 1px;
+  background: var(--white-12, rgba(0,0,0,.22));
+}
+
+/* ═══════ ANNOUNCEMENTS ═══════ */
+.announcement-card {
+  padding: 20px 24px;
+  background: var(--white-2, rgba(0,0,0,.02));
+  border-radius: var(--radius, 20px);
+  margin-bottom: 12px;
+  transition: background .25s;
+  position: relative;
+}
+.announcement-card:hover { background: var(--white-3, rgba(0,0,0,.04)); }
+.announcement-card.pinned::before {
+  content: '';
+  position: absolute; left: 0; top: 16px; bottom: 16px;
+  width: 2px; background: var(--primary, #f45f00);
+  border-radius: 2px;
+}
+.ann-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 10px;
+}
+.ann-avatar {
+  width: 32px; height: 32px; border-radius: 10px;
+  overflow: hidden; flex-shrink: 0;
+}
+.ann-avatar img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: grayscale(100%);
+}
+.ann-author {
+  font-size: 13px; font-weight: 600;
+  letter-spacing: -.01em;
+}
+.ann-role {
+  font-family: var(--ff-mono); font-size: 8px;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--primary, #f45f00);
+  background: rgba(244,95,0,.08);
+  padding: 2px 8px; border-radius: 99px;
+}
+.ann-time {
+  font-family: var(--ff-mono); font-size: 9px;
+  color: var(--gray-1); margin-left: auto;
+}
+.ann-body {
+  font-size: 13.5px; line-height: 1.65;
+  color: var(--black-3, #0c0c0d);
+  margin-bottom: 12px;
+}
+.ann-body strong { font-weight: 600; color: var(--black-1); }
+.ann-actions {
+  display: flex; gap: 16px;
+}
+.ann-action {
+  font-family: var(--ff-mono); font-size: 9px;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--gray-1); display: flex;
+  align-items: center; gap: 4px;
+  transition: color .2s;
+}
+.ann-action:hover { color: var(--black-1); }
+.ann-action i { font-size: 13px; }
+
+/* ═══════ MEMBERS ═══════ */
+.members-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+}
+.member-card {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px;
+  background: var(--white-2);
+  border-radius: 16px;
+  transition: background .25s;
+}
+.member-card:hover { background: var(--white-3); }
+.member-av {
+  width: 40px; height: 40px;
+  border-radius: 12px; overflow: hidden;
+  flex-shrink: 0; position: relative;
+}
+.member-av img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: grayscale(100%);
+  transition: filter .3s;
+}
+.member-card:hover .member-av img { filter: grayscale(0%); }
+.member-online {
+  position: absolute; bottom: -1px; right: -1px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #4ade80;
+  border: 2px solid var(--white-1, #fff);
+}
+.member-info { min-width: 0; flex: 1; }
+.member-name {
+  font-size: 13px; font-weight: 600;
+  letter-spacing: -.01em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.member-tag {
+  font-family: var(--ff-mono); font-size: 9px;
+  color: var(--gray-1); text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.member-role-badge {
+  font-family: var(--ff-mono); font-size: 8px;
+  text-transform: uppercase; letter-spacing: .08em;
+  padding: 3px 8px; border-radius: 99px;
+  flex-shrink: 0;
+}
+.role-admin { background: rgba(244,95,0,.08); color: var(--primary); }
+.role-mod { background: var(--white-4); color: var(--black-3); }
+.role-member { background: transparent; color: transparent; }
+
+.members-search {
+  width: 100%; height: 42px; padding: 0 16px;
+  border: 1px solid var(--white-8);
+  border-radius: 99px; font-size: 13px;
+  color: var(--black-1); background: var(--white-2);
+  font-family: inherit; outline: none;
+  transition: border-color .25s;
+  margin-bottom: 20px;
+}
+.members-search::placeholder { color: var(--gray-1); }
+.members-search:focus { border-color: var(--black-4); }
+
+/* ═══════ EVENTS / CALENDAR ═══════ */
+.events-list { display: flex; flex-direction: column; gap: 10px; }
+.event-card {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 18px 22px;
+  background: var(--white-2);
+  border-radius: var(--radius, 20px);
+  transition: background .25s;
+}
+.event-card:hover { background: var(--white-3); }
+.event-date-block {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-width: 52px; padding: 8px 0;
+  border-radius: 14px;
+  background: var(--white-3);
+  flex-shrink: 0;
+}
+.event-month {
+  font-family: var(--ff-mono); font-size: 9px;
+  text-transform: uppercase; letter-spacing: .12em;
+  color: var(--primary, #f45f00); font-weight: 700;
+}
+.event-day {
+  font-family: var(--ff-mono); font-size: 22px;
+  font-weight: 700; letter-spacing: -.02em;
+  line-height: 1.1;
+}
+.event-info { flex: 1; min-width: 0; }
+.event-name {
+  font-size: 15px; font-weight: 700;
+  letter-spacing: -.02em; margin-bottom: 3px;
+}
+.event-detail {
+  font-size: 12px; color: var(--gray-1);
+  line-height: 1.5;
+}
+.event-detail i { font-size: 11px; margin-right: 3px; }
+.event-tags { display: flex; gap: 6px; margin-top: 8px; }
+.event-tag {
+  font-family: var(--ff-mono); font-size: 8px;
+  text-transform: uppercase; letter-spacing: .1em;
+  padding: 3px 10px; border-radius: 99px;
+  background: var(--white-4); color: var(--black-4);
+}
+.event-status {
+  display: flex; align-items: center; gap: 4px;
+  font-family: var(--ff-mono); font-size: 9px;
+  text-transform: uppercase; letter-spacing: .08em;
+  padding: 6px 14px; border-radius: 99px;
+  align-self: center; flex-shrink: 0;
+  transition: all .25s;
+}
+.event-status.confirmed { background: rgba(74,222,128,.1); color: #16a34a; }
+.event-status.pending { background: var(--white-4); color: var(--gray-1); }
+
+/* ═══════ FILES ═══════ */
+.files-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+.file-card {
+  padding: 18px 20px;
+  background: var(--white-2);
+  border-radius: 16px;
+  transition: background .25s;
+  cursor: pointer;
+}
+.file-card:hover { background: var(--white-3); }
+.file-icon {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: var(--white-4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: var(--black-4);
+  margin-bottom: 12px;
+}
+.file-icon.pdf { color: #ef4444; background: rgba(239,68,68,.08); }
+.file-icon.img { color: #8b5cf6; background: rgba(139,92,246,.08); }
+.file-icon.audio { color: var(--primary); background: rgba(244,95,0,.08); }
+.file-icon.doc { color: #3b82f6; background: rgba(59,130,246,.08); }
+.file-icon.zip { color: #eab308; background: rgba(234,179,8,.08); }
+.file-name {
+  font-size: 12.5px; font-weight: 600;
+  letter-spacing: -.01em; margin-bottom: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.file-meta {
+  font-family: var(--ff-mono); font-size: 9px;
+  color: var(--gray-1); text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+/* ═══════ MURAL ═══════ */
+.mural-composer {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 20px 22px;
+  background: var(--white-2);
+  border-radius: var(--radius, 20px);
+  margin-bottom: 20px;
+}
+.mural-composer-avatar {
+  width: 36px; height: 36px;
+  border-radius: 10px; overflow: hidden;
+  flex-shrink: 0;
+}
+.mural-composer-avatar img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: grayscale(100%);
+}
+.mural-input-wrap { flex: 1; }
+.mural-input {
+  width: 100%; min-height: 44px; padding: 10px 16px;
+  border: 1px solid var(--white-8);
+  border-radius: 14px; font-size: 13px;
+  font-family: inherit; color: var(--black-1);
+  background: transparent; resize: vertical;
+  outline: none; transition: border-color .25s;
+  line-height: 1.5;
+}
+.mural-input::placeholder { color: var(--gray-1); }
+.mural-input:focus { border-color: var(--black-4); }
+.mural-toolbar {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 10px; justify-content: space-between;
+}
+.mural-tools { display: flex; gap: 2px; }
+.mural-tool-btn {
+  width: 32px; height: 32px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; color: var(--gray-1);
+  transition: all .2s;
+}
+.mural-tool-btn:hover { background: var(--white-4); color: var(--black-1); }
+.mural-send {
+  height: 32px; padding: 0 18px;
+  border-radius: 99px;
+  background: var(--black-1); color: #fff;
+  font-family: var(--ff-mono); font-size: 9px;
+  text-transform: uppercase; letter-spacing: .1em;
+  display: flex; align-items: center; gap: 5px;
+  transition: all .2s;
+}
+.mural-send:hover { background: #000; }
+.mural-send i { font-size: 12px; }
+
+/* Mural posts */
+.mural-feed { display: flex; flex-direction: column; gap: 4px; }
+.mural-post {
+  padding: 18px 22px;
+  background: var(--white-2);
+  border-radius: var(--radius, 20px);
+  transition: background .25s;
+}
+.mural-post:hover { background: var(--white-3); }
+.mural-post-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 10px;
+}
+.mural-post-avatar {
+  width: 30px; height: 30px;
+  border-radius: 8px; overflow: hidden;
+  flex-shrink: 0;
+}
+.mural-post-avatar img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: grayscale(100%);
+}
+.mural-post-author {
+  font-size: 12.5px; font-weight: 600;
+  letter-spacing: -.01em;
+}
+.mural-post-time {
+  font-family: var(--ff-mono); font-size: 9px;
+  color: var(--gray-1); margin-left: auto;
+}
+.mural-post-body {
+  font-size: 13px; line-height: 1.65;
+  color: var(--black-3);
+  margin-bottom: 10px;
+}
+.mural-post-reactions {
+  display: flex; gap: 8px;
+}
+.mural-reaction {
+  display: flex; align-items: center; gap: 4px;
+  font-family: var(--ff-mono); font-size: 9px;
+  color: var(--gray-1); padding: 4px 10px;
+  border-radius: 99px; background: var(--white-3);
+  transition: all .2s;
+}
+.mural-reaction:hover { background: var(--white-5); color: var(--black-1); }
+.mural-reaction i { font-size: 12px; }
+
+/* ═══════ GSAP ═══════ */
+.g-fade { opacity: 0; transform: translateY(24px); }
+
+/* ═══════ EMPTY STATE ═══════ */
+.empty-state {
+  text-align: center; padding: 60px 20px;
+  color: var(--gray-1);
+}
+.empty-state i { font-size: 28px; margin-bottom: 10px; display: block; color: var(--white-12); }
+.empty-state p { font-family: var(--ff-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+
+/* ═══════ BOTTOM ═══════ */
+.bottom-space { height: 100px; }
+
+/* ═══════ RESPONSIVE ═══════ */
+@media (max-width: 640px) {
+  .wrap { padding: 0 16px; }
+  .group-cover { height: 160px; border-radius: 16px; }
+  .group-info { padding: 0 12px; }
+  .group-stats { gap: 16px; flex-wrap: wrap; }
+  .members-grid { grid-template-columns: 1fr; }
+  .files-grid { grid-template-columns: repeat(2, 1fr); }
+  .event-card { flex-direction: column; }
+  .event-status { align-self: flex-start; }
+  .mural-composer { padding: 14px 16px; }
+}
+@media (min-width: 1024px) {
+  .group-header { padding-top: 48px; }
+  .group-cover { height: 280px; }
+}
+.hero-bg-text{position:absolute;top:-20px;left:-10px;font-family:var(--ff-fun,"Syne",sans-serif);font-size:min(28vw,320px);color:transparent;-webkit-text-stroke:1px rgba(0,0,0,.03);white-space:nowrap;pointer-events:none;z-index:0;line-height:.85;user-select:none;}
+.hero-bg-text{position:absolute;top:-20px;left:-10px;font-family:var(--ff-fun,"Syne",sans-serif);font-size:min(28vw,320px);color:transparent;-webkit-text-stroke:1px rgba(0,0,0,.03);white-space:nowrap;pointer-events:none;z-index:0;line-height:.85;user-select:none;}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════
+     ■ PHP MODULE MAP — apollo-groups · single-group.php
+     ═══════════════════════════════════════════════════════════════
+
+     Plugin:   apollo-groups (L3 — IMPLEMENTED)
+     Route:    /grupo/{slug}
+     Template: apollo-groups/templates/single-group.php
+     Type:     Canvas (uses wp_head / wp_footer)
+     Auth:     Public (some actions require login)
+
+     REST ENDPOINTS:
+       GET    apollo/v1/groups/{id}                         → Group data
+       GET    apollo/v1/groups/{id}/members                  → Members list
+       GET    apollo/v1/groups/{id}/feed                     → Activity feed
+       POST   apollo/v1/groups/{id}/join                     → Join group
+       POST   apollo/v1/groups/{id}/leave                    → Leave group
+       POST   apollo/v1/groups/{id}/members/{uid}/promote    → Promote member
+       POST   apollo/v1/groups/{id}/members/{uid}/demote     → Demote member
+       POST   apollo/v1/groups/{id}/members/{uid}/ban        → Ban/Unban
+       DELETE apollo/v1/groups/{id}/members/{uid}             → Remove member
+       GET    apollo/v1/groups/{id}/invitations               → Invitations
+       GET    apollo/v1/groups/{id}/requests                  → Membership requests
+       POST   apollo/v1/groups/{id}/avatar                    → Upload avatar
+       POST   apollo/v1/groups/{id}/cover                     → Upload cover
+
+     DB TABLES:
+       apollo_groups, apollo_group_members, apollo_group_meta,
+       apollo_group_invitations, apollo_group_bans, apollo_group_requests
+
+     TEMPLATE PARTS (from registry → parts/single/):
+       header.php         → Cover image + avatar + group info
+       head.php           → Meta: type pill, name, description, stats
+       loader.php         → Full-screen loader animation
+       pinned.php         → Pinned announcements
+       feed.php           → Activity feed / announcements list
+       composer.php       → Mural post composer (textarea + toolbar)
+       post.php           → Single mural post card
+       post-poll.php      → Poll-type post
+       post-thread.php    → Thread-type post
+       scripts.php        → GSAP, tab system, search, reactions
+       channels.php       → Group channels (future)
+       drawer.php         → Mobile drawer (future)
+       sidebar-about.php  → About section
+       sidebar-cover.php  → Cover section
+       sidebar-join.php   → Join / Leave button
+       sidebar-members.php→ Members preview grid
+       sidebar-rules.php  → Group rules
+       sidebar-stats.php  → Stats (members, online, events, files)
+       sidebar-tags.php   → Tags / categories
+
+     ■ MODULAR BREAKDOWN:
+       PART 01 — CDN + Styles       → wp_head() + wp_enqueue_style()
+       PART 02 — Loader              → parts/single/loader.php
+       PART 03 — Group Header        → parts/single/header.php + head.php
+       PART 04 — Panel: Avisos       → parts/single/pinned.php + feed.php
+       PART 05 — Panel: Membros      → parts/single/sidebar-members.php
+       PART 06 — Panel: Eventos      → WP_Query CPT=apollo_event (group context)
+       PART 07 — Panel: Arquivos     → Group media attachments
+       PART 08 — Panel: Mural        → parts/single/composer.php + post.php
+       PART 09 — Scripts             → parts/single/scripts.php
+       PART 10 — FAB Menu            → Shared FAB component
+
+     ICON REGISTRY (RemixIcon 4.6):
+       ri-community-line    → Group type pill
+       ri-megaphone-line    → Avisos tab
+       ri-group-line        → Membros tab
+       ri-calendar-event-line → Eventos tab
+       ri-folder-3-line     → Arquivos tab
+       ri-chat-quote-line   → Mural tab
+       ri-heart-3-line/fill → Wow reaction (use "wow" not "like")
+       ri-chat-1-line       → Comment/depoimento reaction
+       ri-fire-line/fill    → Fire reaction
+       ri-pushpin-2-line    → Pinned indicator
+       ri-send-plane-2-fill → Send post
+       ri-image-add-line    → Attach image
+       ri-attachment-2      → Attach file
+       ri-emoji-sticker-line→ Emoji picker
+══════════════════════════════════════════════════════════════ -->
+
+
+<!-- PART 02 — LOADER ─────────────────────────────────────────── -->
+<!--
+  PHP: apollo-groups/templates/parts/single/loader.php
+  Full-screen overlay with brand text, auto-dismissed via GSAP.
+  Removed on DOMContentLoaded after 0.65s transition.
+-->
+<div class="loader" id="loader"><span>Apollo::Comuna</span></div>
+
+<div class="shell">
+<div class="wrap">
+
+  <!-- BACK NAV REMOVED — mobile-first: use FAB "Voltar: Comunas" or browser back -->
+
+  <!-- PART 03 — GROUP HEADER ──────────────────────────────────── -->
+  <!--
+    PHP: apollo-groups/templates/parts/single/header.php
+         + apollo-groups/templates/parts/single/head.php
+    Cover image: GET apollo/v1/groups/{id}/cover
+    Avatar: GET apollo/v1/groups/{id}/avatar
+    Stats row: members, online, events, files counts
+    REST: GET apollo/v1/groups/{id} → all group data
+  -->
+  <header class="group-header" style="position:relative;overflow:hidden;">
+    <div class="hero-bg-text" id="bgText">NUCLEO</div>
+    <div class="group-cover g-fade">
+      <img src="https://images.unsplash.com/photo-1571266028243-d220c6a8b0e7?w=1200&h=400&fit=crop&q=80" alt="Underground Carioca">
+    </div>
+    <div class="group-info">
+      <div class="group-avatar g-fade">
+        <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=160&h=160&fit=crop&q=80" alt="">
+      </div>
+      <div class="group-meta g-fade">
+        <div class="group-type-pill"><i class="ri-community-line"></i> Comuna</div>
+        <h1 class="group-name">Underground<br>Carioca</h1>
+        <p class="group-desc">Coletivo de DJs e produtores de festa do Rio de Janeiro. Sets, riders técnicos, collabs, agenda compartilhada e o papo reto da cena underground.</p>
+      </div>
+
+      <div class="group-stats g-fade">
+        <div class="g-stat">
+          <span class="g-stat-num">284</span>
+          <span class="g-stat-label">Membros</span>
+        </div>
+        <div class="g-stat">
+          <span class="g-stat-num">18</span>
+          <span class="g-stat-label">Online</span>
+        </div>
+        <div class="g-stat">
+          <span class="g-stat-num">12</span>
+          <span class="g-stat-label">Eventos</span>
+        </div>
+        <div class="g-stat">
+          <span class="g-stat-num">96</span>
+          <span class="g-stat-label">Arquivos</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- TAB NAV REMOVED — mobile-first: all section triggers in FAB sheet -->
+
+  <!-- PART 04 — PANEL: AVISOS ────────────────────────────────── -->
+  <!--
+    PHP: apollo-groups/templates/parts/single/pinned.php (pinned cards)
+         apollo-groups/templates/parts/single/feed.php   (recent announcements)
+    Loop: WP_Query on group activity → type=announcement
+    REST: GET apollo/v1/groups/{id}/feed?type=announcement
+    Actions: wow (heart), depoimento (chat), pin toggle
+  -->
+  <section class="panel active" id="panel-avisos">
+    <div class="section-title g-fade">Avisos Fixados</div>
+
+    <!-- Pinned -->
+    <div class="announcement-card pinned g-fade">
+      <div class="ann-header">
+        <div class="ann-avatar"><img src="https://i.pravatar.cc/64?img=3" alt=""></div>
+        <div>
+          <div class="ann-author">Mário Viana</div>
+        </div>
+        <span class="ann-role">Admin</span>
+        <span class="ann-time">Fixado · 2h atrás</span>
+      </div>
+      <div class="ann-body">
+        <strong>Reunião de pauta — Sábado 22h</strong><br>
+        Galera, confirmem presença na call de sábado. Vamos alinhar o line-up do Morro Sessions e fechar os últimos riders. Quem tiver material novo, manda no drive até sexta.
+      </div>
+      <div class="ann-actions">
+        <button class="ann-action"><i class="ri-heart-3-line"></i> 14</button>
+        <button class="ann-action"><i class="ri-chat-1-line"></i> 6</button>
+        <button class="ann-action"><i class="ri-pushpin-2-line"></i> Fixado</button>
+      </div>
+    </div>
+
+    <div class="announcement-card pinned g-fade">
+      <div class="ann-header">
+        <div class="ann-avatar"><img src="https://i.pravatar.cc/64?img=12" alt=""></div>
+        <div>
+          <div class="ann-author">Bia Nogueira</div>
+        </div>
+        <span class="ann-role">Admin</span>
+        <span class="ann-time">Fixado · 1 dia</span>
+      </div>
+      <div class="ann-body">
+        <strong>Regras atualizadas do coletivo</strong><br>
+        Atualizamos as regras de conduta e política de cancelamento. Leiam o doc completo na aba Arquivos. Qualquer dúvida, manda no mural.
+      </div>
+      <div class="ann-actions">
+        <button class="ann-action"><i class="ri-heart-3-line"></i> 22</button>
+        <button class="ann-action"><i class="ri-chat-1-line"></i> 8</button>
+        <button class="ann-action"><i class="ri-pushpin-2-line"></i> Fixado</button>
+      </div>
+    </div>
+
+    <div style="height:24px"></div>
+    <div class="section-title g-fade">Recentes</div>
+
+    <div class="announcement-card g-fade">
+      <div class="ann-header">
+        <div class="ann-avatar"><img src="https://i.pravatar.cc/64?img=25" alt=""></div>
+        <div>
+          <div class="ann-author">Lucas Braga</div>
+        </div>
+        <span class="ann-time">4h atrás</span>
+      </div>
+      <div class="ann-body">
+        Pessoal, quem quiser participar do warming da Lapa Sessions semana que vem, manda DM com o set demo. Temos 2 slots abertos de 1h cada. Prioridade pra quem nunca tocou com a gente.
+      </div>
+      <div class="ann-actions">
+        <button class="ann-action"><i class="ri-heart-3-line"></i> 8</button>
+        <button class="ann-action"><i class="ri-chat-1-line"></i> 3</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 05 — PANEL: MEMBROS ───────────────────────────────── -->
+  <!--
+    PHP: apollo-groups/templates/parts/single/sidebar-members.php
+    Groups: Admins, Moderators, Members — role badges
+    REST: GET apollo/v1/groups/{id}/members?role=admin|mod|member
+    Search: JS client-side filter by name/tag
+    Promote: POST apollo/v1/groups/{id}/members/{uid}/promote
+    Ban:     POST apollo/v1/groups/{id}/members/{uid}/ban
+  -->
+  <section class="panel" id="panel-membros">
+    <input type="text" class="members-search g-fade" placeholder="Buscar membro..." id="memberSearch">
+
+    <div class="section-title g-fade">Administradores</div>
+    <div class="members-grid g-fade" style="margin-bottom:24px">
+      <div class="member-card">
+        <div class="member-av">
+          <img src="https://i.pravatar.cc/80?img=3" alt="">
+          <span class="member-online"></span>
+        </div>
+        <div class="member-info">
+          <div class="member-name">Mário Viana</div>
+          <div class="member-tag">DJ · Produtor</div>
+        </div>
+        <span class="member-role-badge role-admin">Admin</span>
+      </div>
+      <div class="member-card">
+        <div class="member-av">
+          <img src="https://i.pravatar.cc/80?img=12" alt="">
+          <span class="member-online"></span>
+        </div>
+        <div class="member-info">
+          <div class="member-name">Bia Nogueira</div>
+          <div class="member-tag">Produtora · Booking</div>
+        </div>
+        <span class="member-role-badge role-admin">Admin</span>
+      </div>
+    </div>
+
+    <div class="section-title g-fade">Moderadores</div>
+    <div class="members-grid g-fade" style="margin-bottom:24px">
+      <div class="member-card">
+        <div class="member-av">
+          <img src="https://i.pravatar.cc/80?img=25" alt="">
+          <span class="member-online"></span>
+        </div>
+        <div class="member-info">
+          <div class="member-name">Lucas Braga</div>
+          <div class="member-tag">DJ · Tech House</div>
+        </div>
+        <span class="member-role-badge role-mod">Mod</span>
+      </div>
+      <div class="member-card">
+        <div class="member-av">
+          <img src="https://i.pravatar.cc/80?img=33" alt="">
+        </div>
+        <div class="member-info">
+          <div class="member-name">Camila Reis</div>
+          <div class="member-tag">Visual · Flyers</div>
+        </div>
+        <span class="member-role-badge role-mod">Mod</span>
+      </div>
+      <div class="member-card">
+        <div class="member-av">
+          <img src="https://i.pravatar.cc/80?img=41" alt="">
+        </div>
+        <div class="member-info">
+          <div class="member-name">Pedro Lemos</div>
+          <div class="member-tag">Produtor · Áudio</div>
+        </div>
+        <span class="member-role-badge role-mod">Mod</span>
+      </div>
+    </div>
+
+    <div class="section-title g-fade">Membros</div>
+    <div class="members-grid g-fade" id="membersList">
+      <div class="member-card">
+        <div class="member-av">
+          <img src="https://i.pravatar.cc/80?img=5" alt="">
+          <span class="member-online"></span>
+        </div>
+        <div class="member-info">
+          <div class="member-name">Thiago Alves</div>
+          <div class="member-tag">DJ · Minimal</div>
+        </div>
+      </div>
+      <div class="member-card">
+        <div class="member-av">
+          <img src="https://i.pravatar.cc/80?img=15" alt="">
+        </div>
+        <div class="member-info">
+          <div class="member-name">Juliana Costa</div>
+          <div class="member-tag">Produtora · Afro House</div>
+        </div>
+      </div>
+      <div class="member-card">
+        <div class="member-av">
+          <img src="https://i.pravatar.cc/80?img=22" alt="">
+          <span class="member-online"></span>
+        </div>
+        <div class="member-info">
+          <div class="member-name">Rafael Santos</div>
+          <div class="member-tag">DJ · Disco</div>
+        </div>
+      </div>
+      <div class="member-card">
+        <div class="member-av">
+          <img src="https://i.pravatar.cc/80?img=36" alt="">
+        </div>
+        <div class="member-info">
+          <div class="member-name">Amanda Ferreira</div>
+          <div class="member-tag">Booking · PR</div>
+        </div>
+      </div>
+      <div class="member-card">
+        <div class="member-av">
+          <img src="https://i.pravatar.cc/80?img=44" alt="">
+          <span class="member-online"></span>
+        </div>
+        <div class="member-info">
+          <div class="member-name">Gustavo Lima</div>
+          <div class="member-tag">Técnico · PA</div>
+        </div>
+      </div>
+      <div class="member-card">
+        <div class="member-av">
+          <img src="https://i.pravatar.cc/80?img=50" alt="">
+        </div>
+        <div class="member-info">
+          <div class="member-name">Fernanda Dias</div>
+          <div class="member-tag">DJ · Deep House</div>
+        </div>
+      </div>
+      <div class="member-card">
+        <div class="member-av">
+          <img src="https://i.pravatar.cc/80?img=57" alt="">
+        </div>
+        <div class="member-info">
+          <div class="member-name">Daniel Rocha</div>
+          <div class="member-tag">DJ · Techno</div>
+        </div>
+      </div>
+      <div class="member-card">
+        <div class="member-av">
+          <img src="https://i.pravatar.cc/80?img=60" alt="">
+          <span class="member-online"></span>
+        </div>
+        <div class="member-info">
+          <div class="member-name">Isabela Moura</div>
+          <div class="member-tag">Fotógrafa · Vídeo</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 06 — PANEL: EVENTOS ───────────────────────────────── -->
+  <!--
+    PHP: WP_Query CPT=apollo_event, meta_key=event_group_id={group_id}
+    Each card: apollo-events/templates/cards/card-event-group.php
+    REST: GET apollo/v1/events?group_id={id}&per_page=10
+    Status: confirmed (green) or pending (gray)
+    Date block: month (mono uppercase) + day (large)
+  -->
+  <section class="panel" id="panel-eventos">
+    <div class="section-title g-fade">Próximos Eventos</div>
+    <div class="events-list">
+
+      <div class="event-card g-fade">
+        <div class="event-date-block">
+          <span class="event-month">Mar</span>
+          <span class="event-day">15</span>
+        </div>
+        <div class="event-info">
+          <div class="event-name">Morro Sessions #14</div>
+          <div class="event-detail"><i class="ri-map-pin-2-line"></i> Mirante do Arvrão, Vidigal</div>
+          <div class="event-detail"><i class="ri-time-line"></i> 16h — 23h · Open air</div>
+          <div class="event-tags">
+            <span class="event-tag">House</span>
+            <span class="event-tag">Disco</span>
+            <span class="event-tag">Open Air</span>
+          </div>
+        </div>
+        <div class="event-status confirmed"><i class="ri-checkbox-circle-line"></i> Confirmado</div>
+      </div>
+
+      <div class="event-card g-fade">
+        <div class="event-date-block">
+          <span class="event-month">Mar</span>
+          <span class="event-day">22</span>
+        </div>
+        <div class="event-info">
+          <div class="event-name">Lapa Sessions</div>
+          <div class="event-detail"><i class="ri-map-pin-2-line"></i> Arco da Lapa · Espaço Cultural</div>
+          <div class="event-detail"><i class="ri-time-line"></i> 23h — 06h · Indoor</div>
+          <div class="event-tags">
+            <span class="event-tag">Techno</span>
+            <span class="event-tag">Minimal</span>
+          </div>
+        </div>
+        <div class="event-status confirmed"><i class="ri-checkbox-circle-line"></i> Confirmado</div>
+      </div>
+
+      <div class="event-card g-fade">
+        <div class="event-date-block">
+          <span class="event-month">Abr</span>
+          <span class="event-day">05</span>
+        </div>
+        <div class="event-info">
+          <div class="event-name">Sunset Coletivo — Niterói</div>
+          <div class="event-detail"><i class="ri-map-pin-2-line"></i> MAC Niterói · Área externa</div>
+          <div class="event-detail"><i class="ri-time-line"></i> 15h — 22h · Open air</div>
+          <div class="event-tags">
+            <span class="event-tag">Afro House</span>
+            <span class="event-tag">Balearic</span>
+          </div>
+        </div>
+        <div class="event-status pending"><i class="ri-time-line"></i> Pendente</div>
+      </div>
+
+      <div class="event-card g-fade">
+        <div class="event-date-block">
+          <span class="event-month">Abr</span>
+          <span class="event-day">19</span>
+        </div>
+        <div class="event-info">
+          <div class="event-name">Warehouse 404</div>
+          <div class="event-detail"><i class="ri-map-pin-2-line"></i> Galpão Zona Portuária</div>
+          <div class="event-detail"><i class="ri-time-line"></i> 00h — 10h · Indoor</div>
+          <div class="event-tags">
+            <span class="event-tag">Hard Techno</span>
+            <span class="event-tag">Industrial</span>
+          </div>
+        </div>
+        <div class="event-status pending"><i class="ri-time-line"></i> Pendente</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PART 07 — PANEL: ARQUIVOS ──────────────────────────────── -->
+  <!--
+    PHP: Group media attachments → WP_Query attachment post_parent in group
+    Sections: Documentos, Mídia & Sets, Visual & Identidade
+    File types: PDF, DOC, XLSX, MP3, WAV, PNG, SVG, ZIP
+    Icon colors by type: pdf=red, doc=blue, img=purple, audio=orange, zip=yellow
+    Upload: POST apollo/v1/groups/{id}/avatar (for group media)
+  -->
+  <section class="panel" id="panel-arquivos">
+    <div class="section-title g-fade">Documentos do Coletivo</div>
+    <div class="files-grid g-fade" style="margin-bottom:28px">
+      <div class="file-card">
+        <div class="file-icon pdf"><i class="ri-file-pdf-2-line"></i></div>
+        <div class="file-name">Regras-Conduta-2026.pdf</div>
+        <div class="file-meta">PDF · 240KB · 2 dias atrás</div>
+      </div>
+      <div class="file-card">
+        <div class="file-icon doc"><i class="ri-file-text-line"></i></div>
+        <div class="file-name">Rider-Técnico-Template.docx</div>
+        <div class="file-meta">DOC · 88KB · 5 dias atrás</div>
+      </div>
+      <div class="file-card">
+        <div class="file-icon doc"><i class="ri-file-list-3-line"></i></div>
+        <div class="file-name">Planilha-Line-Up-Mar.xlsx</div>
+        <div class="file-meta">XLSX · 52KB · 1 semana</div>
+      </div>
+      <div class="file-card">
+        <div class="file-icon pdf"><i class="ri-file-pdf-2-line"></i></div>
+        <div class="file-name">Contrato-Espaço-Lapa.pdf</div>
+        <div class="file-meta">PDF · 1.2MB · 1 semana</div>
+      </div>
+    </div>
+
+    <div class="section-title g-fade">Mídia & Sets</div>
+    <div class="files-grid g-fade" style="margin-bottom:28px">
+      <div class="file-card">
+        <div class="file-icon audio"><i class="ri-headphone-line"></i></div>
+        <div class="file-name">Set-Mario-Morro13.mp3</div>
+        <div class="file-meta">MP3 · 142MB · 3 dias</div>
+      </div>
+      <div class="file-card">
+        <div class="file-icon audio"><i class="ri-headphone-line"></i></div>
+        <div class="file-name">Demo-Lucas-TechHouse.wav</div>
+        <div class="file-meta">WAV · 320MB · 5 dias</div>
+      </div>
+      <div class="file-card">
+        <div class="file-icon img"><i class="ri-image-line"></i></div>
+        <div class="file-name">Flyer-Morro14-Final.png</div>
+        <div class="file-meta">PNG · 4.8MB · 1 dia</div>
+      </div>
+      <div class="file-card">
+        <div class="file-icon zip"><i class="ri-folder-zip-line"></i></div>
+        <div class="file-name">Fotos-Lapa-Sessions.zip</div>
+        <div class="file-meta">ZIP · 890MB · 2 semanas</div>
+      </div>
+    </div>
+
+    <div class="section-title g-fade">Visual & Identidade</div>
+    <div class="files-grid g-fade">
+      <div class="file-card">
+        <div class="file-icon img"><i class="ri-palette-line"></i></div>
+        <div class="file-name">Logo-Coletivo-2026.svg</div>
+        <div class="file-meta">SVG · 18KB · 3 semanas</div>
+      </div>
+      <div class="file-card">
+        <div class="file-icon img"><i class="ri-layout-4-line"></i></div>
+        <div class="file-name">Brand-Guidelines.pdf</div>
+        <div class="file-meta">PDF · 6.2MB · 1 mês</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 08 — PANEL: MURAL ─────────────────────────────────── -->
+  <!--
+    PHP: apollo-groups/templates/parts/single/composer.php (post form)
+         apollo-groups/templates/parts/single/post.php      (post card)
+         apollo-groups/templates/parts/single/feed.php      (feed loop)
+    Composer: textarea + toolbar (image/file/emoji) + send button
+    Posts: author avatar, name, time, body, reactions (wow/depoimento/fire)
+    REST: GET  apollo/v1/groups/{id}/feed?per_page=20
+           POST apollo/v1/groups/{id}/feed (create post)
+    XSS: All user input escaped server-side (esc_html, wp_kses_post)
+    Enter=submit (shift+enter=newline)
+  -->
+  <section class="panel" id="panel-mural">
+
+    <!-- Composer -->
+    <div class="mural-composer g-fade">
+      <div class="mural-composer-avatar">
+        <img src="https://i.pravatar.cc/72?img=5" alt="">
+      </div>
+      <div class="mural-input-wrap">
+        <textarea class="mural-input" placeholder="Deixa um recado pro coletivo..." rows="2"></textarea>
+        <div class="mural-toolbar">
+          <div class="mural-tools">
+            <button class="mural-tool-btn"><i class="ri-image-add-line"></i></button>
+            <button class="mural-tool-btn"><i class="ri-attachment-2"></i></button>
+            <button class="mural-tool-btn"><i class="ri-emoji-sticker-line"></i></button>
+          </div>
+          <button class="mural-send"><i class="ri-send-plane-2-fill"></i> Enviar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feed -->
+    <div class="mural-feed">
+
+      <div class="mural-post g-fade">
+        <div class="mural-post-header">
+          <div class="mural-post-avatar"><img src="https://i.pravatar.cc/60?img=22" alt=""></div>
+          <div>
+            <div class="mural-post-author">Rafael Santos</div>
+          </div>
+          <span class="mural-post-time">Agora</span>
+        </div>
+        <div class="mural-post-body">
+          Alguém tem contato de aluguel de CDJ-3000 pro evento de sábado? O nosso setup tá com um deck falhando. Preciso de 2 unidades.
+        </div>
+        <div class="mural-post-reactions">
+          <button class="mural-reaction"><i class="ri-heart-3-line"></i> 2</button>
+          <button class="mural-reaction"><i class="ri-chat-1-line"></i> 4</button>
+        </div>
+      </div>
+
+      <div class="mural-post g-fade">
+        <div class="mural-post-header">
+          <div class="mural-post-avatar"><img src="https://i.pravatar.cc/60?img=33" alt=""></div>
+          <div>
+            <div class="mural-post-author">Camila Reis</div>
+          </div>
+          <span class="mural-post-time">1h atrás</span>
+        </div>
+        <div class="mural-post-body">
+          Flyer do Morro Sessions #14 tá pronto! Subi na aba de arquivos. Quem puder compartilhar nos stories, cola a hashtag #morrosessions pra gente trackear o alcance.
+        </div>
+        <div class="mural-post-reactions">
+          <button class="mural-reaction"><i class="ri-heart-3-line"></i> 11</button>
+          <button class="mural-reaction"><i class="ri-fire-line"></i> 7</button>
+          <button class="mural-reaction"><i class="ri-chat-1-line"></i> 2</button>
+        </div>
+      </div>
+
+      <div class="mural-post g-fade">
+        <div class="mural-post-header">
+          <div class="mural-post-avatar"><img src="https://i.pravatar.cc/60?img=15" alt=""></div>
+          <div>
+            <div class="mural-post-author">Juliana Costa</div>
+          </div>
+          <span class="mural-post-time">3h atrás</span>
+        </div>
+        <div class="mural-post-body">
+          Gravei um set afro house novo ontem, 2h de material. Vou subir o áudio amanhã. Se alguém quiser fazer um edit visual em cima, tô aberta pra collab.
+        </div>
+        <div class="mural-post-reactions">
+          <button class="mural-reaction"><i class="ri-heart-3-line"></i> 15</button>
+          <button class="mural-reaction"><i class="ri-chat-1-line"></i> 6</button>
+        </div>
+      </div>
+
+      <div class="mural-post g-fade">
+        <div class="mural-post-header">
+          <div class="mural-post-avatar"><img src="https://i.pravatar.cc/60?img=44" alt=""></div>
+          <div>
+            <div class="mural-post-author">Gustavo Lima</div>
+          </div>
+          <span class="mural-post-time">5h atrás</span>
+        </div>
+        <div class="mural-post-body">
+          Update técnico: testamos o novo setup de PA no galpão da zona portuária. 4x sub + 2x top por lado. Som tá absurdo, galera. Warehouse 404 vai ser insano.
+        </div>
+        <div class="mural-post-reactions">
+          <button class="mural-reaction"><i class="ri-fire-line"></i> 23</button>
+          <button class="mural-reaction"><i class="ri-heart-3-line"></i> 9</button>
+          <button class="mural-reaction"><i class="ri-chat-1-line"></i> 8</button>
+        </div>
+      </div>
+
+      <div class="mural-post g-fade">
+        <div class="mural-post-header">
+          <div class="mural-post-avatar"><img src="https://i.pravatar.cc/60?img=3" alt=""></div>
+          <div>
+            <div class="mural-post-author">Mário Viana</div>
+          </div>
+          <span class="mural-post-time">8h atrás</span>
+        </div>
+        <div class="mural-post-body">
+          Lembrete: quem for tocar no Morro Sessions precisa mandar o set list até quinta-feira. Sem set list, sem slot. Vamos manter a organização, família.
+        </div>
+        <div class="mural-post-reactions">
+          <button class="mural-reaction"><i class="ri-heart-3-line"></i> 6</button>
+          <button class="mural-reaction"><i class="ri-chat-1-line"></i> 1</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="bottom-space"></div>
+
+</div>
+</div>
+
+<!-- PART 09 — SCRIPTS ─────────────────────────────────────── -->
+<!--
+  PHP: apollo-groups/templates/parts/single/scripts.php
+  Dependencies: GSAP 3.12+ (via CDN), ScrollTrigger
+  Features:
+    - Loader dismiss (gsap.to yPercent:-100)
+    - g-fade scroll-triggered animations
+    - Tab system (panel switching + re-animate)
+    - Member search (client-side filter)
+    - Mural send (create post, escape HTML)
+    - Reaction toggle (wow/fire/depoimento)
+  NOTE: Tab switching now handled via FAB sheet items
+        (the .tab click listeners still work as internal API)
+-->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+  // ── Loader
+  var loader = document.getElementById('loader');
+  if (typeof gsap !== 'undefined') {
+    gsap.to(loader, {
+      yPercent: -100, duration: .65,
+      ease: 'power3.inOut', delay: .15,
+      onComplete: function() { loader.remove(); }
+    });
+  } else {
+    setTimeout(function() { loader.style.display = 'none'; }, 300);
+  }
+
+  // ── GSAP fade-in
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+
+    function animateVisibleFades() {
+      var activePanel = document.querySelector('.panel.active');
+      var targets = [];
+
+      // Global g-fade (outside panels)
+      document.querySelectorAll('.g-fade').forEach(function(el) {
+        if (!el.closest('.panel') || (activePanel && activePanel.contains(el))) {
+          targets.push(el);
+        }
+      });
+
+      targets.forEach(function(el, i) {
+        gsap.fromTo(el,
+          { opacity: 0, y: 24 },
+          {
+            opacity: 1, y: 0, duration: .6,
+            ease: 'power3.out',
+            delay: i < 10 ? i * .04 : 0,
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 94%',
+              toggleActions: 'play none none none'
+            }
+          }
+        );
+      });
+    }
+
+    animateVisibleFades();
+  }
+
+  // ── Tab system
+  var tabs = document.querySelectorAll('.tab');
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var target = this.getAttribute('data-tab');
+
+      // Update active tab
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      this.classList.add('active');
+
+      // Switch panels
+      document.querySelectorAll('.panel').forEach(function(p) {
+        p.classList.remove('active');
+      });
+      var panel = document.getElementById('panel-' + target);
+      if (panel) {
+        panel.classList.add('active');
+
+        // Animate new panel content
+        if (typeof gsap !== 'undefined') {
+          var items = panel.querySelectorAll('.g-fade');
+          items.forEach(function(el, i) {
+            gsap.fromTo(el,
+              { opacity: 0, y: 20 },
+              { opacity: 1, y: 0, duration: .5, ease: 'power3.out', delay: i * .03 }
+            );
+          });
+        }
+      }
+    });
+  });
+
+  // ── Member search
+  var memberSearch = document.getElementById('memberSearch');
+  if (memberSearch) {
+    memberSearch.addEventListener('input', function() {
+      var query = this.value.toLowerCase().trim();
+      document.querySelectorAll('#panel-membros .member-card').forEach(function(card) {
+        var name = card.querySelector('.member-name');
+        var tag = card.querySelector('.member-tag');
+        var text = ((name ? name.textContent : '') + ' ' + (tag ? tag.textContent : '')).toLowerCase();
+        card.style.display = text.includes(query) ? '' : 'none';
+      });
+    });
+  }
+
+  // ── Mural send
+  var muralSend = document.querySelector('.mural-send');
+  var muralInput = document.querySelector('.mural-input');
+  if (muralSend && muralInput) {
+    muralSend.addEventListener('click', function() {
+      var text = muralInput.value.trim();
+      if (!text) return;
+
+      var feed = document.querySelector('.mural-feed');
+      var post = document.createElement('div');
+      post.className = 'mural-post';
+      post.innerHTML =
+        '<div class="mural-post-header">' +
+          '<div class="mural-post-avatar"><img src="https://i.pravatar.cc/60?img=5" alt=""></div>' +
+          '<div><div class="mural-post-author">Você</div></div>' +
+          '<span class="mural-post-time">Agora</span>' +
+        '</div>' +
+        '<div class="mural-post-body">' + text.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>' +
+        '<div class="mural-post-reactions">' +
+          '<button class="mural-reaction"><i class="ri-heart-3-line"></i> 0</button>' +
+          '<button class="mural-reaction"><i class="ri-chat-1-line"></i> 0</button>' +
+        '</div>';
+
+      feed.insertBefore(post, feed.firstChild);
+      muralInput.value = '';
+
+      if (typeof gsap !== 'undefined') {
+        gsap.fromTo(post, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .4, ease: 'power3.out' });
+      }
+    });
+
+    // Enter to send
+    muralInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        muralSend.click();
+      }
+    });
+  }
+
+  // ── Reaction toggle
+  document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.mural-reaction, .ann-action');
+    if (!btn) return;
+    var icon = btn.querySelector('i');
+    if (!icon) return;
+
+    // Toggle heart fill
+    if (icon.classList.contains('ri-heart-3-line')) {
+      icon.classList.replace('ri-heart-3-line', 'ri-heart-3-fill');
+      icon.style.color = '#ef4444';
+      var parts = btn.textContent.trim().split(' ');
+      var num = parseInt(parts[parts.length - 1]) || 0;
+      btn.innerHTML = '<i class="ri-heart-3-fill" style="color:#ef4444;font-size:12px"></i> ' + (num + 1);
+    } else if (icon.classList.contains('ri-heart-3-fill')) {
+      var parts2 = btn.textContent.trim().split(' ');
+      var num2 = parseInt(parts2[parts2.length - 1]) || 1;
+      btn.innerHTML = '<i class="ri-heart-3-line" style="font-size:12px"></i> ' + Math.max(0, num2 - 1);
+    }
+
+    // Toggle fire fill
+    if (icon.classList.contains('ri-fire-line')) {
+      icon.classList.replace('ri-fire-line', 'ri-fire-fill');
+      icon.style.color = 'var(--primary)';
+    }
+  });
+
+});
+</script>
+
+<!-- PART 10 — FAB MENU ─────────────────────────────────────── -->
+<!--
+  PHP: Shared FAB component (apollo-templates or inline)
+  Two sections:
+    1. "Núcleo" — panel tab triggers (Avisos/Membros/Eventos/Arquivos/Mural)
+       + "Voltar: Comunas" link
+    2. "Apollo" — ecosystem links (Eventos/DJs/Espaços/Classificados/Acomoda)
+       + Entrar/Cadastrar CTA
+  GSAP stagger animation on open
+  Close: Escape / outside click / item click
+-->
+<!-- PHP: apollo-groups/templates/parts/single/fab-menu.php -->
+<button class="nh-menu-fab" id="nhMenuFab" aria-label="Menu Apollo" aria-expanded="false" aria-haspopup="true">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="20" height="20" style="display:block;flex-shrink:0;pointer-events:none"><path d="M21 17C21 19.2091 19.2091 21 17 21C14.7909 21 13 19.2091 13 17C13 14.7909 14.7909 13 17 13C19.2091 13 21 14.7909 21 17ZM11 7C11 9.20914 9.20914 11 7 11C4.79086 11 3 9.20914 3 7C3 4.79086 4.79086 3 7 3C9.20914 3 11 4.79086 11 7ZM21 7C21 9.20914 19.2091 11 17 11C16.2584 11 15.5634 10.7972 14.9678 10.4453L10.4453 14.9678C10.7972 15.5634 11 16.2584 11 17C11 19.2091 9.20914 21 7 21C4.79086 21 3 19.2091 3 17C3 14.7909 4.79086 13 7 13C7.74116 13 8.43593 13.2022 9.03125 13.5537L13.5537 9.03125C13.2022 8.43593 13 7.74116 13 7C13 4.79086 14.7909 3 17 3C19.2091 3 21 4.79086 21 7Z"/></svg>
+</button>
+<div class="nh-menu-sheet" id="nhMenuSheet" role="menu" aria-label="Menu de navegação">
+  <span class="nh-sheet-label" style="display:block;padding:12px 20px 4px;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,0,0,.35);pointer-events:none">Núcleo</span>
+  <a href="#" class="nh-sheet-item" role="menuitem" onclick="document.querySelector('.tab[data-tab=avisos]')&&document.querySelector('.tab[data-tab=avisos]').click();return false;"><i class="ri-megaphone-line"></i>Avisos</a>
+  <a href="#" class="nh-sheet-item" role="menuitem" onclick="document.querySelector('.tab[data-tab=membros]')&&document.querySelector('.tab[data-tab=membros]').click();return false;"><i class="ri-group-line"></i>Membros</a>
+  <a href="#" class="nh-sheet-item" role="menuitem" onclick="document.querySelector('.tab[data-tab=eventos]')&&document.querySelector('.tab[data-tab=eventos]').click();return false;"><i class="ri-calendar-event-line"></i>Eventos</a>
+  <a href="#" class="nh-sheet-item" role="menuitem" onclick="document.querySelector('.tab[data-tab=arquivos]')&&document.querySelector('.tab[data-tab=arquivos]').click();return false;"><i class="ri-folder-3-line"></i>Arquivos</a>
+  <a href="#" class="nh-sheet-item" role="menuitem" onclick="document.querySelector('.tab[data-tab=mural]')&&document.querySelector('.tab[data-tab=mural]').click();return false;"><i class="ri-chat-quote-line"></i>Mural</a>
+  <a href="/comunas" class="nh-sheet-item" role="menuitem"><i class="ri-arrow-left-s-line"></i>Voltar: Comunas</a>
+  <div class="nh-sheet-divider" aria-hidden="true"></div>
+  <span class="nh-sheet-label" style="display:block;padding:12px 20px 4px;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,0,0,.35);pointer-events:none">Apollo</span>
+  <a href="/eventos"       class="nh-sheet-item" role="menuitem"><i class="ri-calendar-event-line"></i>Eventos</a>
+  <a href="/djs"           class="nh-sheet-item" role="menuitem"><i class="ri-music-2-line"></i>DJs &amp; Artistas</a>
+  <a href="/criativo"      class="nh-sheet-item" role="menuitem"><i class="ri-map-pin-2-line"></i>Espaços</a>
+  <a href="/classificados" class="nh-sheet-item" role="menuitem"><i class="ri-price-tag-3-line"></i>Classificados</a>
+  <a href="/acomoda"       class="nh-sheet-item" role="menuitem"><i class="ri-home-heart-line"></i>Acomoda::Rio</a>
+  <div class="nh-sheet-divider" aria-hidden="true"></div>
+  <a href="/acesso" class="nh-sheet-item nh-sheet-item--cta" role="menuitem">
+    <i class="ri-login-circle-line"></i>Entrar / Cadastrar
+  </a>
+</div>
+<script>
+(function(){
+  var fab=document.getElementById('nhMenuFab'),
+      sheet=document.getElementById('nhMenuSheet');
+  if(!fab||!sheet)return;
+  fab.addEventListener('click',function(e){
+    e.stopPropagation();
+    var open=sheet.classList.toggle('is-open');
+    fab.setAttribute('aria-expanded',open);
+    if(open&&typeof gsap!=='undefined'){
+      gsap.fromTo(sheet.querySelectorAll('.nh-sheet-item'),
+        {opacity:0,y:16},{opacity:1,y:0,stagger:.04,duration:.3,ease:'power2.out'});
+    }
+  });
+  document.addEventListener('click',function(e){
+    if(!sheet.contains(e.target)&&!fab.contains(e.target)){
+      sheet.classList.remove('is-open');fab.setAttribute('aria-expanded','false');
+    }
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){sheet.classList.remove('is-open');fab.setAttribute('aria-expanded','false');}
+  });
+  sheet.querySelectorAll('.nh-sheet-item').forEach(function(it){
+    it.addEventListener('click',function(){
+      sheet.classList.remove('is-open');fab.setAttribute('aria-expanded','false');
+    });
+  });
+})();
+</script>
+</body>
+</html>

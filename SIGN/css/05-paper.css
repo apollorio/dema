@@ -1,0 +1,120 @@
+/* ═══════════════════════════════════════════════════════════
+   05 — PAPER
+   A4 document sheet: tray container, paper surface, document
+   header, clauses, signature lines, footer, QR, ICP seal.
+   Reused in Panels 1–4.
+   ═══════════════════════════════════════════════════════════ */
+
+/* document tray (gray scroll area) */
+.doc-tray {
+  flex: 1;
+  display: flex; justify-content: center; align-items: flex-start;
+  overflow-y: auto; overflow-x: auto;
+  background: var(--tray);
+  padding: 40px 48px 52px;
+  gap: 24px;
+}
+.doc-tray.tray-sm { padding: 28px 32px 32px; }
+
+/* A4 paper sheet */
+.paper-sheet {
+  width: var(--a4-w);
+  min-height: var(--a4-h);
+  background: #fff;
+  box-shadow: var(--sh-paper);
+  position: relative;
+  flex-shrink: 0;
+  user-select: none; -webkit-user-select: none;
+}
+.paper { padding: var(--a4-pad-y) var(--a4-pad-x); }
+
+/* document header */
+.paper-hd {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  padding-bottom: 32px; margin-bottom: 32px;
+  border-bottom: 1.5px solid #e4e4e6;
+}
+.paper-wordmark { display: flex; align-items: baseline; gap: 5px; margin-bottom: 18px; }
+.paper-wordmark .wm-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .18em; color: var(--ink); }
+.paper-wordmark .wm-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--primary); align-self: center; }
+.paper-wordmark .wm-sub { font-family: var(--mono); font-size: 8px; color: var(--ghost); letter-spacing: .08em; text-transform: uppercase; }
+.paper-rule {
+  display: block; width: 36px; height: 1.5px;
+  background: linear-gradient(90deg, transparent, var(--primary) 40%, transparent);
+  margin: 0 auto 20px;
+}
+.paper-inst { font-family: var(--mono); font-size: 7.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .18em; color: var(--mist); margin-bottom: 10px; }
+.paper-title { font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: var(--ink); line-height: 1.15; margin-bottom: 10px; }
+.paper-docid { font-family: var(--mono); font-size: 9px; color: var(--mist); letter-spacing: .06em; }
+
+/* clauses */
+.paper-sec { margin-bottom: 20px; }
+.paper-sec-lbl {
+  font-family: var(--mono); font-size: 9.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .12em; color: var(--smoke);
+  padding-left: 8px; border-left: 2px solid var(--primary);
+  margin-bottom: 7px; line-height: 1.4;
+}
+.paper-txt {
+  font-size: 13px; color: #3c3c3e; line-height: 1.9; text-align: justify;
+  max-width: 65ch;
+}
+.paper-list { margin: 7px 0 0 18px; }
+.paper-list li { font-size: 13px; color: #48484a; line-height: 1.8; list-style: disc; margin-bottom: 5px; }
+
+/* signature block */
+.paper-sig-row {
+  display: flex; gap: 56px;
+  margin-top: 56px; padding-top: 28px;
+  border-top: 1.5px solid #e4e4e6;
+}
+.paper-sig-col { flex: 1; position: relative; }
+.paper-sig-line { border-top: 1px solid; padding-top: 10px; }
+.paper-sig-line.ink     { border-color: #1c1c1e; }
+.paper-sig-line.waiting { border-color: var(--faint); border-style: dashed; }
+.sig-name { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; line-height: 1.4; }
+.sig-role { font-family: var(--mono); font-size: 9px; color: var(--mist); margin-top: 3px; }
+.sig-stamp {
+  position: absolute; top: -21px; left: 0;
+  border: 1.5px solid var(--live); color: var(--live);
+  padding: 2px 7px; font-family: var(--mono); font-size: 7px; font-weight: 700;
+  transform: rotate(-8deg); opacity: 0; pointer-events: none; white-space: nowrap;
+  transition: opacity .5s var(--ease);
+}
+
+/* document footer */
+.paper-foot {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-top: 24px; padding-top: 14px;
+  border-top: 1px solid #f0f0f0;
+  font-family: var(--mono); font-size: 9px; color: var(--mist);
+}
+.pf-left { display: flex; flex-direction: column; gap: 3px; }
+.pf-right { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+
+/* QR code placeholder */
+.paper-qr {
+  position: absolute; bottom: 64px; right: 64px;
+  width: 58px; height: 58px;
+  border: 1px solid #e0e0e0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 5px;
+}
+.paper-qr-inner {
+  width: 100%; height: 100%;
+  background-image: repeating-conic-gradient(#121214 0% 25%, #fff 0% 50%);
+  background-size: 7px 7px;
+  image-rendering: pixelated;
+}
+
+/* ICP seal */
+.paper-seal {
+  position: absolute; bottom: 64px; left: 64px;
+  width: 58px; height: 58px;
+  border: 1.5px solid var(--faint); border-radius: 50%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 1px;
+}
+.seal-star { font-size: 14px; color: var(--primary); line-height: 1; }
+.seal-txt { font-family: var(--mono); font-size: 5.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--ghost); text-align: center; }

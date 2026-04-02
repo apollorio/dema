@@ -1,0 +1,210 @@
+﻿
+===========================================
+  SMOKE TEST 1: index.html
+  HTTP=200 SIZE=7305
+===========================================
+  [PASS] DOCTYPE html
+  [PASS] lang=pt-BR
+  [PASS] viewport no-scale
+  [PASS] PWA manifest link
+  [PASS] Page title
+  [PASS] Space Mono font
+  [PASS] Intro overlay
+  [PASS] SVG music icon
+  [PASS] Intro label text
+  [PASS] INICIAR button
+  [PASS] Boot loader div
+  [PASS] 7 boot bars
+  [PASS] barPulse keyframes
+  [PASS] Boot step element
+  [PASS] Security badge
+  [PASS] Service Worker register
+  [PASS] file:// protocol check
+  [PASS] Redirect to bpm-meter
+  [PASS] Frame busting
+  [PASS] 5 boot messages
+  [PASS] use strict
+  [PASS] Transition: intro.out
+  --- 22 PASS / 0 FAIL ---
+
+===========================================
+  SMOKE TEST 2: bpm-meter.html
+  HTTP=200 SIZE=38190
+===========================================
+  [PASS] DOCTYPE html
+  [PASS] lang=pt-BR
+  [PASS] viewport no-scale
+  [PASS] apple-mobile-web-app
+  [PASS] RemixIcon CDN 4.6.0
+  [PASS] NO core.js
+  [PASS] NO GSAP reference
+  [PASS] Space Grotesk font
+  [PASS] Space Mono font
+  [PASS] CSS :root tokens
+  [PASS] Primary color #f45f00
+  [PASS] 100dvh layout
+  [PASS] Intro overlay
+  [PASS] INICIAR button
+  [PASS] App container
+  [PASS] BPM hero display
+  [PASS] BPM value element
+  [PASS] BPM confidence
+  [PASS] Beat ring
+  [PASS] Visualizer
+  [PASS] Candidates
+  [PASS] Source panel
+  [PASS] 3 source buttons
+  [PASS] ri-mic-line icon
+  [PASS] ri-file-music-line
+  [PASS] ri-broadcast-line
+  [PASS] ri-pulse-line icon
+  [PASS] ri-stop-line in JS
+  [PASS] Action button
+  [PASS] Stream URL input
+  [PASS] File input accept=audio
+  [PASS] Stats grid (3 cols)
+  [PASS] History panel
+  [PASS] History clear btn
+  [PASS] Toast error
+  [PASS] Footer
+  --- 36 PASS / 0 FAIL ---
+
+===========================================
+  FUNCTIONAL TEST 3: JS Engine Logic
+===========================================
+  [PASS] IIFE wrapper
+  [PASS] AudioContext constructor
+  [FAIL] AudioCtx on INICIAR
+  [PASS] audioCtx.resume on gesture
+  [PASS] getUserMedia async
+  [PASS] echoCancellation false
+  [PASS] noiseSuppression false
+  [PASS] autoGainControl false
+  [PASS] Resume AFTER getUserMedia
+  [PASS] createAnalyser
+  [PASS] fftSize 2048
+  [PASS] lowpass filter 200Hz
+  [PASS] createMediaStreamSource
+  [PASS] createMediaElementSource
+  [PASS] Pre-alloc Float32Array
+  [PASS] Pre-alloc Uint8Array
+  [PASS] lowpass state var
+  [PASS] timeData state var
+  [PASS] freqData state var
+  [PASS] requestAnimationFrame
+  [PASS] cancelAnimationFrame
+  [PASS] Peak threshold 0.35
+  [PASS] BPM range 60-220
+  [PASS] Median filter outliers
+  [PASS] Stability check
+  [PASS] BPM candidates
+  [PASS] History recording
+  [PASS] Toast messages
+  [PASS] Stop cleanup lowpass
+  [PASS] Stop cleanup stream
+  [PASS] Stop cleanup source
+  [PASS] Err: NotAllowedError
+  [PASS] Err: NotFoundError
+  [PASS] Err: NotReadableError
+  [PASS] Err: AbortError
+  [PASS] Cleanup on error: stream
+  [PASS] Cleanup on error: element
+  --- 36 PASS / 1 FAIL ---
+
+===========================================
+  FUNCTIONAL TEST 4: Mobile + Recovery
+===========================================
+  [PASS] visibilitychange listener
+  [PASS] audioCtx.state interrupted
+  [PASS] Resume on foreground
+  [PASS] beforeunload cleanup
+  [PASS] playsInline attribute
+  [PASS] crossOrigin anonymous
+  [PASS] Audio element loop
+  [PASS] tap-highlight color
+  [PASS] overscroll-behavior
+  [PASS] Responsive 480px
+  [PASS] Responsive 768px
+  --- 11 PASS / 0 FAIL ---
+
+===========================================
+  FUNCTIONAL TEST 5: CDN Dependencies
+===========================================
+  [PASS] RemixIcon CSS reachable
+  [PASS] RemixIcon CSS has content
+  [PASS] Google Fonts reachable
+  --- 3 PASS / 0 FAIL ---
+
+===========================================
+  FUNCTIONAL TEST 6: Security Layer Files
+===========================================
+  [PASS] sw.js loads (200)
+  [PASS] sw.js cache name
+  [PASS] sw.js install event
+  [PASS] sw.js activate event
+  [PASS] sw.js fetch event
+  [PASS] sw.js origin check
+  [PASS] sw.js wasm/blob protection
+  [PASS] sw.js message handler
+  [PASS] sw.js error handler
+  [PASS] blob.js loads (200)
+  [PASS] blob.js has encrypt fn
+  [PASS] blob.js has decrypt fn
+  [PASS] blob.js has XOR logic
+  [PASS] blob.js has ENCRYPTED_CORE
+  [PASS] blob.js has BPM_CORE_MODULE
+  [PASS] wasm.js loads (200)
+  [PASS] wasm.js WebAssembly.Memory
+  [PASS] wasm.js exports startMic
+  [PASS] wasm.js exports stopAnalysis
+  [PASS] wasm.js exports getBPM
+  [PASS] wasm.js exports version
+  [PASS] wasm.js global export
+  [PASS] assets.js loads (200)
+  [PASS] assets.js has encryptAsset
+  [PASS] assets.js has decryptAsset
+  [PASS] assets.js has ENCRYPTED_CSS
+  [PASS] assets.js has loadCSS fn
+  [PASS] assets.js has loadTemplate
+  [PASS] assets.js global export
+  [PASS] manifest.json loads
+  [PASS] manifest name
+  [PASS] manifest short_name
+  [PASS] manifest start_url
+  [PASS] manifest display standalone
+  [PASS] manifest theme_color
+  [PASS] manifest orientation
+  [PASS] manifest lang pt-BR
+  [PASS] manifest icons present
+  --- 38 PASS / 0 FAIL ---
+
+===========================================
+  FUNCTIONAL TEST 7: Navigation Flow
+===========================================
+  [PASS] index->bpm-meter redirect
+  [PASS] index->sw.js register
+  [PASS] index->manifest link
+  [PASS] sw->index.html cache
+  [PASS] sw->manifest cache
+  [PASS] bpm-meter self-contained
+  [PASS] bpm-meter no SW register
+  --- 7 PASS / 0 FAIL ---
+
+===========================================
+  FUNCTIONAL TEST 8: Known Issues
+===========================================
+  [PASS] SW caches .wasm (not .wasm.js)
+  [PASS] SW caches .blob (not .blob.js)
+  [PASS] bpm-meter uses no .wasm/.blob
+  [PASS] startAnalysis is async
+  [PASS] No console.error in bpm-meter
+  [PASS] File exists: bpm-meter.html
+  [PASS] File exists: sw.js
+  [PASS] File exists: bpm-manifest.json
+  --- 8 PASS / 0 FAIL ---
+
+===========================================
+  FINAL SUMMARY
+  TOTAL: 161 PASS / 1 FAIL
+  OVERALL: HAS FAILURES
+===========================================

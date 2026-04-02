@@ -1,0 +1,55 @@
+/* ═══════════════════════════════════════════════════════════
+   08 — SIGN RECT
+   Interactive stamp-placement rectangle with resize handles,
+   ghost SVG crosshair layer, and touch overlay.
+   ═══════════════════════════════════════════════════════════ */
+
+/* sign rect (draggable / resizable via interact.js) */
+#sign-rect { display: none; position: absolute; border: 1.5px solid var(--primary); cursor: move; z-index: 6; border-radius: 2px; }
+.rect-inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--primary-l); }
+.rect-lbl { font-family: var(--mono); font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--primary); white-space: nowrap; }
+.rect-dim { font-family: var(--mono); font-size: 7px; color: rgba(244,95,0,.5); white-space: nowrap; margin-top: 2px; }
+.rect-lbl.ok { color: var(--live); } .rect-dim.ok { color: rgba(22,163,74,.6); }
+
+/* resize handles */
+.rh { position: absolute; width: 8px; height: 8px; border-radius: 1.5px; background: var(--primary); }
+.rh-tl { top:-4px; left:-4px; cursor:nwse-resize; }
+.rh-tr { top:-4px; right:-4px; cursor:nesw-resize; }
+.rh-bl { bottom:-4px; left:-4px; cursor:nesw-resize; }
+.rh-br { bottom:-4px; right:-4px; cursor:nwse-resize; }
+
+/* confirmed state (signed) */
+#sign-rect.confirmed { border-color: var(--live); overflow: visible; }
+#sign-rect.confirmed .rect-inner { background: rgba(22,163,74,.06); }
+#sign-rect.confirmed .rh { background: var(--live); display: none; }
+#sign-rect.confirmed .rect-inner {
+  padding: 0 !important; background: transparent !important;
+  align-items: flex-start !important; justify-content: flex-start !important;
+  overflow: visible; inset: unset !important; position: static;
+}
+
+/* touch overlay (crosshair placement) */
+#touch-ov {
+  position: absolute; inset: 0; z-index: 5;
+  display: none; cursor: crosshair;
+}
+#touch-ov.active {
+  display: block;
+  touch-action: none;
+}
+#ghost-svg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* min-size warning toast */
+#min-warn {
+  position: fixed; bottom: 140px; left: 50%; transform: translateX(-50%);
+  background: var(--ink); color: #fff;
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  padding: 6px 16px; border-radius: var(--pill); z-index: 999;
+  opacity: 0; pointer-events: none; transition: opacity .2s; white-space: nowrap;
+}
+#min-warn.vis { opacity: 1; }

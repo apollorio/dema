@@ -1,0 +1,33 @@
+/* ═══════════════════════════════════════════════════════════
+   06 — PANEL 1: PREVIEW
+   Participant strip + CTA footer for the document preview.
+   ═══════════════════════════════════════════════════════════ */
+.part-strip {
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 16px;
+  padding: 12px 28px;
+  background: var(--sf); border-top: 1px solid var(--brd);
+}
+.part-chip { display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--ghost); }
+.part-chip i { font-size: 14px; }
+.part-chip.ok { color: var(--live); }
+.part-rule { flex: 1; height: 1px; background: var(--brd); margin: 0 4px; }
+
+.pg-footer {
+  flex-shrink: 0;
+  padding: 16px 28px calc(18px + var(--safe-bottom));
+  padding-right: calc(28px + var(--safe-right));
+  padding-left: calc(28px + var(--safe-left));
+  background: rgba(255,255,255,.98);
+  border-top: 1px solid var(--brd);
+}
+.btn-proceed {
+  width: 100%; height: 50px;
+  background: var(--ink); color: #fff;
+  border-radius: var(--r);
+  font-size: 14px; font-weight: 700; letter-spacing: -.01em;
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  transition: background .16s var(--ease), transform .12s;
+}
+.btn-proceed:hover { background: #242426; }
+.btn-proceed:active { transform: scale(.99); }

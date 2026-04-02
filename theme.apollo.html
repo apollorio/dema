@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apollo Design System · v3.1</title>
+  <link rel="canonical" href="https://apollo.rio.br">
+ <script src="https://cdn.apollo.rio.br/v1.0.0/core.js" fetchpriority="high"></script>
+ <link rel="stylesheet" href="./universal.css">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Syne:wght@400..800&display=swap">
+
+  <!-- Remix Icons — replaces Material Symbols -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.min.css">
+
+
+</head>
+
+<body>
+
+<!-- SVG refraction filter — required by .ig-glass backdrop (one per page) -->
+<svg style="display:none;position:absolute;width:0;height:0" aria-hidden="true">
+  <defs>
+    <filter id="ig-refract" x="-22%" y="-22%" width="144%" height="144%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.015 0.015" numOctaves="2" seed="47" result="noise"/>
+      <feGaussianBlur in="noise" stdDeviation="1.2" result="soft-noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="soft-noise" scale="12" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
+
+<!-- ── Topbar with dark mode toggle ─────────────────── -->
+<header class="apollo-topbar">
+  <span class="brand">
+    <i class="ri-compass-3-line"></i>
+    apollo::rio · design system
+  </span>
+
+  <!-- Dark mode toggle -->
+  <label class="toggle-wrap dm-toggle" for="dm-toggle" title="Toggle dark mode" style="gap:8px;">
+    <i class="ri-sun-line" style="font-size:14px;color:var(--muted);"></i>
+    <input type="checkbox" class="toggle-input" id="dm-toggle" role="switch" aria-label="Dark mode">
+    <span class="toggle-track"></span>
+    <i class="ri-moon-line" style="font-size:14px;color:var(--muted);"></i>
+  </label>
+</header>
+  <div class="hero-title-watermark">Luxury<br>Monochrome</div>
+
+<div class="apollo-wrapper">
+
+  <!-- ═══════════════════════════════════════
+       01. TYPOGRAPHY
+       ═══════════════════════════════════════ -->
+  <section id="s01" class="section">
+  
+    
+    <div class="tag-bnw black">CULTURE</div>
+    <div class="tag-bnw white">ART</div>
+    
+    <h1 class="hero-title">Luxury<br>Monochrome</h1>
+    <br>
+    <span class="label-section">01 · Typography</span>
+
+    <p class="txt-secondary" style="max-width:540px; margin-top: 12px;">
+      A restrained, shadow-capped design system. Black · White · Grayscale —
+      accented with <span class="txt-mono">--primary</span> where it counts.
+    </p>
+    <div class="flex-row" style="margin-top:var(--s-4);">
+      <span class="tag">Default</span>
+      <span class="tag tag-primary">Primary</span>
+      <span class="tag tag-success">Success</span>
+      <span class="tag tag-danger">Error</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       02. INTERACTIONS
+       ═══════════════════════════════════════ -->
+  <section id="s02" class="section">
+    <span class="label-section">02 · Interactions</span>
+    <div class="grid-3">
+
+      <!-- Buttons -->
+      <div class="card">
+        <h4 class="h4" style="margin-bottom:var(--s-4);">Button Set</h4>
+        <div class="flex-col">
+          <div class="flex-row">
+            <button class="btn btn-primary">
+              <i class="ri-add-line"></i> Primary Action
+            </button>
+            <button class="btn btn-primary btn-sm">Small</button>
+          </div>
+          <div class="flex-row">
+            <button class="btn btn-secondary">
+              <i class="ri-star-line"></i> Secondary
+            </button>
+            <button class="btn btn-ghost">Ghost</button>
+          </div>
+          <div class="flex-row">
+            <button class="btn btn-icon" aria-label="Add">
+              <i class="ri-add-line" style="font-size:20px;"></i>
+            </button>
+            <button class="btn btn-icon" aria-label="Forward" style="background:var(--black-1);color:#fff;border-color:var(--black-1);">
+              <i class="ri-arrow-right-line" style="font-size:20px;"></i>
+            </button>
+            <button class="btn btn-icon" aria-label="Settings">
+              <i class="ri-settings-3-line" style="font-size:20px;"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Fields -->
+      <div class="card">
+        <h4 class="h4" style="margin-bottom:var(--s-4);">Form Fields</h4>
+        <form autocomplete="off" onsubmit="return false">
+          <div class="input-group">
+            <input type="text" class="apollo-input" placeholder=" " required>
+            <label class="apollo-label">Nome Completo</label>
+          </div>
+          <div class="input-group">
+            <input type="email" class="apollo-input" placeholder=" " required>
+            <label class="apollo-label">E-mail</label>
+          </div>
+
+          <!-- Select Type 1 -->
+          <div class="input-group as1" id="select1">
+            <button type="button" class="as1-trigger is-placeholder">
+              <span class="as1-val">
+                <span class="as1-val-icon" style="background:var(--primary)">
+                  <i class="ri-circle-line"></i>
+                </span>
+                <span class="as1-val-text"></span>
+              </span>
+              <i class="ri-arrow-down-s-line as1-arrow"></i>
+            </button>
+            <label class="apollo-label">Assunto</label>
+            <div class="as1-drop">
+              <div class="as1-opt" data-value="1" data-name="Sobre Parceria" data-icon-bg="#1a73e8">
+                <span class="as1-opt-icon" style="background:#1a73e8"><i class="ri-group-line"></i></span>
+                <span class="as1-opt-text"><span class="as1-opt-name">Sobre Parceria</span><span class="as1-opt-hint">Colaborações &amp; projetos</span></span>
+                <i class="ri-check-line as1-opt-check"></i>
+              </div>
+              <div class="as1-opt" data-value="2" data-name="Problema ou Denúncia" data-icon-bg="#e53935">
+                <span class="as1-opt-icon" style="background:#e53935"><i class="ri-alert-line"></i></span>
+                <span class="as1-opt-text"><span class="as1-opt-name">Problema ou Denúncia</span><span class="as1-opt-hint">Relatar incidentes</span></span>
+                <i class="ri-check-line as1-opt-check"></i>
+              </div>
+              <div class="as1-opt" data-value="3" data-name="Suporte Técnico" data-icon-bg="#f45f00">
+                <span class="as1-opt-icon" style="background:#f45f00"><i class="ri-customer-service-2-line"></i></span>
+                <span class="as1-opt-text"><span class="as1-opt-name">Suporte Técnico</span><span class="as1-opt-hint">Ajuda com a plataforma</span></span>
+                <i class="ri-check-line as1-opt-check"></i>
+              </div>
+              <div class="as1-opt" data-value="4" data-name="Elogio ou Crítica" data-icon-bg="#651FFF">
+                <span class="as1-opt-icon" style="background:#651FFF"><i class="ri-message-3-line"></i></span>
+                <span class="as1-opt-text"><span class="as1-opt-name">Elogio ou Crítica</span><span class="as1-opt-hint">Feedback &amp; sugestões</span></span>
+                <i class="ri-check-line as1-opt-check"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <input type="text" class="apollo-input" placeholder=" " required>
+            <label class="apollo-label">Mensagem</label>
+          </div>
+
+          <label class="custom-checkbox" style="padding:10px 14px; gap:10px;">
+            <input name="terms" type="checkbox">
+            <span class="checkmark"></span>
+            Concordo com os Termos de Uso.
+          </label>
+
+          <label class="custom-checkbox" style="padding:10px 14px; gap:10px;">
+            <input name="privacy" type="checkbox">
+            <span class="checkmark"></span>
+            Aceito a Política de Privacidade.
+          </label>
+
+          <!-- Radio Buttons -->
+          <fieldset style="border:none; padding:0; margin:var(--s-3) 0 0;">
+            <legend class="toggle-label" style="margin-bottom:10px;">Preferência de Contato</legend>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <label class="custom-radio" style="padding:10px 14px; gap:10px;">
+                <input name="contact" type="radio" value="email" checked>
+                <span class="radio-mark"><svg class="radio-scribble" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9C4 5 7 2 9 3C11 4 14 7 12 10C11 12 8 14 9 16C10 17 13 13 16 10"/></svg></span>
+                E-mail
+              </label>
+              <label class="custom-radio" style="padding:10px 14px; gap:10px;">
+                <input name="contact" type="radio" value="whatsapp">
+                <span class="radio-mark"><svg class="radio-scribble" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9C4 5 7 2 9 3C11 4 14 7 12 10C11 12 8 14 9 16C10 17 13 13 16 10"/></svg></span>
+                WhatsApp
+              </label>
+              <label class="custom-radio" style="padding:10px 14px; gap:10px;">
+                <input name="contact" type="radio" value="phone">
+                <span class="radio-mark"><svg class="radio-scribble" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9C4 5 7 2 9 3C11 4 14 7 12 10C11 12 8 14 9 16C10 17 13 13 16 10"/></svg></span>
+                Telefone
+              </label>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+
+      <!-- Tags & Status + Selects -->
+      <div class="card">
+        <h4 class="h4" style="margin-bottom:var(--s-4);">Status &amp; Controls</h4>
+        <div class="flex-row" style="gap:8px;">
+          <span class="tag">Default</span>
+          <span class="tag tag-primary">Primary</span>
+          <span class="tag tag-success">Success</span>
+          <span class="tag tag-danger">Error</span>
+        </div>
+
+        <!-- Toggles showcase -->
+        <div style="margin-top:var(--s-4); display:flex; flex-direction:column; gap:14px;">
+          <!-- Toggle 1 — enabled by default -->
+          <label class="toggle-wrap" for="toggle-enabled">
+            <input type="checkbox" class="toggle-input" id="toggle-enabled" checked role="switch">
+            <span class="toggle-track"></span>
+            <span class="toggle-label">Notifications enabled</span>
+          </label>
+          <!-- Toggle 2 — off by default -->
+          <label class="toggle-wrap" for="toggle-dark">
+            <input type="checkbox" class="toggle-input" id="toggle-dark" role="switch">
+            <span class="toggle-track"></span>
+            <span class="toggle-label" id="toggle-dark-label">Dark mode (sync)</span>
+          </label>
+          <!-- Toggle 3 — disabled -->
+          <label class="toggle-wrap" for="toggle-disabled" style="opacity:0.4;pointer-events:none;">
+            <input type="checkbox" class="toggle-input" id="toggle-disabled" disabled role="switch">
+            <span class="toggle-track"></span>
+            <span class="toggle-label">Feature locked</span>
+          </label>
+        </div>
+
+        <!-- Select Type 2 -->
+        <div style="margin-top:var(--s-5); padding-top:var(--s-4); border-top:1px solid var(--border);">
+          <div class="type-badge">Type 2 — Palette</div>
+          <div class="input-group as2" id="select2">
+            <span class="as2-swatch"></span>
+            <input type="text" class="as2-input" placeholder=" " autocomplete="off">
+            <label class="apollo-label">Choose a color</label>
+            <span class="as2-line"></span>
+            <i class="ri-arrow-down-s-line as2-arrow"></i>
+            <div class="as2-drop">
+              <div class="as2-opt" data-value="#5790E6" data-name="eyes"          data-desc="by kersheys"><span class="as2-opt-swatch" style="background:#5790E6"></span><span><span class="as2-opt-name">eyes</span><span class="as2-opt-desc">by kersheys</span></span><i class="ri-check-line as2-opt-check"></i></div>
+              <div class="as2-opt" data-value="#8773EB" data-name="status"        data-desc="by grandiloquent"><span class="as2-opt-swatch" style="background:#8773EB"></span><span><span class="as2-opt-name">status</span><span class="as2-opt-desc">by grandiloquent</span></span><i class="ri-check-line as2-opt-check"></i></div>
+              <div class="as2-opt" data-value="#B27CD9" data-name="costume party" data-desc="by lemonpaste"><span class="as2-opt-swatch" style="background:#B27CD9"></span><span><span class="as2-opt-name">costume party</span><span class="as2-opt-desc">by lemonpaste</span></span><i class="ri-check-line as2-opt-check"></i></div>
+              <div class="as2-opt" data-value="#E884B0" data-name="musk stix"     data-desc="by the rusty wench"><span class="as2-opt-swatch" style="background:#E884B0"></span><span><span class="as2-opt-name">musk stix</span><span class="as2-opt-desc">by the rusty wench</span></span><i class="ri-check-line as2-opt-check"></i></div>
+              <div class="as2-opt" data-value="#EDA180" data-name="cymbalic"      data-desc="by clairyfairy"><span class="as2-opt-swatch" style="background:#EDA180"></span><span><span class="as2-opt-name">cymbalic</span><span class="as2-opt-desc">by clairyfairy</span></span><i class="ri-check-line as2-opt-check"></i></div>
+              <div class="as2-empty">Nenhum resultado</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Select Type 3 -->
+        <div style="margin-top:4px;">
+          <div class="type-badge">Type 3 — Glass</div>
+          <div class="as3" id="select3">
+            <button type="button" class="as3-trigger is-placeholder">
+              <span class="as3-swatch"></span>
+              <span class="as3-label">Choose a color</span>
+              <i class="ri-arrow-down-s-line as3-chevron"></i>
+            </button>
+            <div class="as3-drop">
+              <div class="as3-search-wrap">
+                <i class="ri-search-line as3-search-icon"></i>
+                <input class="as3-search" type="text" placeholder="Buscar…" autocomplete="off">
+              </div>
+              <div class="as3-opts">
+                <div class="as3-opt" data-value="#5790E6" data-name="eyes"          data-desc="by kersheys"><span class="as3-opt-sw" style="background:#5790E6"></span><span><span class="as3-opt-name">eyes</span><span class="as3-opt-desc">by kersheys</span></span><i class="ri-check-line as3-opt-check"></i></div>
+                <div class="as3-opt" data-value="#8773EB" data-name="status"        data-desc="by grandiloquent"><span class="as3-opt-sw" style="background:#8773EB"></span><span><span class="as3-opt-name">status</span><span class="as3-opt-desc">by grandiloquent</span></span><i class="ri-check-line as3-opt-check"></i></div>
+                <div class="as3-opt" data-value="#B27CD9" data-name="costume party" data-desc="by lemonpaste"><span class="as3-opt-sw" style="background:#B27CD9"></span><span><span class="as3-opt-name">costume party</span><span class="as3-opt-desc">by lemonpaste</span></span><i class="ri-check-line as3-opt-check"></i></div>
+                <div class="as3-opt" data-value="#E884B0" data-name="musk stix"     data-desc="by the rusty wench"><span class="as3-opt-sw" style="background:#E884B0"></span><span><span class="as3-opt-name">musk stix</span><span class="as3-opt-desc">by the rusty wench</span></span><i class="ri-check-line as3-opt-check"></i></div>
+                <div class="as3-opt" data-value="#EDA180" data-name="cymbalic"      data-desc="by clairyfairy"><span class="as3-opt-sw" style="background:#EDA180"></span><span><span class="as3-opt-name">cymbalic</span><span class="as3-opt-desc">by clairyfairy</span></span><i class="ri-check-line as3-opt-check"></i></div>
+              </div>
+              <div class="as3-empty">Nenhum resultado</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile identity -->
+        <div style="margin-top:var(--s-5); padding-top:var(--s-4); border-top:1px solid var(--border);">
+          <div class="type-badge">Identity Component</div>
+          <div class="post-header" style="padding:16px 0 0;">
+            <div class="post-meta">
+              <div class="av-md"><img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100" alt="avatar"></div>
+              <div class="profile-identity">
+                <h1 class="name">
+                  <span>Apollo Team</span>
+                  <span class="user-membership-badge">
+                    <i class="icon-apollo-s"></i>
+                    <i class="icon-shield-check-s"></i>
+                  </span>
+                </h1>
+                <div class="tags"><span class="tag">EQUIPE DE MODERAÇÃO</span></div>
+                <span class="handle">@apollo_rio · 1h</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       03. WIDGETS
+       ═══════════════════════════════════════ -->
+  <section id="s03" class="section">
+    <span class="label-section">03 · Widgets</span>
+    <div class="grid-2">
+      <!-- Media Player -->
+      <div>
+        <h3 class="h3" style="margin-bottom:25px;">Media Controller</h3>
+        <p class="txt-secondary" style="margin-bottom:var(--s-4);">Minimalist. Shadow-based depth. Grayscale art, monochrome progress.</p>
+        <article class="media-widget">
+          <div class="media-cover-art">
+            <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&auto=format&fit=crop&q=60" alt="Album Art">
+          </div>
+          <div class="media-info"><h3>Midnight Jazz</h3><p>Apollo Orchestra</p></div>
+          <div class="media-progress">
+            <span>1:24</span>
+            <div class="progress-bar-container">
+              <div class="progress-fill"></div>
+              <div class="progress-knob"></div>
+            </div>
+            <span>4:12</span>
+          </div>
+          <div class="media-controls">
+            <button class="ctrl-btn" aria-label="Shuffle"><i class="ri-shuffle-line"></i></button>
+            <button class="ctrl-btn" aria-label="Previous"><i class="ri-skip-back-line" style="font-size:26px;"></i></button>
+            <label class="play-pause-btn">
+              <input class="player-input" type="checkbox">
+              <svg class="icon play-outline" viewBox="0 0 24 24"><path d="M16.3944 12.0001L10 7.7371V16.263L16.3944 12.0001ZM19.376 12.4161L8.77735 19.4818C8.54759 19.635 8.23715 19.5729 8.08397 19.3432C8.02922 19.261 8 19.1645 8 19.0658V4.93433C8 4.65818 8.22386 4.43433 8.5 4.43433C8.59871 4.43433 8.69522 4.46355 8.77735 4.5183L19.376 11.584C19.6057 11.7372 19.6678 12.0477 19.5146 12.2774C19.478 12.3323 19.4309 12.3795 19.376 12.4161Z"></path></svg>
+              <svg class="icon play-solid" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              <svg class="icon pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            </label>
+            <button class="ctrl-btn" aria-label="Next"><i class="ri-skip-forward-line" style="font-size:26px;"></i></button>
+            <button class="ctrl-btn" aria-label="Repeat"><i class="ri-repeat-line"></i></button>
+          </div>
+        </article>
+      </div>
+
+      <!-- Stats + CTA -->
+      <div class="flex-col">
+        <h3 class="h3" style="margin-bottom:4px;">Data Points</h3>
+        <p class="txt-secondary" style="margin-bottom:var(--s-3);">Monochrome metrics. Trend colors only.</p>
+        <div class="grid-2" style="gap:var(--s-3);">
+          <div class="stat-card card-hover">
+            <div class="stat-header">
+              <div class="stat-icon"><i class="ri-group-line"></i></div>
+              <button class="btn-more" aria-label="More"><i class="ri-more-line"></i></button>
+            </div>
+            <div>
+              <div class="stat-value">24.5k</div>
+              <div class="stat-label">Total Users</div>
+              <div class="stat-trend trend-up"><i class="ri-arrow-up-line"></i> +12%</div>
+            </div>
+          </div>
+          <div class="stat-card card-hover">
+            <div class="stat-header">
+              <div class="stat-icon"><i class="ri-coins-line"></i></div>
+              <button class="btn-more" aria-label="More"><i class="ri-more-line"></i></button>
+            </div>
+            <div>
+              <div class="stat-value">$84.2k</div>
+              <div class="stat-label">Revenue</div>
+              <div class="stat-trend trend-down"><i class="ri-arrow-down-line"></i> -2.4%</div>
+            </div>
+          </div>
+        </div>
+        <div class="cta-card" style="margin-top:auto;">
+          <div class="flex-between">
+            <div><h4 style="margin-bottom:3px;font-size:1rem;">Pro Plan</h4><p>Unlock all widgets &amp; themes.</p></div>
+            <button class="btn btn-sm"><i class="ri-rocket-line"></i> Upgrade</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       04. PARAMETRIC EQ
+       ═══════════════════════════════════════ -->
+  <section id="s04" class="section">
+    <span class="label-section">04 · Range Controls</span>
+    <h3 class="h3" style="margin-bottom:25px;">Parametric EQ</h3>
+    <p class="txt-secondary" style="margin-bottom:var(--s-5);">Native input[type=range] restyled. Vertical sliders with graduated tick marks.</p>
+    <div class="eq-card">
+      <div class="eq-header">
+        <h3 class="eq-title"><i class="ri-equalizer-line" style="color:var(--primary);font-size:1.2em;"></i> Parametric EQ</h3>
+        <span class="eq-badge">Rock Profile</span>
+      </div>
+      <div class="eq-board">
+        <div class="eq-y-axis"><span>+12dB</span><span>0</span><span>-12dB</span></div>
+        <div class="eq-channel pre-amp"><div class="eq-slider-wrapper"><input type="range" min="-12" max="12" value="0"></div><label class="eq-label">PRE</label></div>
+        <div class="eq-channel"><div class="eq-slider-wrapper"><input type="range" min="-12" max="12" value="4.5" step="0.5"></div><label class="eq-label">32</label></div>
+        <div class="eq-channel"><div class="eq-slider-wrapper"><input type="range" min="-12" max="12" value="4" step="0.5"></div><label class="eq-label">64</label></div>
+        <div class="eq-channel"><div class="eq-slider-wrapper"><input type="range" min="-12" max="12" value="2" step="0.5"></div><label class="eq-label">128</label></div>
+        <div class="eq-channel"><div class="eq-slider-wrapper"><input type="range" min="-12" max="12" value="1" step="0.5"></div><label class="eq-label">256</label></div>
+        <div class="eq-channel"><div class="eq-slider-wrapper"><input type="range" min="-12" max="12" value="-1" step="0.5"></div><label class="eq-label">512</label></div>
+        <div class="eq-channel"><div class="eq-slider-wrapper"><input type="range" min="-12" max="12" value="-1.5" step="0.5"></div><label class="eq-label">1K</label></div>
+        <div class="eq-channel"><div class="eq-slider-wrapper"><input type="range" min="-12" max="12" value="0.5" step="0.5"></div><label class="eq-label">2K</label></div>
+        <div class="eq-channel"><div class="eq-slider-wrapper"><input type="range" min="-12" max="12" value="2" step="0.5"></div><label class="eq-label">4K</label></div>
+        <div class="eq-channel"><div class="eq-slider-wrapper"><input type="range" min="-12" max="12" value="3" step="0.5"></div><label class="eq-label">8K</label></div>
+        <div class="eq-channel"><div class="eq-slider-wrapper"><input type="range" min="-12" max="12" value="4" step="0.5"></div><label class="eq-label">16K</label></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       05. LISTINGS
+       ═══════════════════════════════════════ -->
+  <section id="s05" class="section">
+    <div class="flex-between" style="margin-bottom:var(--s-4);">
+      <div>
+        <span class="label-section">05 · Listings</span>
+        <h3 class="h3">Upcoming Events</h3>
+      </div>
+      <button class="btn btn-ghost btn-sm">View All <i class="ri-arrow-right-line"></i></button>
+    </div>
+    <div class="event-list-container">
+      <div class="event-row soldout">
+        <div class="date-box"><span class="date-day">28</span><span class="date-month">Jan</span></div>
+        <div class="event-details">
+          <h4>Techno Bunker Night</h4>
+          <div class="event-meta">
+            <span><i class="ri-time-line"></i> 22:00</span>
+            <span><i class="ri-map-pin-line"></i> Club Aurora</span>
+          </div>
+        </div>
+        <div class="event-action"><span class="status">Sold Out</span></div>
+      </div>
+      <div class="event-row featured">
+        <div class="date-box"><span class="date-day">02</span><span class="date-month">Feb</span></div>
+        <div class="event-details">
+          <h4>Startup Summit 2026</h4>
+          <div class="event-meta">
+            <span><i class="ri-time-line"></i> 09:00</span>
+            <span><i class="ri-map-pin-line"></i> Grand Hall</span>
+          </div>
+        </div>
+        <div class="event-action"><button class="btn btn-primary btn-icon btn-sm" title="Register"><i class="ri-calendar-add-line"></i></button></div>
+      </div>
+      <div class="event-row">
+        <div class="date-box"><span class="date-day">14</span><span class="date-month">Feb</span></div>
+        <div class="event-details">
+          <h4>Product Design Workshop</h4>
+          <div class="event-meta">
+            <span><i class="ri-time-line"></i> 14:00</span>
+            <span><i class="ri-wifi-line"></i> Online</span>
+          </div>
+        </div>
+        <div class="event-action"><span class="status active">Live Now</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pagination -->
+  <ul id="pagination">
+    <li><a href="#s01" aria-label="Previous"><i class="ri-arrow-left-s-line"></i></a></li>
+    <li><a href="#s01">1</a></li>
+    <li><a href="#s02" class="current-page">2</a></li>
+    <li><a href="#s03">3</a></li>
+    <li><a href="#s04">4</a></li>
+    <li><a href="#s05">5</a></li>
+    <li><a href="#s06">6</a></li>
+    <li><a href="#s07">7</a></li>
+    <li><a href="#s13" aria-label="Next"><i class="ri-arrow-right-s-line"></i></a></li>
+  </ul>
+
+
+
+  <!-- ═══════════════════════════════════════════════
+       06. GALLERY CARD
+       ═══════════════════════════════════════════════ -->
+  <section id="s06" class="section">
+    <span class="label-section">06 · Gallery Card</span>
+    <p class="txt-secondary" style="max-width:560px; margin-bottom:var(--s-4);">
+      Monochrome→color on hover. GSAP ScrollTrigger stagger entrance.
+    </p>
+    <div class="grid-3 gallery-reveal" style="gap:var(--s-3);">
+      <article class="gallery-card">
+        <img src="https://picsum.photos/seed/apollog1/600/380" alt="Underground Sessions" loading="lazy">
+        <div class="gallery-card-body">
+          <h4>Underground Sessions</h4>
+          <p>Resident sets from local selectors every Saturday at Club Aurora.</p>
+        </div>
+      </article>
+      <article class="gallery-card">
+        <img src="https://picsum.photos/seed/apollog2/600/380" alt="Sunset Theory" loading="lazy">
+        <div class="gallery-card-body">
+          <h4>Sunset Theory</h4>
+          <p>Rooftop electronic sessions as the city fades to amber light.</p>
+        </div>
+      </article>
+      <article class="gallery-card">
+        <img src="https://picsum.photos/seed/apollog3/600/380" alt="Comunas" loading="lazy">
+        <div class="gallery-card-body">
+          <h4>Comunas · Núcleos</h4>
+          <p>Community spaces for culture, art, and nightlife discovery.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       08. TOAST NOTIFICATION
+       ═══════════════════════════════════════════════ -->
+  <section id="s07" class="section">
+    <span class="label-section">07 · Toast Notification</span>
+    <p class="txt-secondary" style="margin-bottom:var(--s-4);">
+      GSAP <code>fromTo</code> slide-up with back-easing. Auto-dismiss in 4 s.
+    </p>
+    <div id="toast-stack" class="flex-col" style="gap:var(--s-2); max-width:420px; min-height:56px;"></div>
+    <div class="flex-row" style="margin-top:var(--s-4); gap:var(--s-2);">
+      <button class="btn btn-ghost btn-sm" onclick="apolloToast('info')">
+        <i class="ri-information-line"></i> Info
+      </button>
+      <button class="btn btn-ghost btn-sm" onclick="apolloToast('success')">
+        <i class="ri-checkbox-circle-line"></i> Success
+      </button>
+      <button class="btn btn-ghost btn-sm" onclick="apolloToast('error')">
+        <i class="ri-error-warning-line"></i> Error
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       08. BREADCRUMB
+       ═══════════════════════════════════════════════ -->
+  <section id="s08" class="section">
+    <span class="label-section">08 · Breadcrumb</span>
+    <nav class="breadcrumb" id="bc-demo" aria-label="Localização na página">
+      <a href="#">Apollo::Rio</a>
+      <span class="separator" aria-hidden="true">/</span>
+      <a href="#">Eventos</a>
+      <span class="separator" aria-hidden="true">/</span>
+      <a href="#">Zona Sul</a>
+      <span class="separator" aria-hidden="true">/</span>
+      <span aria-current="page">Techno Bunker Night</span>
+    </nav>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       09. MENU FAB
+       ═══════════════════════════════════════════════ -->
+  <section id="s09" class="section">
+    <span class="label-section">09 · Menu FAB</span>
+    <p class="txt-secondary" style="margin-bottom:var(--s-4);">
+      GSAP spring-rotate icon on toggle. CSS transition handles scale/shadow. The FAB is fixed at bottom-right of the viewport.
+    </p>
+    <p style="color:var(--muted); font-size:.85rem;">
+      <i class="ri-cursor-line"></i> Click the floating button at the bottom-right corner → opens the sheet
+    </p>
+  </section>
+
+  <!-- FAB lives outside sections — fixed to viewport -->
+  <button class="nh-menu-fab" id="demo-fab"
+    aria-label="Open app menu" aria-expanded="false" aria-controls="demo-fab-sheet">
+    <i class="ri-add-line" id="demo-fab-icon"></i>
+  </button>
+  <nav class="nh-menu-sheet" id="demo-fab-sheet"
+    aria-hidden="true" role="menu">
+    <a href="#" class="nh-sheet-item" role="menuitem"><i class="ri-calendar-event-line"></i> Eventos</a>
+    <a href="#" class="nh-sheet-item" role="menuitem"><i class="ri-map-pin-line"></i> Locais</a>
+    <a href="#" class="nh-sheet-item" role="menuitem"><i class="ri-disc-line"></i> DJs</a>
+    <div class="nh-sheet-divider"></div>
+    <a href="#" class="nh-sheet-item nh-sheet-item--cta" role="menuitem"><i class="ri-user-add-line"></i> Entrar</a>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════
+       10. MENU SHEET
+       ═══════════════════════════════════════════════ -->
+  <section id="s10" class="section">
+    <span class="label-section">10 · Menu Sheet</span>
+    <p class="txt-secondary" style="margin-bottom:var(--s-4);">
+      Standalone sheet toggled by button. GSAP handles entrance; CSS transition handles exit.
+    </p>
+    <div class="flex-row" style="gap:var(--s-3); align-items:flex-start; flex-wrap:wrap;">
+      <button class="btn btn-ghost btn-sm" id="sheet-open-btn" aria-expanded="true" aria-controls="sheet-standalone">
+        <i class="ri-close-line"></i> Close Sheet
+      </button>
+      <div class="nh-menu-sheet is-open" id="sheet-standalone" role="menu" aria-label="Navigation menu"
+        style="position:relative; bottom:auto; right:auto; width:210px; transform:none; pointer-events:auto;">
+        <a href="#" class="nh-sheet-item" role="menuitem"><i class="ri-home-5-line"></i> Início</a>
+        <a href="#" class="nh-sheet-item" role="menuitem"><i class="ri-calendar-event-line"></i> Agenda</a>
+        <a href="#" class="nh-sheet-item" role="menuitem"><i class="ri-group-line"></i> Comunidade</a>
+        <a href="#" class="nh-sheet-item" role="menuitem"><i class="ri-disc-line"></i> DJs</a>
+        <div class="nh-sheet-divider"></div>
+        <a href="#" class="nh-sheet-item nh-sheet-item--cta" role="menuitem"><i class="ri-user-add-line"></i> Cadastrar</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       11. DROPDOWN
+       ═══════════════════════════════════════════════ -->
+  <section id="s11" class="section">
+    <span class="label-section">11 · Dropdown</span>
+    <p class="txt-secondary" style="margin-bottom:var(--s-4);">
+      Popper.js v2 absolute positioning · GSAP opacity + scale reveal/hide.
+    </p>
+    <div class="flex-row" style="gap:var(--s-3); flex-wrap:wrap; align-items:flex-start;">
+      <div style="position:relative;">
+        <button class="btn btn-ghost" id="dd-account" aria-expanded="false" aria-haspopup="true" aria-controls="dd-account-panel">
+          <i class="ri-user-line"></i> Minha Conta <i class="ri-arrow-down-s-line"></i>
+        </button>
+        <div class="nh-dropdown" id="dd-account-panel" role="menu" style="min-width:200px;">
+          <a href="#" class="nh-sheet-item" role="menuitem"><i class="ri-profile-line"></i> Perfil</a>
+          <a href="#" class="nh-sheet-item" role="menuitem"><i class="ri-ticket-line"></i> Ingressos</a>
+          <a href="#" class="nh-sheet-item" role="menuitem"><i class="ri-heart-line"></i> Favoritos</a>
+          <div class="nh-sheet-divider"></div>
+          <a href="#" class="nh-sheet-item" role="menuitem"><i class="ri-logout-box-line"></i> Sair</a>
+        </div>
+      </div>
+      <div style="position:relative;">
+        <button class="btn btn-ghost" id="dd-explore" aria-expanded="false" aria-haspopup="true" aria-controls="dd-explore-panel">
+          <i class="ri-apps-line"></i> Explorar <i class="ri-arrow-down-s-line"></i>
+        </button>
+        <div class="nh-dropdown" id="dd-explore-panel" role="menu" style="min-width:180px;">
+          <a href="#" class="nh-sheet-item" role="menuitem"><i class="ri-calendar-event-line"></i> Eventos</a>
+          <a href="#" class="nh-sheet-item" role="menuitem"><i class="ri-disc-line"></i> DJs</a>
+          <a href="#" class="nh-sheet-item" role="menuitem"><i class="ri-map-pin-line"></i> Locais</a>
+          <a href="#" class="nh-sheet-item" role="menuitem"><i class="ri-group-line"></i> Grupos</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       12. DISCLAIMER
+       ═══════════════════════════════════════════════ -->
+  <section id="s12" class="section">
+    <span class="label-section">12 · Disclaimer</span>
+    <p class="txt-secondary" style="margin-bottom:var(--s-4);">
+      Base · Accent bar · Custom color variants. GSAP ScrollTrigger stagger.
+    </p>
+    <div class="disclaimer-reveal" style="display:flex; flex-direction:column; gap:var(--s-3); max-width:640px;">
+      <div class="nh-disclaimer">
+        <i class="ri-information-line"></i>
+        <p>Vendas encerram em 24h. Leia os <a href="#">termos do evento</a> antes de confirmar sua presença.</p>
+      </div>
+      <div class="nh-disclaimer nh-disclaimer--accent">
+        <i class="ri-alert-line"></i>
+        <p>Área restrita a maiores de 18 anos. Documento de identidade obrigatório na entrada.</p>
+      </div>
+      <div class="nh-disclaimer" style="border-left:3px solid #22c55e; padding-left:15px;">
+        <i class="ri-checkbox-circle-line" style="color:#22c55e;"></i>
+        <p>Ingresso confirmado! Chegue com 30 min de antecedência para retirar sua pulseira.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════
+       13. ICON BUTTON — LIQUID GLASS
+       ═════════════════════════════════════════════════ -->
+  <section id="s13" class="section">
+    <span class="label-section">13 · Icon Button — Liquid Glass</span>
+    <p class="txt-secondary" style="margin-bottom:var(--s-4);">
+      Arquitetura de 5 camadas: shell → <span class="txt-mono">.ig-glass</span> →
+      <span class="txt-mono">.ig-dome</span> → <span class="txt-mono">.ig-rim</span> →
+      icon. Zero JS. <span class="txt-mono">backdrop-filter</span> + SVG <span class="txt-mono">feTurbulence</span> refraction.
+    </p>
+
+    <div class="grid-3" style="align-items:start;">
+
+      <!-- Sizes -->
+      <div class="card">
+        <h4 class="h4" style="margin-bottom:var(--s-4);">Sizes</h4>
+        <div class="flex-row" style="align-items:flex-end; gap:16px; flex-wrap:wrap;">
+
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <button class="icon-btn icon-btn--xs" aria-label="Atividade">
+              <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+              <i class="ri-flashlight-line"></i>
+            </button>
+            <span class="txt-mono" style="font-size:10px;color:var(--muted);">--xs 32</span>
+          </div>
+
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <button class="icon-btn icon-btn--sm" aria-label="Buscar">
+              <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+              <i class="ri-search-line"></i>
+            </button>
+            <span class="txt-mono" style="font-size:10px;color:var(--muted);">--sm 42</span>
+          </div>
+
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <button class="icon-btn" aria-label="Início">
+              <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+              <i class="ri-home-5-line"></i>
+            </button>
+            <span class="txt-mono" style="font-size:10px;color:var(--muted);">default 52</span>
+          </div>
+
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <button class="icon-btn icon-btn--lg" aria-label="Curtir">
+              <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+              <i class="ri-heart-line"></i>
+            </button>
+            <span class="txt-mono" style="font-size:10px;color:var(--muted);">--lg 64</span>
+          </div>
+
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <button class="icon-btn icon-btn--xl" aria-label="Play">
+              <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+              <i class="ri-play-line"></i>
+            </button>
+            <span class="txt-mono" style="font-size:10px;color:var(--muted);">--xl 80</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Primary variant -->
+      <div class="card">
+        <h4 class="h4" style="margin-bottom:var(--s-4);">Variant — Primary</h4>
+        <div class="flex-row" style="align-items:flex-end; gap:16px; flex-wrap:wrap;">
+
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <button class="icon-btn icon-btn--sm icon-btn--primary" aria-label="Compartilhar">
+              <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+              <i class="ri-share-line"></i>
+            </button>
+            <span class="txt-mono" style="font-size:10px;color:var(--muted);">--sm</span>
+          </div>
+
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <button class="icon-btn icon-btn--primary" aria-label="Adicionar">
+              <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+              <i class="ri-add-line"></i>
+            </button>
+            <span class="txt-mono" style="font-size:10px;color:var(--muted);">default</span>
+          </div>
+
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <button class="icon-btn icon-btn--lg icon-btn--primary" aria-label="Destaque">
+              <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+              <i class="ri-flashlight-line"></i>
+            </button>
+            <span class="txt-mono" style="font-size:10px;color:var(--muted);">--lg</span>
+          </div>
+
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <button class="icon-btn icon-btn--xl icon-btn--primary" aria-label="Fire">
+              <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+              <i class="ri-fire-line"></i>
+            </button>
+            <span class="txt-mono" style="font-size:10px;color:var(--muted);">--xl</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Icon set -->
+      <div class="card">
+        <h4 class="h4" style="margin-bottom:var(--s-4);">Icon Set (default size)</h4>
+        <div class="flex-row" style="flex-wrap:wrap; gap:12px;">
+          <button class="icon-btn" aria-label="Mapa">
+            <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+            <i class="ri-map-pin-line"></i>
+          </button>
+          <button class="icon-btn" aria-label="Música">
+            <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+            <i class="ri-music-line"></i>
+          </button>
+          <button class="icon-btn" aria-label="Ingresso">
+            <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+            <i class="ri-ticket-line"></i>
+          </button>
+          <button class="icon-btn" aria-label="Estrela">
+            <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+            <i class="ri-star-line"></i>
+          </button>
+          <button class="icon-btn" aria-label="Notificação">
+            <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+            <i class="ri-notification-3-line"></i>
+          </button>
+          <button class="icon-btn" aria-label="Perfil">
+            <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+            <i class="ri-user-line"></i>
+          </button>
+          <button class="icon-btn" aria-label="Câmera">
+            <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+            <i class="ri-camera-line"></i>
+          </button>
+          <button class="icon-btn" aria-label="Link">
+            <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+            <i class="ri-link"></i>
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /grid-3 -->
+
+    <!-- Labeled variant — full width app launcher row -->
+    <div class="card" style="margin-top:var(--s-4);">
+      <h4 class="h4" style="margin-bottom:var(--s-4);">Labeled — App Launcher</h4>
+      <div class="flex-row" style="flex-wrap:wrap; gap:16px; justify-content:flex-start;">
+
+        <button class="icon-btn icon-btn--labeled" aria-label="Início">
+          <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+          <i class="ri-home-5-line"></i>
+          <span class="btn-label">Início</span>
+        </button>
+
+        <button class="icon-btn icon-btn--labeled" aria-label="Buscar">
+          <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+          <i class="ri-search-line"></i>
+          <span class="btn-label">Buscar</span>
+        </button>
+
+        <button class="icon-btn icon-btn--labeled" aria-label="Ingressos">
+          <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+          <i class="ri-ticket-line"></i>
+          <span class="btn-label">Ingressos</span>
+        </button>
+
+        <button class="icon-btn icon-btn--labeled" aria-label="Favoritos">
+          <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+          <i class="ri-heart-3-line"></i>
+          <span class="btn-label">Favoritos</span>
+        </button>
+
+        <button class="icon-btn icon-btn--labeled" aria-label="Mapa">
+          <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+          <i class="ri-map-pin-2-line"></i>
+          <span class="btn-label">Mapa</span>
+        </button>
+
+        <button class="icon-btn icon-btn--labeled" aria-label="Música">
+          <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+          <i class="ri-music-2-line"></i>
+          <span class="btn-label">Música</span>
+        </button>
+
+        <button class="icon-btn icon-btn--labeled icon-btn--primary" aria-label="Publicar">
+          <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+          <i class="ri-add-circle-line"></i>
+          <span class="btn-label">Publicar</span>
+        </button>
+
+        <button class="icon-btn icon-btn--labeled" aria-label="Ajustes">
+          <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+          <i class="ri-settings-3-line"></i>
+          <span class="btn-label">Ajustes</span>
+        </button>
+
+        <button class="icon-btn icon-btn--labeled" aria-label="Perfil">
+          <span class="ig-glass"></span><span class="ig-dome"></span><span class="ig-rim"></span>
+          <i class="ri-user-3-line"></i>
+          <span class="btn-label">Perfil</span>
+        </button>
+
+      </div>
+    </div><!-- /labeled row -->
+
+  </section>
+
+</div><!-- /.apollo-wrapper -->
+
+
+<script>
+/* ═══════════════════════════════════════════════
+   APOLLO DS — TOGGLE SYSTEM
+   Handles: dark mode + all toggle switches
+   ═══════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  // ── 1. Dark Mode ─────────────────────────────
+  const DM_KEY  = 'apollo-dark-mode';
+  const html    = document.documentElement;
+  const dmMain  = document.getElementById('dm-toggle');       // topbar
+  const dmSync  = document.getElementById('toggle-dark');    // section 02 (sync toggle)
+
+  /**
+   * Apply or remove dark mode.
+   * @param {boolean} on
+   * @param {boolean} [persist=true] — write to localStorage
+   */
+  function applyDarkMode(on, persist) {
+    html.classList.toggle('dark-mode', on);
+    // Keep all DM checkboxes in sync
+    [dmMain, dmSync].forEach(function (el) {
+      if (el) el.checked = on;
+    });
+    if (persist !== false) {
+      try { localStorage.setItem(DM_KEY, on ? '1' : '0'); } catch (_) {}
+    }
+  }
+
+  // Restore persisted preference
+  (function () {
+    var saved = null;
+    try { saved = localStorage.getItem(DM_KEY); } catch (_) {}
+    if (saved === null) {
+      // First visit — respect OS preference
+      saved = window.matchMedia('(prefers-color-scheme: dark)').matches ? '1' : '0';
+    }
+    applyDarkMode(saved === '1', false);
+  })();
+
+  // Topbar toggle
+  if (dmMain) {
+    dmMain.addEventListener('change', function () {
+      applyDarkMode(this.checked);
+    });
+  }
+
+  // Section-02 "sync" toggle mirrors topbar
+  if (dmSync) {
+    dmSync.addEventListener('change', function () {
+      applyDarkMode(this.checked);
+    });
+  }
+
+  // React to OS-level changes while page is open
+  window.matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', function (e) {
+      // Only auto-follow if user hasn't set a manual preference
+      var stored = null;
+      try { stored = localStorage.getItem(DM_KEY); } catch (_) {}
+      if (stored === null) applyDarkMode(e.matches, false);
+    });
+
+
+  // ── 2. Generic toggle switches ────────────────
+  // All .toggle-input checkboxes that are NOT dark-mode switches.
+  // Fires a 'apollo:toggle' custom event so other scripts can react.
+  document.querySelectorAll('.toggle-input').forEach(function (input) {
+    if (input === dmMain || input === dmSync) return; // already handled
+
+    input.addEventListener('change', function () {
+      input.dispatchEvent(new CustomEvent('apollo:toggle', {
+        bubbles: true,
+        detail: { id: input.id, checked: input.checked }
+      }));
+    });
+  });
+
+
+  // ── 3. Ripple effect for buttons ─────────────
+  document.querySelectorAll('.btn').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      var r    = document.createElement('span');
+      var rect = btn.getBoundingClientRect();
+      var size = Math.max(rect.width, rect.height);
+      r.className = 'ripple';
+      r.style.cssText = [
+        'width:'  + size + 'px',
+        'height:' + size + 'px',
+        'left:'   + (e.clientX - rect.left - size / 2) + 'px',
+        'top:'    + (e.clientY - rect.top  - size / 2) + 'px'
+      ].join(';');
+      btn.appendChild(r);
+      r.addEventListener('animationend', function () { r.remove(); });
+    });
+  });
+
+})();
+
+
+/* ═══════════════════════════════════════════════
+   APOLLO DS — SELECT COMPONENTS (as1 / as2 / as3)
+   ═══════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', function () {
+  'use strict';
+
+  // ── Shared: close on outside click ───────────
+  function onOutside(root, closeFn) {
+    document.addEventListener('click', function (e) {
+      if (!root.contains(e.target)) closeFn();
+    });
+  }
+
+
+  /* ──────────────────────────────────────────────
+     TYPE 1 — Form Inline
+  ────────────────────────────────────────────── */
+  document.querySelectorAll('.as1').forEach(function (root) {
+    var trigger = root.querySelector('.as1-trigger');
+    var opts    = root.querySelectorAll('.as1-opt');
+    var valIcon = trigger.querySelector('.as1-val-icon');
+    var valText = trigger.querySelector('.as1-val-text');
+
+    function open() {
+      document.querySelectorAll('.as1.is-open').forEach(function (el) {
+        if (el !== root) el.classList.remove('is-open');
+      });
+      root.classList.add('is-open');
+    }
+    function close() {
+      root.classList.remove('is-open');
+    }
+    function toggle() { root.classList.contains('is-open') ? close() : open(); }
+
+    function select(opt) {
+      opts.forEach(function (o) { o.classList.remove('is-selected'); });
+      opt.classList.add('is-selected');
+      trigger.classList.remove('is-placeholder');
+      root.classList.add('has-value');
+      valText.textContent = opt.dataset.name;
+      var iconEl = opt.querySelector('.as1-opt-icon');
+      valIcon.style.background = opt.dataset.iconBg;
+      valIcon.innerHTML = iconEl ? iconEl.innerHTML : '';
+      close();
+      trigger.focus();
+    }
+
+    trigger.addEventListener('click', toggle);
+    trigger.addEventListener('keydown', function (e) {
+      if (['ArrowDown', 'Enter', ' '].includes(e.key)) { e.preventDefault(); open(); }
+      if (e.key === 'Escape') close();
+    });
+
+    opts.forEach(function (opt) {
+      opt.addEventListener('click', function (e) { e.stopPropagation(); select(opt); });
+      opt.addEventListener('mouseenter', function () {
+        opts.forEach(function (o) { o.classList.remove('is-focused'); });
+        opt.classList.add('is-focused');
+      });
+    });
+
+    onOutside(root, close);
+  });
+
+
+  /* ──────────────────────────────────────────────
+     TYPE 2 — Palette Writable
+  ────────────────────────────────────────────── */
+  document.querySelectorAll('.as2').forEach(function (root) {
+    var input  = root.querySelector('.as2-input');
+    var opts   = root.querySelectorAll('.as2-opt');
+    var empty  = root.querySelector('.as2-empty');
+    var swatch = root.querySelector('.as2-swatch');
+
+    function open()  { root.classList.add('is-open'); }
+    function close() {
+      root.classList.remove('is-open');
+      opts.forEach(function (o) { o.classList.remove('is-focused'); });
+    }
+
+    function filter() {
+      var q = input.value.toLowerCase().trim();
+      var visible = 0;
+      opts.forEach(function (opt) {
+        var text = ((opt.dataset.name || '') + ' ' + (opt.dataset.desc || '')).toLowerCase();
+        opt.hidden = !(!q || text.includes(q));
+        if (!opt.hidden) visible++;
+      });
+      if (empty) empty.classList.toggle('is-visible', visible === 0);
+    }
+
+    function select(opt) {
+      opts.forEach(function (o) { o.classList.remove('is-selected'); });
+      opt.classList.add('is-selected');
+      input.value = opt.dataset.name;
+      root.classList.add('has-value');
+      if (swatch) swatch.style.background = opt.dataset.value;
+      close();
+    }
+
+    input.addEventListener('focus', open);
+    input.addEventListener('input', function () { open(); filter(); });
+
+    opts.forEach(function (opt) {
+      opt.addEventListener('click', function (e) { e.stopPropagation(); select(opt); });
+      opt.addEventListener('mouseenter', function () {
+        opts.forEach(function (o) { o.classList.remove('is-focused'); });
+        opt.classList.add('is-focused');
+      });
+    });
+
+    input.addEventListener('keydown', function (e) {
+      var vis = Array.from(opts).filter(function (o) { return !o.hidden; });
+      var fi  = vis.findIndex(function (o) { return o.classList.contains('is-focused'); });
+      if (e.key === 'ArrowDown') { e.preventDefault(); var ni = fi < vis.length - 1 ? fi + 1 : 0; vis.forEach(function (o) { o.classList.remove('is-focused'); }); vis[ni].classList.add('is-focused'); vis[ni].scrollIntoView({ block: 'nearest' }); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); var pi = fi > 0 ? fi - 1 : vis.length - 1; vis.forEach(function (o) { o.classList.remove('is-focused'); }); vis[pi].classList.add('is-focused'); vis[pi].scrollIntoView({ block: 'nearest' }); }
+      else if (e.key === 'Enter') { e.preventDefault(); if (vis[fi]) select(vis[fi]); }
+      else if (e.key === 'Escape') { close(); input.blur(); }
+    });
+
+    onOutside(root, close);
+  });
+
+
+  /* ──────────────────────────────────────────────
+     TYPE 3 — Glass Panel
+  ────────────────────────────────────────────── */
+  document.querySelectorAll('.as3').forEach(function (root) {
+    var trigger  = root.querySelector('.as3-trigger');
+    var search   = root.querySelector('.as3-search');
+    var opts     = root.querySelectorAll('.as3-opt');
+    var empty    = root.querySelector('.as3-empty');
+    var swatchEl = root.querySelector('.as3-swatch');
+    var labelEl  = root.querySelector('.as3-label');
+
+    function open() {
+      root.classList.add('is-open');
+      if (search) { search.value = ''; filter(); requestAnimationFrame(function () { search.focus(); }); }
+    }
+    function close() {
+      root.classList.remove('is-open');
+      opts.forEach(function (o) { o.classList.remove('is-focused'); });
+    }
+    function toggle() { root.classList.contains('is-open') ? close() : open(); }
+
+    function filter() {
+      var q = search ? search.value.toLowerCase().trim() : '';
+      var visible = 0;
+      opts.forEach(function (opt) {
+        var text = ((opt.dataset.name || '') + ' ' + (opt.dataset.desc || '')).toLowerCase();
+        opt.hidden = !(!q || text.includes(q));
+        if (!opt.hidden) visible++;
+      });
+      if (empty) empty.classList.toggle('is-visible', visible === 0);
+      opts.forEach(function (o) { o.classList.remove('is-focused'); });
+    }
+
+    function select(opt) {
+      opts.forEach(function (o) { o.classList.remove('is-selected'); });
+      opt.classList.add('is-selected');
+      trigger.classList.remove('is-placeholder');
+      var name = opt.dataset.name || '';
+      var desc = opt.dataset.desc || '';
+      var html = '<span class="as3-lbl-name">' + name + '</span>';
+      if (desc) html += '<span class="as3-lbl-desc">' + desc + '</span>';
+      if (labelEl) labelEl.innerHTML = html;
+      var optSw = opt.querySelector('.as3-opt-sw');
+      if (swatchEl && optSw) swatchEl.style.background = optSw.style.background;
+      close();
+      trigger.focus();
+    }
+
+    trigger.addEventListener('click', toggle);
+    trigger.addEventListener('keydown', function (e) {
+      if (['ArrowDown', 'Enter', ' '].includes(e.key)) { e.preventDefault(); open(); }
+      if (e.key === 'Escape') close();
+    });
+
+    if (search) {
+      search.addEventListener('input', filter);
+      search.addEventListener('keydown', function (e) {
+        var vis = Array.from(opts).filter(function (o) { return !o.hidden; });
+        var fi  = vis.findIndex(function (o) { return o.classList.contains('is-focused'); });
+        if (e.key === 'ArrowDown') { e.preventDefault(); var ni = fi < vis.length - 1 ? fi + 1 : 0; vis.forEach(function (o) { o.classList.remove('is-focused'); }); vis[ni].classList.add('is-focused'); vis[ni].scrollIntoView({ block: 'nearest' }); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); var pi = fi > 0 ? fi - 1 : vis.length - 1; vis.forEach(function (o) { o.classList.remove('is-focused'); }); vis[pi].classList.add('is-focused'); vis[pi].scrollIntoView({ block: 'nearest' }); }
+        else if (e.key === 'Enter') { e.preventDefault(); if (vis[fi]) select(vis[fi]); }
+        else if (e.key === 'Escape') { close(); trigger.focus(); }
+      });
+    }
+
+    opts.forEach(function (opt) {
+      opt.addEventListener('click', function () { select(opt); });
+      opt.addEventListener('mouseenter', function () {
+        opts.forEach(function (o) { o.classList.remove('is-focused'); });
+        opt.classList.add('is-focused');
+      });
+    });
+
+    onOutside(root, close);
+  });
+
+
+  /* ──────────────────────────────────────────────────────────
+     06 – GALLERY CARD  (GSAP ScrollTrigger stagger)
+     08 – BREADCRUMB    (GSAP ScrollTrigger fade-left)
+     12 – DISCLAIMER    (GSAP ScrollTrigger stagger)
+  ─────────────────────────────────────────────────────────── */
+  if (window.gsap) {
+    if (window.ScrollTrigger) { gsap.registerPlugin(ScrollTrigger); }
+
+    var scroller = { trigger: '#s06', start: 'top 82%' };
+    if (window.ScrollTrigger) {
+      gsap.from('.gallery-reveal .gallery-card', {
+        y: 36, opacity: 0, stagger: 0.13, duration: 0.75, ease: 'power3.out',
+        scrollTrigger: scroller
+      });
+      gsap.from('#bc-demo', {
+        x: -24, opacity: 0, duration: 0.6, ease: 'power2.out',
+        scrollTrigger: { trigger: '#s08', start: 'top 85%' }
+      });
+      gsap.from('.disclaimer-reveal .nh-disclaimer', {
+        y: 20, opacity: 0, stagger: 0.14, duration: 0.65, ease: 'power2.out',
+        scrollTrigger: { trigger: '#s12', start: 'top 85%' }
+      });
+    } else {
+      /* Fallback: simple entrance without scroll context */
+      gsap.from('.gallery-reveal .gallery-card', { y: 36, opacity: 0, stagger: 0.13, duration: 0.75, ease: 'power3.out' });
+    }
+  }
+
+
+  /* ──────────────────────────────────────────────────────────
+     07 – TOAST NOTIFICATION  (GSAP slide-up, auto-dismiss)
+  ─────────────────────────────────────────────────────────── */
+  var _toastCfg = {
+    info:    { icon: 'ri-information-line',   iconColor: 'var(--primary)', text: 'Evento "Techno Bunker" começa em 30 minutos.', bg: 'var(--black-1)' },
+    success: { icon: 'ri-checkbox-circle-line', iconColor: '#22c55e',       text: 'Você foi confirmado no evento!',               bg: 'var(--black-1)' },
+    error:   { icon: 'ri-error-warning-line',  iconColor: '#fbbf24',       text: 'Falha ao processar pagamento. Tente novamente.', bg: 'var(--alert-red)' }
+  };
+
+  function _dismissToast(el) {
+    if (window.gsap) {
+      gsap.to(el, { opacity: 0, x: 30, duration: 0.3, ease: 'power1.in', onComplete: function () { if (el.parentNode) el.remove(); } });
+    } else { el.remove(); }
+  }
+
+  window.apolloToast = function (type) {
+    var cfg = _toastCfg[type];
+    if (!cfg) return;
+    var stack = document.getElementById('toast-stack');
+    var el = document.createElement('div');
+    el.className = 'toast-demo';
+    el.style.cssText = 'background:' + cfg.bg + '; color:#fff; overflow:hidden; cursor:default;';
+    el.setAttribute('role', 'alert');
+    el.setAttribute('aria-live', 'polite');
+    el.innerHTML =
+      '<i class="' + cfg.icon + '" style="color:' + cfg.iconColor + '; flex-shrink:0;"></i>' +
+      '<span style="flex:1;">' + cfg.text + '</span>' +
+      '<button style="background:none;border:none;cursor:pointer;color:inherit;opacity:.55;padding:0;margin-left:auto;" aria-label="Fechar">' +
+        '<i class="ri-close-line" style="font-size:16px;"></i>' +
+      '</button>';
+    el.querySelector('button').addEventListener('click', function () { _dismissToast(el); });
+    stack.appendChild(el);
+    if (window.gsap) {
+      gsap.fromTo(el, { opacity: 0, y: 20, scale: 0.95 }, { opacity: 1, y: 0, scale: 1, duration: 0.42, ease: 'back.out(1.6)' });
+    }
+    setTimeout(function () { if (el.parentNode) _dismissToast(el); }, 4200);
+  };
+
+
+  /* ──────────────────────────────────────────────────────────
+     09 – MENU FAB  (GSAP spring-rotate icon)
+  ─────────────────────────────────────────────────────────── */
+  (function () {
+    var fab     = document.getElementById('demo-fab');
+    var sheet   = document.getElementById('demo-fab-sheet');
+    var fabIcon = document.getElementById('demo-fab-icon');
+    var isOpen  = false;
+    if (!fab || !sheet) return;
+
+    fab.addEventListener('click', function () {
+      isOpen = !isOpen;
+      fab.setAttribute('aria-expanded', String(isOpen));
+      sheet.setAttribute('aria-hidden', String(!isOpen));
+      fab.classList.toggle('is-open', isOpen);
+      sheet.classList.toggle('is-open', isOpen);
+      if (window.gsap) {
+        gsap.to(fabIcon, { rotate: isOpen ? 45 : 0, duration: 0.32, ease: isOpen ? 'back.out(2.5)' : 'power2.out' });
+      }
+    });
+  })();
+
+
+  /* ──────────────────────────────────────────────────────────
+     10 – MENU SHEET  (toggle + GSAP entrance)
+  ─────────────────────────────────────────────────────────── */
+  (function () {
+    var btn    = document.getElementById('sheet-open-btn');
+    var panel  = document.getElementById('sheet-standalone');
+    var isOpen = true; /* starts open for showcase */
+    if (!btn || !panel) return;
+
+    btn.addEventListener('click', function () {
+      isOpen = !isOpen;
+      btn.setAttribute('aria-expanded', String(isOpen));
+      panel.classList.toggle('is-open', isOpen);
+      btn.innerHTML = isOpen
+        ? '<i class="ri-close-line"></i> Close Sheet'
+        : '<i class="ri-menu-3-line"></i> Open Sheet';
+      if (isOpen && window.gsap) {
+        gsap.fromTo(panel,
+          { y: 14, opacity: 0, scale: 0.95 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.3, ease: 'back.out(1.6)', clearProps: 'transform,opacity' }
+        );
+      }
+    });
+  })();
+
+
+  /* ──────────────────────────────────────────────────────────
+     11 – DROPDOWN  (Popper v2 positioning + GSAP reveal)
+  ─────────────────────────────────────────────────────────── */
+  function makeNhDropdown(triggerId, panelId) {
+    var trigger = document.getElementById(triggerId);
+    var panel   = document.getElementById(panelId);
+    if (!trigger || !panel) return;
+    var popperInst = null;
+    var isOpen = false;
+
+    function openDrop() {
+      isOpen = true;
+      trigger.setAttribute('aria-expanded', 'true');
+      panel.classList.add('is-open');
+      if (window.Popper && !popperInst) {
+        popperInst = Popper.createPopper(trigger, panel, {
+          placement: 'bottom-start',
+          modifiers: [{ name: 'offset', options: { offset: [0, 6] } }]
+        });
+      }
+      if (popperInst) popperInst.update();
+      if (window.gsap) {
+        gsap.fromTo(panel,
+          { opacity: 0, y: -8, scale: 0.97 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.26, ease: 'power2.out' }
+        );
+      }
+    }
+
+    function closeDrop() {
+      isOpen = false;
+      trigger.setAttribute('aria-expanded', 'false');
+      if (window.gsap) {
+        gsap.to(panel, {
+          opacity: 0, y: -8, scale: 0.97, duration: 0.2, ease: 'power1.in',
+          onComplete: function () { panel.classList.remove('is-open'); }
+        });
+      } else { panel.classList.remove('is-open'); }
+    }
+
+    trigger.addEventListener('click', function (e) { e.stopPropagation(); isOpen ? closeDrop() : openDrop(); });
+    trigger.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); isOpen ? closeDrop() : openDrop(); }
+      if (e.key === 'Escape') { closeDrop(); trigger.focus(); }
+    });
+    document.addEventListener('click', function (e) {
+      if (isOpen && !panel.contains(e.target) && e.target !== trigger) closeDrop();
+    });
+  }
+
+  makeNhDropdown('dd-account', 'dd-account-panel');
+  makeNhDropdown('dd-explore', 'dd-explore-panel');
+
+}); // end DOMContentLoaded
+</script>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+/* ═══════════════════════════════════════════════════════
+   16 · FOOTER — Site footer
+   ═══════════════════════════════════════════════════════ */
+
+.dj-footer {
+  border-top: 1px solid var(--dj-border); padding: 28px var(--dj-pad-x);
+  display: flex; flex-direction: column; gap: 16px;
+  align-items: center; text-align: center;
+}
+
+@media (min-width: 600px) {
+  .dj-footer { flex-direction: row; justify-content: space-between; text-align: left; }
+}
+
+.dj-footer-logo {
+  font-family: var(--dj-ff-mono); font-size: 0.75rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.14em; color: var(--dj-txt-muted);
+}
+
+.dj-footer-links {
+  display: flex; gap: 20px;
+  font-family: var(--dj-ff-mono); font-size: 0.62rem;
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+
+.dj-footer-links a {
+  color: var(--dj-txt-muted); transition: color 0.2s; text-decoration: none;
+}
+
+.dj-footer-links a:hover { color: var(--dj-txt-heading); }
+
+.dj-footer-copy {
+  font-family: var(--dj-ff-mono); font-size: 0.58rem;
+  color: var(--dj-txt-muted); opacity: 0.45;
+}

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0">
+  <title>Apollo :: Loc | Arpoador Club</title>
+
+  <!-- ═══ Apollo CDN ═══ -->
+  <script src="https://cdn.apollo.rio.br/v1.0.0/hub.js" fetchpriority="high"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.min.css">
+  <link rel="stylesheet" href="https://cdn.apollo.rio.br/v1.0.0/css/uni.css?x=1.0.1">
+  <script src="https://cdn.apollo.rio.br/v1.0.0/js/theme.1.js" fetchpriority="high"></script>
+
+  <!-- ═══ Leaflet (mapa interativo) ═══ -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    /* ── Force light mode ── */
+    html.dark-mode {
+      --rgb-theme: 255,255,255 !important; --rgb-diff: 0,0,0 !important;
+      --bg: #ffffff !important; --surface: var(--white-2) !important;
+      --card: var(--white-3) !important; --border: rgba(0,0,0,0.18) !important;
+      --txt-color: rgba(19,21,23,0.77) !important;
+      --txt-color-heading: rgba(19,21,23,0.9) !important;
+      --muted: rgba(19,21,23,0.45) !important; --black-1: #121214 !important;
+    }
+    html.dark-mode body { background-image: none !important; background-color: #fff !important; }
+
+    :root { --max-w: 1280px; --ease-out: cubic-bezier(0.16,1,0.3,1); }
+
+    .container { width: 100%; max-width: var(--max-w); padding: 0 20px; margin: 0 auto; }
+
+    .page-loader {
+      position: fixed; inset: 0; background: var(--black-1); z-index: 9999;
+      transform-origin: bottom;
+    }
+
+    /* ═══════════════════ HEADER ═══════════════════ */
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .site-header::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.9) 0%, transparent 100%);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); z-index: -1;
+    }
+    .header-brand {
+      font-family: var(--ff-mono); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      display: flex; align-items: center; gap: 8px; color: var(--black-1);
+    }
+    .header-brand .dot { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; }
+    .header-nav { display: flex; align-items: center; gap: 10px; }
+    .header-nav a {
+      font-size: 12px; font-weight: 600; color: var(--muted);
+      transition: color 0.25s; text-decoration: none;
+    }
+    .header-nav a:hover { color: var(--txt-color-heading); }
+    .btn-login {
+      background: var(--black-1); color: #fff !important;
+      padding: 8px 18px; border-radius: 100px;
+      font-size: 11px; font-weight: 700;
+    }
+
+    /* ═══════════════════ HERO ═══════════════════ */
+    .venue-hero { position: relative; height: 68vh; min-height: 480px; overflow: hidden; }
+    .venue-hero-bg { position: absolute; inset: 0; }
+    .venue-hero-bg img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: grayscale(55%); transition: filter 1s;
+    }
+    .venue-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.2) 45%, transparent 72%);
+    }
+    .venue-hero-content {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 40px 20px; color: #fff; z-index: 2;
+    }
+    .venue-hero-content .container {
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 20px;
+    }
+    .venue-hero-pills { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+    .venue-pill {
+      padding: 4px 12px; border-radius: 100px;
+      font-family: var(--ff-mono); font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .venue-pill.type  { background: rgba(255,255,255,0.14); color: #fff; backdrop-filter: blur(8px); }
+    .venue-pill.rating{ background: rgba(255,255,255,0.14); color: #fff; backdrop-filter: blur(8px); }
+    .venue-pill.open  { background: var(--primary); color: #fff; }
+    .venue-hero-title {
+      font-family: var(--ff-mono); font-size: clamp(36px,8vw,80px);
+      font-weight: 900; line-height: 0.9; letter-spacing: -0.04em;
+      text-transform: uppercase; color: #fff; margin-bottom: 10px;
+    }
+    .venue-hero-location {
+      font-size: 13px; color: rgba(255,255,255,0.68);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .venue-hero-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .venue-action-btn {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,0.14); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 18px; transition: background 0.25s; border: none; cursor: pointer;
+    }
+    .venue-action-btn:hover { background: var(--primary); }
+    .gallery-counter {
+      position: absolute; bottom: 20px; right: 20px; padding: 5px 14px;
+      background: rgba(0,0,0,0.55); backdrop-filter: blur(8px);
+      border-radius: 100px; color: #fff; font-size: 11px; font-weight: 600;
+      z-index: 3; display: flex; align-items: center; gap: 6px;
+    }
+
+    /* ═══════════════════ MAIN GRID ═══════════════════ */
+    .venue-main { padding: 48px 0 64px; }
+    .venue-grid { display: grid; grid-template-columns: 1fr 360px; gap: 40px; }
+
+    .section-title {
+      font-family: var(--ff-mono); font-size: 10px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--txt-color-heading); margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-title i { color: var(--primary); font-size: 14px; }
+
+    /* ── About ── */
+    .venue-about { margin-bottom: 36px; }
+    .venue-description { font-size: 15px; line-height: 1.78; color: var(--txt-color); margin-bottom: 14px; }
+    .venue-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+    .venue-tag {
+      padding: 4px 12px; border-radius: 100px;
+      background: var(--surface); border: 1px solid var(--border);
+      font-family: var(--ff-mono); font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em; color: var(--txt-color);
+    }
+
+    /* ── Stats ── */
+    .venue-quick-stats {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 1px; background: var(--border);
+      border-radius: var(--radius); overflow: hidden; margin-bottom: 36px;
+    }
+    .venue-stat { background: var(--bg); padding: 20px; text-align: center; }
+    .venue-stat-number {
+      font-family: var(--ff-mono); font-size: 24px; font-weight: 900;
+      letter-spacing: -0.03em; line-height: 1;
+      margin-bottom: 4px; color: var(--txt-color-heading);
+    }
+    .venue-stat-label {
+      font-family: var(--ff-mono); font-size: 9px;
+      text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
+    }
+
+    /* ── Amenities ── */
+    .amenities-grid {
+      display: grid; grid-template-columns: repeat(auto-fill,minmax(148px,1fr));
+      gap: 10px; margin-bottom: 36px;
+    }
+    .amenity-item {
+      display: flex; align-items: center; gap: 10px; padding: 14px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; font-size: 12px; font-weight: 600; color: var(--txt-color);
+    }
+    .amenity-item i { font-size: 18px; color: var(--primary); }
+
+    /* ── Events ── */
+    .venue-events-list { margin-bottom: 36px; }
+    .venue-event-card {
+      display: flex; gap: 14px; padding: 14px;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      margin-bottom: 10px; align-items: center;
+      transition: border-color 0.25s, transform 0.25s var(--ease-out);
+    }
+    .venue-event-card:hover { border-color: var(--primary); transform: translateX(4px); }
+    .venue-event-date {
+      width: 52px; height: 52px; background: var(--surface);
+      border-radius: 12px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .venue-event-date .month {
+      font-family: var(--ff-mono); font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em; color: var(--primary); line-height: 1;
+    }
+    .venue-event-date .day {
+      font-family: var(--ff-mono); font-size: 20px; font-weight: 900;
+      line-height: 1.1; color: var(--txt-color-heading);
+    }
+    .venue-event-info { flex: 1; min-width: 0; }
+    .venue-event-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: var(--txt-color-heading); }
+    .venue-event-meta { font-size: 11px; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap; }
+    .venue-event-tickets {
+      padding: 8px 16px; background: var(--black-1); color: #fff;
+      border-radius: 100px; font-size: 11px; font-weight: 700;
+      transition: opacity 0.2s; flex-shrink: 0; white-space: nowrap;
+    }
+    .venue-event-tickets:hover { opacity: 0.78; }
+
+    /* ── Reviews ── */
+    .review-card {
+      padding: 18px; border: 1px solid var(--border);
+      border-radius: var(--radius); margin-bottom: 10px;
+    }
+    .review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .review-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+    .review-name { font-size: 13px; font-weight: 700; color: var(--txt-color-heading); }
+    .review-date { font-size: 10px; color: var(--muted); }
+    .review-stars { display: flex; gap: 2px; margin-bottom: 8px; }
+    .review-stars i { font-size: 12px; color: var(--primary); }
+    .review-text { font-size: 13px; line-height: 1.65; color: var(--txt-color); }
+
+    /* ═══════════════════ SIDEBAR ═══════════════════ */
+    .venue-sidebar { position: sticky; top: 76px; }
+    .venue-map-card {
+      border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden; margin-bottom: 16px;
+    }
+    .venue-map { height: 220px; }
+    .venue-map-info { padding: 14px 16px; }
+    .venue-address { font-size: 13px; font-weight: 600; margin-bottom: 2px; color: var(--txt-color-heading); }
+    .venue-address-detail { font-size: 11px; color: var(--muted); }
+
+    .venue-contact-card, .venue-hours-card {
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 18px; margin-bottom: 16px;
+    }
+    .contact-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+    }
+    .contact-row:last-child { border-bottom: none; }
+    .contact-row i { font-size: 18px; color: var(--primary); width: 22px; text-align: center; }
+    .contact-row span { font-size: 13px; color: var(--txt-color); }
+
+    .hours-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 12px; }
+    .hours-day { font-weight: 600; color: var(--txt-color-heading); }
+    .hours-time { color: var(--muted); }
+    .hours-row.today .hours-day,
+    .hours-row.today .hours-time { color: var(--primary); font-weight: 700; }
+
+    .resident-dj {
+      display: flex; align-items: center; gap: 10px; padding: 8px;
+      border-radius: 12px; transition: background 0.2s; cursor: pointer; margin-bottom: 2px;
+    }
+    .resident-dj:hover { background: var(--surface); }
+    .resident-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+    .resident-name { font-size: 13px; font-weight: 700; color: var(--txt-color-heading); }
+    .resident-genre { font-size: 10px; color: var(--muted); }
+
+    /* ═══════════════════ GALLERY (max 6) ═══════════════════ */
+    .photo-gallery { padding: 48px 0; border-top: 1px solid var(--border); }
+    .gallery-grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 8px; margin-top: 16px;
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .gallery-item { aspect-ratio: 1; overflow: hidden; cursor: pointer; }
+    .gallery-item img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: grayscale(50%);
+      transition: filter 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+    }
+    .gallery-item:hover img { filter: grayscale(0%); transform: scale(1.08); }
+
+    /* ═══════════════════ FOOTER ═══════════════════ */
+    .site-footer { border-top: 1px solid var(--border); padding: 28px 0; }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; }
+    .footer-copy { font-family: var(--ff-mono); font-size: 10px; color: var(--muted); }
+    .footer-links { display: flex; gap: 18px; }
+    .footer-links a { font-size: 11px; color: var(--muted); transition: color 0.25s; }
+    .footer-links a:hover { color: var(--txt-color-heading); }
+
+    .reveal-up { opacity: 0; transform: translateY(22px); }
+
+    /* ═══════════════════ RESPONSIVE ═══════════════════ */
+    @media (max-width: 900px) {
+      .venue-grid { grid-template-columns: 1fr; }
+      .venue-sidebar { position: static; }
+      .venue-quick-stats { grid-template-columns: repeat(2,1fr); }
+      .venue-hero { height: 52vh; min-height: 360px; }
+      .venue-hero-content .container { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 600px) {
+      .venue-hero-title { font-size: 40px; }
+      .gallery-grid { grid-template-columns: repeat(2,1fr); }
+      .footer-inner { flex-direction: column; gap: 14px; text-align: center; }
+      .header-nav a:not(.btn-login) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-loader"></div>
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="site-header">
+    <div class="header-brand">
+      <span class="dot"></span>Apollo::Rio
+    </div>
+    <nav class="header-nav">
+      <a href="/eventos">Eventos</a>
+      <a href="/djs">DJs</a>
+      <a href="/espacos">Espaços</a>
+      <a href="/acesso" class="btn-login">Entrar</a>
+    </nav>
+  </header>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="venue-hero">
+    <div class="venue-hero-bg">
+      <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1400&h=900&fit=crop" alt="Arpoador Club">
+    </div>
+    <div class="venue-hero-overlay"></div>
+    <div class="venue-hero-content">
+      <div class="container">
+        <div>
+          <div class="venue-hero-pills">
+            <span class="venue-pill type">Club / Underground</span>
+            <span class="venue-pill rating"><i class="ri-star-fill" style="margin-right:3px;font-size:8px;"></i> 4.8</span>
+            <span class="venue-pill open">Aberto Agora</span>
+          </div>
+          <h1 class="venue-hero-title">Arpoador<br>Club</h1>
+          <div class="venue-hero-location">
+            <i class="ri-map-pin-2-fill"></i>
+            Rua Francisco Otaviano, 67 — Arpoador, Rio de Janeiro
+          </div>
+        </div>
+        <div class="venue-hero-actions">
+          <button class="venue-action-btn" title="Favoritar"><i class="ri-heart-line"></i></button>
+          <button class="venue-action-btn" title="Compartilhar"><i class="ri-share-forward-line"></i></button>
+          <button class="venue-action-btn" title="Direções"><i class="ri-route-line"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="gallery-counter"><i class="ri-image-line"></i> 6 fotos</div>
+  </section>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="venue-main">
+    <div class="container">
+      <div class="venue-grid">
+
+        <!-- Left Column -->
+        <div class="venue-details">
+
+          <!-- Stats -->
+          <div class="venue-quick-stats reveal-up">
+            <div class="venue-stat">
+              <div class="venue-stat-number">4.8</div>
+              <div class="venue-stat-label">Rating</div>
+            </div>
+            <div class="venue-stat">
+              <div class="venue-stat-number">324</div>
+              <div class="venue-stat-label">Depoimentos</div>
+            </div>
+            <div class="venue-stat">
+              <div class="venue-stat-number">89</div>
+              <div class="venue-stat-label">Eventos</div>
+            </div>
+            <div class="venue-stat">
+              <div class="venue-stat-number">1.2k</div>
+              <div class="venue-stat-label">Favs</div>
+            </div>
+          </div>
+
+          <!-- About -->
+          <div class="venue-about reveal-up">
+            <div class="section-title"><i class="ri-information-line"></i> Sobre</div>
+            <p class="venue-description">
+              O Arpoador Club nasceu da fusão entre a energia do mar e a pulsação eletrônica do Rio. Localizado a poucos passos da icônica Pedra do Arpoador, o espaço é referência em música underground, abrigando DJs residentes e artistas internacionais em uma experiência sonora que transcende o convencional.
+            </p>
+            <p class="venue-description">
+              Com capacidade para 800 pessoas, o club opera com sistema de som Funktion-One e iluminação imersiva, criando uma atmosfera única onde a arquitetura brutalista encontra a vibe tropical.
+            </p>
+            <div class="venue-tags">
+              <span class="venue-tag">Techno</span>
+              <span class="venue-tag">House</span>
+              <span class="venue-tag">Underground</span>
+              <span class="venue-tag">Minimal</span>
+              <span class="venue-tag">Drum &amp; Bass</span>
+              <span class="venue-tag">Experimental</span>
+            </div>
+          </div>
+
+          <!-- Amenities -->
+          <div class="reveal-up">
+            <div class="section-title"><i class="ri-service-line"></i> Estrutura</div>
+            <div class="amenities-grid">
+              <div class="amenity-item"><i class="ri-volume-up-line"></i> Funktion-One</div>
+              <div class="amenity-item"><i class="ri-parking-box-line"></i> Estacionamento</div>
+              <div class="amenity-item"><i class="ri-goblet-fill"></i> 3 Bars</div>
+              <div class="amenity-item"><i class="ri-shield-check-line"></i> Segurança 24h</div>
+              <div class="amenity-item"><i class="ri-vip-crown-line"></i> Área VIP</div>
+              <div class="amenity-item"><i class="ri-camera-off-line"></i> No Photo Policy</div>
+              <div class="amenity-item"><i class="ri-temp-cold-line"></i> Ar Condicionado</div>
+              <div class="amenity-item"><i class="ri-wheelchair-line"></i> Acessibilidade</div>
+            </div>
+          </div>
+
+          <!-- Events -->
+          <div class="venue-events-list reveal-up">
+            <div class="section-title"><i class="ri-calendar-event-fill"></i> Próximos Eventos</div>
+
+            <div class="venue-event-card">
+              <div class="venue-event-date"><span class="month">Mar</span><span class="day">22</span></div>
+              <div class="venue-event-info">
+                <div class="venue-event-name">Sunset Theory #04</div>
+                <div class="venue-event-meta">
+                  <span><i class="ri-time-line"></i> 16h – 04h</span>
+                  <span><i class="ri-group-line"></i> 800 cap.</span>
+                </div>
+              </div>
+              <a href="#" class="venue-event-tickets">Ingressos</a>
+            </div>
+
+            <div class="venue-event-card">
+              <div class="venue-event-date"><span class="month">Mar</span><span class="day">29</span></div>
+              <div class="venue-event-info">
+                <div class="venue-event-name">Acid Pauli (DE) + Residents</div>
+                <div class="venue-event-meta">
+                  <span><i class="ri-time-line"></i> 23h – 08h</span>
+                  <span><i class="ri-group-line"></i> 800 cap.</span>
+                </div>
+              </div>
+              <a href="#" class="venue-event-tickets">Ingressos</a>
+            </div>
+
+            <div class="venue-event-card">
+              <div class="venue-event-date"><span class="month">Abr</span><span class="day">05</span></div>
+              <div class="venue-event-info">
+                <div class="venue-event-name">Warehouse Collective</div>
+                <div class="venue-event-meta">
+                  <span><i class="ri-time-line"></i> 22h – 06h</span>
+                  <span><i class="ri-group-line"></i> 600 cap.</span>
+                </div>
+              </div>
+              <a href="#" class="venue-event-tickets">Ingressos</a>
+            </div>
+
+            <div class="venue-event-card">
+              <div class="venue-event-date"><span class="month">Abr</span><span class="day">12</span></div>
+              <div class="venue-event-info">
+                <div class="venue-event-name">Nómade Festival — Day 1</div>
+                <div class="venue-event-meta">
+                  <span><i class="ri-time-line"></i> 14h – 04h</span>
+                  <span><i class="ri-group-line"></i> 1200 cap.</span>
+                </div>
+              </div>
+              <a href="#" class="venue-event-tickets">Ingressos</a>
+            </div>
+          </div>
+
+          <!-- Reviews -->
+          <div class="reveal-up">
+            <div class="section-title"><i class="ri-star-fill"></i> Depoimentos (324)</div>
+
+            <div class="review-card">
+              <div class="review-header">
+                <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=72&fit=crop" alt="" class="review-avatar">
+                <div>
+                  <div class="review-name">Rafael Valle</div>
+                  <div class="review-date">2 semanas atrás</div>
+                </div>
+              </div>
+              <div class="review-stars">
+                <i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i>
+              </div>
+              <p class="review-text">Som impecável. Funktion-One entregando o que promete. A vibe underground que o Rio precisava. Voltarei sempre.</p>
+            </div>
+
+            <div class="review-card">
+              <div class="review-header">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=72&fit=crop" alt="" class="review-avatar">
+                <div>
+                  <div class="review-name">Marina Luna</div>
+                  <div class="review-date">1 mês atrás</div>
+                </div>
+              </div>
+              <div class="review-stars">
+                <i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-half-fill"></i>
+              </div>
+              <p class="review-text">Espaço incrível, mas pode melhorar a circulação na pista. Drinks bem feitos e staff atencioso. A localização é perfeita.</p>
+            </div>
+
+            <div class="review-card">
+              <div class="review-header">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=72&fit=crop" alt="" class="review-avatar">
+                <div>
+                  <div class="review-name">Thiago Motta</div>
+                  <div class="review-date">1 mês atrás</div>
+                </div>
+              </div>
+              <div class="review-stars">
+                <i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i>
+              </div>
+              <p class="review-text">Melhor club do Rio, sem competição. Curadoria de altíssimo nível. A experiência de som não existe em nenhum outro lugar da cidade.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="venue-sidebar">
+
+          <!-- Map -->
+          <div class="venue-map-card reveal-up">
+            <div class="venue-map" id="venueMap"></div>
+            <div class="venue-map-info">
+              <div class="venue-address">Rua Francisco Otaviano, 67</div>
+              <div class="venue-address-detail">Arpoador, Rio de Janeiro — RJ, 22080-040</div>
+            </div>
+          </div>
+
+          <!-- Contact -->
+          <div class="venue-contact-card reveal-up">
+            <div class="section-title" style="margin-bottom:12px;"><i class="ri-phone-line"></i> Contato</div>
+            <div class="contact-row"><i class="ri-global-line"></i><span>arpoadorclub.com.br</span></div>
+            <div class="contact-row"><i class="ri-instagram-line"></i><span>@arpoadorclub</span></div>
+            <div class="contact-row"><i class="ri-whatsapp-line"></i><span>+55 21 99999-0000</span></div>
+            <div class="contact-row"><i class="ri-mail-line"></i><span>contato@arpoadorclub.com.br</span></div>
+          </div>
+
+          <!-- Hours -->
+          <div class="venue-hours-card reveal-up">
+            <div class="section-title" style="margin-bottom:12px;"><i class="ri-time-line"></i> Horários</div>
+            <div class="hours-row"><span class="hours-day">Segunda</span><span class="hours-time">Fechado</span></div>
+            <div class="hours-row"><span class="hours-day">Terça</span><span class="hours-time">Fechado</span></div>
+            <div class="hours-row"><span class="hours-day">Quarta</span><span class="hours-time">22h – 04h</span></div>
+            <div class="hours-row"><span class="hours-day">Quinta</span><span class="hours-time">22h – 04h</span></div>
+            <div class="hours-row"><span class="hours-day">Sexta</span><span class="hours-time">23h – 06h</span></div>
+            <div class="hours-row today"><span class="hours-day">Sábado</span><span class="hours-time">23h – 08h</span></div>
+            <div class="hours-row"><span class="hours-day">Domingo</span><span class="hours-time">16h – 00h</span></div>
+          </div>
+
+          <!-- Resident DJs -->
+          <div class="reveal-up">
+            <div class="section-title" style="margin-bottom:10px;"><i class="ri-disc-line"></i> DJs Residentes</div>
+            <div class="resident-dj">
+              <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=80&fit=crop" alt="" class="resident-avatar">
+              <div><div class="resident-name">DJ Kauã</div><div class="resident-genre">Techno / Minimal</div></div>
+            </div>
+            <div class="resident-dj">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&fit=crop" alt="" class="resident-avatar">
+              <div><div class="resident-name">Nina Azevedo</div><div class="resident-genre">Deep House / Afro</div></div>
+            </div>
+            <div class="resident-dj">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&fit=crop" alt="" class="resident-avatar">
+              <div><div class="resident-name">Luiz Degas</div><div class="resident-genre">Progressive / Melodic</div></div>
+            </div>
+            <div class="resident-dj">
+              <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&fit=crop" alt="" class="resident-avatar">
+              <div><div class="resident-name">Beto Cass</div><div class="resident-genre">Drum &amp; Bass</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══ GALLERY (max 6) ═══ -->
+  <section class="photo-gallery">
+    <div class="container">
+      <div class="section-title reveal-up"><i class="ri-camera-line"></i> Galeria</div>
+      <div class="gallery-grid">
+        <div class="gallery-item reveal-up"><img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500&h=500&fit=crop" alt=""></div>
+        <div class="gallery-item reveal-up"><img src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=500&h=500&fit=crop" alt=""></div>
+        <div class="gallery-item reveal-up"><img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500&h=500&fit=crop" alt=""></div>
+        <div class="gallery-item reveal-up"><img src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=500&h=500&fit=crop" alt=""></div>
+        <div class="gallery-item reveal-up"><img src="https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=500&h=500&fit=crop" alt=""></div>
+        <div class="gallery-item reveal-up"><img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&h=500&fit=crop" alt=""></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-copy">© 2026 Apollo::Rio — Cultura &amp; Noite</span>
+        <div class="footer-links">
+          <a href="#">Termos</a>
+          <a href="#">Privacidade</a>
+          <a href="#">Contato</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══ SCRIPTS ═══ -->
+  <script>
+    // Page loader
+    window.addEventListener('load', function () {
+      gsap.to('.page-loader', { scaleY: 0, duration: 0.75, ease: 'power4.inOut', delay: 0.15 });
+    });
+
+    // Scroll reveal
+    gsap.registerPlugin(ScrollTrigger);
+    document.querySelectorAll('.reveal-up').forEach(function (el) {
+      gsap.to(el, {
+        scrollTrigger: { trigger: el, start: 'top 92%', once: true },
+        opacity: 1, y: 0, duration: 0.7, ease: 'power3.out'
+      });
+    });
+
+    // Leaflet Map
+    var map = L.map('venueMap', { zoomControl: false, scrollWheelZoom: false, dragging: false })
+      .setView([-22.9882, -43.1916], 16);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '' }).addTo(map);
+    L.marker([-22.9882, -43.1916]).addTo(map)
+      .bindPopup('<strong>Arpoador Club</strong><br>Rua Francisco Otaviano, 67');
+
+    // Hero parallax
+    gsap.to('.venue-hero-bg img', {
+      y: '14%', ease: 'none',
+      scrollTrigger: { trigger: '.venue-hero', start: 'top top', end: 'bottom top', scrub: 1 }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+/* ═══════════════════════════════════════════════════════════
+   02 — RESET
+   Normalizes browser defaults for the Sign SPA canvas.
+   Mobile-first: 100dvh, no overflow, touch-optimized.
+   ═══════════════════════════════════════════════════════════ */
+*, *::before, *::after {
+  box-sizing: border-box; margin: 0; padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  min-width: 0;
+}
+html, body { height: 100%; }
+html {
+  overflow: hidden !important; height: 100dvh !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scrollbar-gutter: stable;
+}
+body {
+  font-family: var(--ff); font-size: 14px; line-height: 1.5;
+  color: var(--ink); background: var(--tray);
+  overflow: hidden !important; height: 100dvh !important;
+  overscroll-behavior: none;
+}
+button { border: none; background: none; cursor: pointer; font-family: inherit; font-size: inherit; }
+a { text-decoration: none; color: inherit; }
+img, picture, video, canvas, svg { display: block; max-width: 100%; height: auto; }
+input, textarea, select { font-size: max(16px, 1em); font-family: inherit; }
+button, [role="button"], a { touch-action: manipulation; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,.12); border-radius: 4px; }
+::selection { background: var(--primary-m); }

@@ -1,0 +1,24 @@
+/* ═══════════════════════════════════════════════════════
+   08 · MARQUEE — Infinite horizontal scroller
+   ═══════════════════════════════════════════════════════ */
+
+.dj-marquee-wrap {
+  width: 100%; overflow: hidden;
+  background: var(--dj-black); color: #fff;
+  padding: 10px 0;
+}
+
+.dj-marquee-track {
+  display: inline-flex; align-items: center;
+  white-space: nowrap; will-change: transform;
+}
+
+.dj-marquee-content {
+  display: inline-flex; align-items: center;
+  gap: 28px; padding-right: 28px;
+  font-family: var(--dj-ff-mono); font-size: 0.78rem;
+  font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.dj-marquee-content i { font-size: 11px; opacity: 0.55; }

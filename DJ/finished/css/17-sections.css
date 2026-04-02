@@ -1,0 +1,57 @@
+/* ═══════════════════════════════════════════════════════
+   17 · SECTIONS — Shared section wrappers, heads, labels
+   ═══════════════════════════════════════════════════════ */
+
+.dj-section {
+  padding: 72px var(--dj-pad-x);
+  max-width: var(--dj-max-width); margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .dj-section { padding: 96px var(--dj-pad-x-md); }
+}
+
+/* ── Section Head ── */
+.dj-section-head {
+  display: flex; justify-content: space-between;
+  align-items: flex-end; margin-bottom: 28px;
+  flex-wrap: wrap; gap: 12px;
+}
+
+.dj-section-head h2 {
+  font-size: clamp(2rem, 6vw, 4rem); font-weight: 800;
+  letter-spacing: -0.03em; color: var(--dj-txt-heading); margin: 0;
+}
+
+.dj-section-head h2 span { color: var(--dj-txt-muted); }
+
+/* ── Label ── */
+.dj-section-label {
+  font-family: var(--dj-ff-mono); font-size: 0.65rem;
+  text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--dj-primary); margin-bottom: 6px; display: block;
+}
+
+/* ── Link ── */
+.dj-section-link {
+  font-family: var(--dj-ff-mono); font-size: 0.7rem;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--dj-txt-muted); text-decoration: none;
+  display: flex; align-items: center; gap: 5px;
+  white-space: nowrap; transition: color 0.2s;
+}
+
+.dj-section-link:hover { color: var(--dj-primary); }
+
+/* ── Full-width Wrap ── */
+.dj-section-full-wrap { padding: 72px 0; }
+
+@media (min-width: 768px) {
+  .dj-section-full-wrap { padding: 96px 0; }
+}
+
+.dj-section-full-head { padding: 0 var(--dj-pad-x); margin-bottom: 28px; }
+
+@media (min-width: 768px) {
+  .dj-section-full-head { padding: 0 var(--dj-pad-x-md); }
+}

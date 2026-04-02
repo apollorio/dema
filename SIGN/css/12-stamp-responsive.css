@@ -1,0 +1,131 @@
+/* ═══════════════════════════════════════════════════════════
+   12 — STAMP + RESPONSIVE + A11Y
+   Titan stamp rendering, global @media responsive,
+   focus-visible, pointer-hover, reduced-motion.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Titan Stamp ──
+   Natural width: 380px — JS scales via transform to fit rect
+   ─────────────────────────────────────────────────────────── */
+.ts-wrap {
+  width: 380px; background: transparent;
+  border: 2px dashed var(--ink);
+  display: flex; flex-direction: column; overflow: hidden;
+  color: var(--ink); position: relative;
+  transform-origin: top left; pointer-events: none; flex-shrink: 0;
+}
+.ts-watermark {
+  position: absolute; top: 68%; left: 78%;
+  transform: translate(-50%,-50%);
+  width: 300px; height: auto; opacity: 0.085;
+  color: var(--ink); pointer-events: none; z-index: 0;
+}
+.ts-header {
+  background: var(--ink); font-family: var(--mono);
+  font-size: 11px; font-weight: 100; color: #fff;
+  text-transform: uppercase; letter-spacing: 1px;
+  border-bottom: 2px solid var(--ink); padding: 5px 0 3px;
+  text-align: center; position: relative; z-index: 1;
+}
+.ts-label {
+  font-family: var(--mono); font-size: 10px;
+  text-transform: uppercase; font-weight: 700;
+  padding: 10px 20px 0; line-height: 1.5;
+  position: relative; z-index: 1;
+}
+.ts-name {
+  font-family: var(--ff); font-size: 30px; font-weight: 800;
+  line-height: 0.85; letter-spacing: -0.03em; text-transform: uppercase;
+  padding: 2px 16px 4px; position: relative; z-index: 1;
+}
+.ts-meta {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  padding: 0 20px; position: relative; z-index: 1;
+}
+.ts-meta .ts-label { padding-top: 4px; padding-bottom: 0; }
+.ts-mono { font-family: var(--mono); font-size: 13px; font-weight: 700; }
+.ts-hash {
+  background: rgba(0,0,0,.055); padding: 4px 10px 5px;
+  margin-top: 10px; font-family: var(--mono); font-size: 9px;
+  word-break: break-all; line-height: 1.4; position: relative; z-index: 1;
+}
+.ts-hash b {
+  opacity: .22; font-family: var(--ff); font-size: 14px;
+  font-weight: 600; text-transform: uppercase; vertical-align: middle;
+}
+.ts-hash span { color: rgba(0,0,0,.32); font-size: 9px; letter-spacing: .02em; }
+
+/* confirmed state: CONTAIN = no clip, rect auto-snaps */
+#sign-rect.confirmed { overflow: visible; border-color: var(--live); }
+#sign-rect.confirmed .rh { display: none; }
+#sign-rect.confirmed .rect-inner {
+  padding: 0 !important; background: transparent !important;
+  align-items: flex-start !important; justify-content: flex-start !important;
+  overflow: visible; inset: unset !important; position: static;
+}
+#done-sig-rect { overflow: visible; }
+
+/* ── Animation helpers ── */
+.ai { opacity: 0; transform: translateY(10px); }
+
+/* ═══════════════════════════════════════════════════════════
+   GLOBAL RESPONSIVE
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 860px) {
+  #ov-card { transform: scale(2) translateY(-65px) !important; }
+  .sbottom-toggle { width: 88px; height: 36px; font-size: 22px; top: -28px; display: flex; }
+  .doc-tray {
+    padding: 18px; overflow-x: hidden;
+    justify-content: flex-start; align-items: flex-start;
+  }
+  .paper-sheet { transform-origin: top left; }
+  .dh-id    { display: none; }
+  .dh-title { max-width: 160px; }
+}
+@media (min-width: 861px) {
+  .sbottom-toggle { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FOCUS / KEYBOARD A11Y
+   ═══════════════════════════════════════════════════════════ */
+:focus         { outline: none; }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
+button:focus-visible,
+a:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; border-radius: 6px; }
+
+/* ═══════════════════════════════════════════════════════════
+   HOVER — pointer devices only
+   ═══════════════════════════════════════════════════════════ */
+@media (hover: hover) and (pointer: fine) {
+  .btn-proceed:hover        { background: #242426; }
+  .icon-btn:hover           { background: var(--sf3); color: var(--ink); border-color: var(--brd-h); }
+  .tb-btn:hover             { background: var(--sf3); color: var(--ink); }
+  .btn-pos:hover            { border-color: var(--ink); color: var(--ink); }
+  .btn-assinar:hover:not(:disabled) { background: #d95300; }
+  .btn-reset-sig:hover      { background: var(--primary-m); border-color: var(--primary); }
+  .sbottom-toggle:hover     { color: var(--ink); }
+  .btn-dl:hover             { background: #282828; }
+  #btn-iniciar:hover        { background: #282828; }
+  #btn-auto:hover           { background: var(--sf2); color: var(--ink); }
+}
+@media (hover: none) {
+  .btn-proceed:active              { background: #242426; }
+  .icon-btn:active                 { background: var(--ink); color: #fff; }
+  .btn-assinar:active:not(:disabled) { background: #d95300; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   REDUCED MOTION — a11y safety net
+   ═══════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .sdot      { animation: none !important; }
+  .sim-rect  { animation: none !important; opacity: .7 !important; }
+  .sim-hand, .sim-dot, .sim-dot2, .sim-label { animation: none !important; }
+}

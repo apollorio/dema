@@ -1,0 +1,1831 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <title>apollo::rio — Painel de Vagas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+
+  <!-- Apollo CDN Core — obrigatorio -->
+  <script src="https://cdn.apollo.rio.br/v1.0.0/core.js?o=0" fetchpriority="high"></script>
+
+  <style>
+    /* ============================================================
+       FORCE LIGHT THEME — sobrescreve dark-mode do Apollo
+    ============================================================ */
+    html, html.dark-mode {
+      color-scheme: light !important;
+      --bg:             #ffffff !important;
+      --bg-neutral:     #00000005 !important;
+      --glass:          #0000000a !important;
+      --surface:        #00000005 !important;
+      --card:           #0000000a !important;
+      --surface-hover:  #0000000f !important;
+      --card-hover:     #00000014 !important;
+      --border:         #0000002e !important;
+      --border-hover:   #0000003d !important;
+      --txt-rgb:        19,21,23;
+      --txt-color:      rgba(19,21,23,0.77) !important;
+      --txt-color-hover:rgba(19,21,23,0.9)  !important;
+      --txt-color-heading:rgba(19,21,23,0.9)!important;
+      --muted:          rgba(19,21,23,0.45) !important;
+      --muted-txt:      rgba(19,21,23,0.3)  !important;
+      --muted-bg:       rgba(19,21,23,0.21) !important;
+      --primary:        #f45f00 !important;
+      --radius:         20px;
+      background: #fff !important;
+    }
+
+    html.dark-mode body {
+      background: #fff !important;
+      background-image: none !important;
+      color: rgba(19,21,23,0.77) !important;
+    }
+
+    /* ============================================================
+       RESET + BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      font-weight: 400;
+      line-height: 1;
+      background: var(--bg, #fff);
+      color: var(--txt-color);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100dvh;
+    }
+
+    a { color: inherit; }
+    button { cursor: pointer; font-family: inherit; }
+    canvas { display: block; }
+
+    /* ============================================================
+       LAYOUT
+    ============================================================ */
+    .rv-wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 var(--s-3, 16px);
+    }
+
+    /* ============================================================
+       HEADER
+    ============================================================ */
+    .rv-header {
+      position: sticky;
+      top: 0;
+      z-index: var(--z-ui, 10);
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .rv-header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--s-3, 16px) var(--s-3, 16px);
+      gap: var(--s-3, 16px);
+    }
+
+    .rv-logo {
+      font-family: var(--ff-mono, monospace);
+      font-size: clamp(0.85rem, 3vw, 1.05rem);
+      font-weight: 700;
+      color: var(--txt-color-heading);
+      letter-spacing: -0.03em;
+      white-space: nowrap;
+    }
+
+    .rv-logo .dot { color: var(--primary); }
+
+    .rv-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 11px;
+      border-radius: 100px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .rv-status-badge.empregado  { background: rgba(34,197,94,0.1); color: #15803d; }
+    .rv-status-badge.desempregado { background: rgba(234,179,8,0.12); color: #b45309; }
+
+    .rv-status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* ============================================================
+       NAV TABS
+    ============================================================ */
+    .rv-nav {
+      overflow-x: auto;
+      scrollbar-width: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .rv-nav::-webkit-scrollbar { display: none; }
+
+    .rv-nav-inner {
+      display: flex;
+      gap: 2px;
+      padding: var(--s-2, 8px) var(--s-3, 16px);
+    }
+
+    .rv-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .rv-tab:hover { background: var(--surface); color: var(--txt-color); }
+
+    .rv-tab.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .rv-tab i { font-size: 1rem; }
+
+    /* ============================================================
+       SECTION PANELS
+    ============================================================ */
+    .rv-panel { display: none; padding: var(--s-5, 32px) var(--s-3, 16px); }
+    .rv-panel.active { display: block; animation: rvFade 0.28s var(--ease-default, cubic-bezier(.16,1,.3,1)) both; }
+
+    @keyframes rvFade {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================================
+       TIPOGRAFIA SECAO
+    ============================================================ */
+    .rv-section-title {
+      font-family: var(--ff-mono, monospace);
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: var(--s-4, 24px);
+    }
+
+    .rv-section-title span { color: var(--primary); }
+
+    /* ============================================================
+       STATS GRID
+    ============================================================ */
+    .rv-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--s-3, 16px);
+      margin-bottom: var(--s-5, 32px);
+    }
+
+    @media (min-width: 640px)  { .rv-stats { grid-template-columns: repeat(4, 1fr); } }
+
+    .rv-stat {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: var(--s-4, 24px);
+    }
+
+    .rv-stat-icon {
+      font-size: 1.3rem;
+      color: var(--primary);
+      margin-bottom: var(--s-2, 8px);
+      display: block;
+    }
+
+    .rv-stat-val {
+      font-family: var(--ff-mono, monospace);
+      font-size: clamp(1.6rem, 5vw, 2.1rem);
+      font-weight: 700;
+      color: var(--txt-color-heading);
+      line-height: 1;
+      margin-bottom: var(--s-1, 4px);
+    }
+
+    .rv-stat-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+
+    /* ============================================================
+       CHARTS
+    ============================================================ */
+    .rv-charts-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--s-4, 24px);
+      margin-bottom: var(--s-5, 32px);
+    }
+
+    @media (min-width: 900px) {
+      .rv-charts-grid { grid-template-columns: 3fr 2fr; }
+    }
+
+    .rv-chart-box {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: var(--s-4, 24px);
+    }
+
+    .rv-chart-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: var(--s-3, 16px);
+    }
+
+    .rv-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--s-3, 16px);
+      margin-bottom: var(--s-3, 16px);
+    }
+
+    .rv-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .rv-legend-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       DONUT GRID (dashboard extra)
+    ============================================================ */
+    .rv-donut-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--s-3, 16px);
+    }
+
+    @media (min-width: 640px) { .rv-donut-grid { grid-template-columns: repeat(4, 1fr); } }
+
+    /* ============================================================
+       BADGES
+    ============================================================ */
+    .rv-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .rv-badge.aplicada   { background: rgba(34,197,94,0.1);  color: #15803d; }
+    .rv-badge.salva      { background: rgba(234,179,8,0.1);  color: #b45309; }
+    .rv-badge.entrevista { background: rgba(244,95,0,0.1);   color: var(--primary); }
+    .rv-badge.recusada   { background: rgba(239,68,68,0.1);  color: #dc2626; }
+    .rv-badge.oferta     { background: rgba(101,31,255,0.1); color: #6d28d9; }
+
+    /* ============================================================
+       FILTER BAR
+    ============================================================ */
+    .rv-filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--s-2, 8px);
+      margin-bottom: var(--s-4, 24px);
+    }
+
+    .rv-filter-btn {
+      padding: 6px 14px;
+      border-radius: 100px;
+      border: none;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .rv-filter-btn:hover { background: var(--surface-hover); color: var(--txt-color); }
+    .rv-filter-btn.active { background: var(--primary); color: #fff; }
+
+    /* ============================================================
+       VAGA CARDS
+    ============================================================ */
+    .rv-vagas-grid {
+      display: grid;
+      gap: var(--s-3, 16px);
+    }
+
+    @media (min-width: 768px) { .rv-vagas-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .rv-vagas-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .rv-vaga-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: var(--s-4, 24px);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      position: relative;
+    }
+
+    .rv-vaga-card:hover {
+      background: var(--card-hover);
+      transform: translateY(-2px);
+    }
+
+    .rv-vaga-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--s-2, 8px);
+      margin-bottom: var(--s-3, 16px);
+    }
+
+    .rv-vaga-empresa {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .rv-vaga-titulo {
+      font-size: clamp(0.88rem, 2vw, 0.96rem);
+      font-weight: 600;
+      color: var(--txt-color-heading);
+      line-height: 1.3;
+    }
+
+    .rv-vaga-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: var(--s-3, 16px);
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .rv-vaga-meta span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .rv-vaga-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .rv-tag {
+      padding: 3px 8px;
+      border-radius: 100px;
+      background: var(--surface);
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    /* ============================================================
+       PROCESSO — TIMELINE
+    ============================================================ */
+    .rv-processo-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: var(--s-4, 24px);
+      margin-bottom: var(--s-4, 24px);
+    }
+
+    .rv-processo-head {
+      margin-bottom: var(--s-4, 24px);
+    }
+
+    .rv-processo-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .rv-processo-nome {
+      font-size: clamp(1rem, 2.5vw, 1.15rem);
+      font-weight: 700;
+      color: var(--txt-color-heading);
+      margin-bottom: var(--s-3, 16px);
+    }
+
+    .rv-progress {
+      display: flex;
+      align-items: center;
+      gap: var(--s-2, 8px);
+    }
+
+    .rv-progress-bar {
+      flex: 1;
+      height: 5px;
+      background: var(--surface);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .rv-progress-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 100px;
+      transition: width 0.9s var(--ease-smooth, cubic-bezier(.25,1,.5,1));
+    }
+
+    .rv-progress-txt {
+      font-size: 0.72rem;
+      color: var(--muted);
+      white-space: nowrap;
+      font-family: var(--ff-mono, monospace);
+    }
+
+    /* Timeline vertical */
+    .rv-timeline {
+      position: relative;
+      padding-left: 28px;
+    }
+
+    .rv-timeline::before {
+      content: '';
+      position: absolute;
+      left: 9px; top: 4px; bottom: 4px;
+      width: 2px;
+      background: var(--surface);
+      border-radius: 2px;
+    }
+
+    .rv-etapa {
+      position: relative;
+      padding-bottom: var(--s-4, 24px);
+    }
+
+    .rv-etapa:last-child { padding-bottom: 0; }
+
+    .rv-etapa-dot {
+      position: absolute;
+      left: -23px;
+      top: 3px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid var(--white-8, rgba(19,21,23,0.14));
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+    }
+
+    .rv-etapa-dot.done {
+      background: #22c55e;
+      border-color: #22c55e;
+      color: #fff;
+    }
+
+    .rv-etapa-dot.current {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+      box-shadow: 0 0 0 4px rgba(244,95,0,0.15);
+    }
+
+    .rv-etapa-header {
+      display: flex;
+      align-items: center;
+      gap: var(--s-2, 8px);
+      flex-wrap: wrap;
+    }
+
+    .rv-etapa-nome {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--txt-color-heading);
+    }
+
+    .rv-etapa-data {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .rv-etapa-obs {
+      margin-top: var(--s-2, 8px);
+      padding: var(--s-3, 16px);
+      background: var(--surface);
+      border-radius: 12px;
+      font-size: 0.82rem;
+      color: var(--txt-color);
+      line-height: 1.6;
+    }
+
+    .rv-etapa-screenshot {
+      margin-top: var(--s-2, 8px);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .rv-etapa-screenshot img {
+      width: 100%;
+      display: block;
+    }
+
+    .rv-upload-zone {
+      margin-top: var(--s-2, 8px);
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: var(--s-3, 16px) var(--s-4, 24px);
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .rv-upload-zone:hover {
+      border-color: var(--primary);
+      background: rgba(244,95,0,0.03);
+    }
+
+    .rv-upload-zone i { font-size: 1.3rem; color: var(--muted); display: block; margin-bottom: 4px; }
+    .rv-upload-zone span { font-size: 0.72rem; color: var(--muted); }
+    .rv-upload-zone input[type="file"] { display: none; }
+
+    /* ============================================================
+       RECRUTADORES ACCORDION
+    ============================================================ */
+    .rv-rec-item {
+      background: var(--card);
+      border-radius: var(--radius);
+      margin-bottom: var(--s-3, 16px);
+      overflow: hidden;
+    }
+
+    .rv-rec-header {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3, 16px);
+      padding: var(--s-4, 24px);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .rv-rec-header:hover { background: var(--card-hover); }
+
+    .rv-rec-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .rv-rec-info { flex: 1; min-width: 0; }
+
+    .rv-rec-nome {
+      font-weight: 700;
+      color: var(--txt-color-heading);
+      font-size: 0.92rem;
+    }
+
+    .rv-rec-cargo {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .rv-rec-email {
+      font-size: 0.75rem;
+      color: var(--primary);
+      margin-top: 2px;
+      text-decoration: none;
+    }
+
+    .rv-rec-email:hover { text-decoration: underline; }
+
+    .rv-rec-chevron {
+      color: var(--muted);
+      font-size: 1.2rem;
+      transition: transform 0.3s var(--ease-default, cubic-bezier(.16,1,.3,1));
+      flex-shrink: 0;
+    }
+
+    .rv-rec-item.open .rv-rec-chevron { transform: rotate(180deg); }
+
+    .rv-rec-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s var(--ease-smooth, cubic-bezier(.25,1,.5,1));
+    }
+
+    .rv-rec-item.open .rv-rec-body { max-height: 1200px; }
+
+    .rv-rec-body-inner {
+      padding: 0 var(--s-4, 24px) var(--s-4, 24px);
+    }
+
+    .rv-subsec-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: var(--s-2, 8px);
+    }
+
+    .rv-entrevista-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: var(--s-3, 16px);
+      margin-bottom: var(--s-2, 8px);
+    }
+
+    .rv-entrevista-meta {
+      display: flex;
+      gap: var(--s-3, 16px);
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: var(--s-2, 8px);
+    }
+
+    .rv-entrevista-tipo {
+      font-weight: 700;
+      font-size: 0.82rem;
+      color: var(--txt-color-heading);
+    }
+
+    .rv-entrevista-data {
+      font-size: 0.72rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .rv-entrevista-obs {
+      font-size: 0.82rem;
+      color: var(--txt-color);
+      line-height: 1.6;
+    }
+
+    .rv-vaga-link-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: var(--surface);
+      border-radius: 10px;
+      margin-bottom: 5px;
+      gap: var(--s-2);
+    }
+
+    .rv-vaga-link-nome {
+      font-size: 0.82rem;
+      color: var(--txt-color);
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Botao primario */
+    .rv-btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 18px;
+      border-radius: 12px;
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: filter 0.2s, transform 0.2s;
+    }
+
+    .rv-btn-primary:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    .rv-btn-primary i { font-size: 1rem; }
+
+    /* Botao ghost */
+    .rv-btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 500;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .rv-btn-ghost:hover { background: var(--surface); color: var(--txt-color); }
+
+    /* ============================================================
+       MODAL / DRAWER DETALHE
+    ============================================================ */
+    .rv-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(19,21,23,0.35);
+      z-index: var(--z-modal, 1000);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .rv-overlay.open { display: flex; }
+
+    @media (min-width: 640px) {
+      .rv-overlay { align-items: center; justify-content: flex-end; }
+    }
+
+    .rv-drawer {
+      background: var(--bg);
+      border-radius: var(--radius) var(--radius) 0 0;
+      width: 100%;
+      max-height: 92dvh;
+      overflow-y: auto;
+      padding: var(--s-5, 32px) var(--s-4, 24px);
+      animation: drawerUp 0.32s var(--ease-default, cubic-bezier(.16,1,.3,1)) both;
+    }
+
+    @keyframes drawerUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    @media (min-width: 640px) {
+      .rv-drawer {
+        border-radius: var(--radius);
+        width: 480px;
+        max-height: 85dvh;
+        margin: var(--s-4);
+        animation: drawerRight 0.32s var(--ease-default) both;
+      }
+
+      @keyframes drawerRight {
+        from { transform: translateX(32px); opacity: 0; }
+        to   { transform: translateX(0);    opacity: 1; }
+      }
+    }
+
+    .rv-drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--s-4, 24px);
+    }
+
+    .rv-drawer-empresa {
+      font-family: var(--ff-mono, monospace);
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .rv-drawer-titulo {
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      font-weight: 700;
+      color: var(--txt-color-heading);
+    }
+
+    .rv-close-btn {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .rv-close-btn:hover { background: var(--surface-hover); }
+
+    .rv-detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--white-5, rgba(19,21,23,0.08));
+      font-size: 0.82rem;
+    }
+
+    .rv-detail-row:last-child { border-bottom: none; }
+
+    .rv-detail-key { color: var(--muted); }
+    .rv-detail-val { font-weight: 500; color: var(--txt-color-heading); }
+
+    /* ============================================================
+       EMPTY STATE
+    ============================================================ */
+    .rv-empty {
+      text-align: center;
+      padding: var(--s-6, 48px) var(--s-4);
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .rv-empty i { font-size: 2.5rem; display: block; margin-bottom: var(--s-3); opacity: 0.4; }
+
+    /* ============================================================
+       MINI TABLE VAGAS SALVAS (dashboard)
+    ============================================================ */
+    .rv-mini-list { display: grid; gap: var(--s-2, 8px); }
+
+    .rv-mini-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-2);
+      padding: 10px 14px;
+      background: var(--surface);
+      border-radius: 12px;
+      font-size: 0.82rem;
+    }
+
+    .rv-mini-empresa { color: var(--muted); font-size: 0.72rem; }
+    .rv-mini-cargo   { font-weight: 500; color: var(--txt-color-heading); }
+
+    /* ============================================================
+       RESPONSIVE UTILS
+    ============================================================ */
+    @media (min-width: 640px) {
+      .rv-panel { padding: var(--s-5, 32px) var(--s-4, 24px); }
+    }
+
+    @media (min-width: 1024px) {
+      .rv-panel { padding: var(--s-6, 48px) var(--s-5, 32px); }
+    }
+
+    /* ============================================================
+       TOOLTIP INLINE
+    ============================================================ */
+    [data-rv-tip] {
+      position: relative;
+    }
+
+    /* Separador de secao */
+    .rv-divider {
+      height: 1px;
+      background: var(--border);
+      margin: var(--s-5, 32px) 0;
+    }
+
+    /* Info chip */
+    .rv-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      background: var(--surface);
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    /* ============================================================
+       SCROLLBAR GLOBAL
+    ============================================================ */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+============================================================ -->
+<header class="rv-header">
+  <div class="rv-header-inner">
+    <div class="rv-logo">apollo<span class="dot">::</span>rio <span style="opacity:.4;font-size:.8em">vagas</span></div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="rv-status-badge" id="js-status-badge">
+        <span class="rv-status-dot"></span>
+        <span id="js-status-txt">Empregado</span>
+      </span>
+      <span style="font-size:.72rem;color:var(--muted);font-family:var(--ff-mono,monospace);">Rafael Valle</span>
+    </div>
+  </div>
+
+  <!-- Nav tabs -->
+  <nav class="rv-nav" role="navigation" aria-label="Navegacao principal">
+    <div class="rv-nav-inner">
+      <button class="rv-tab active" data-tab="painel">
+        <i class="ri-dashboard-line"></i> Painel
+      </button>
+      <button class="rv-tab" data-tab="vagas">
+        <i class="ri-briefcase-line"></i> Vagas
+      </button>
+      <button class="rv-tab" data-tab="processos">
+        <i class="ri-flow-chart"></i> Processos
+      </button>
+      <button class="rv-tab" data-tab="recrutadores">
+        <i class="ri-user-star-line"></i> Recrutadores
+      </button>
+    </div>
+  </nav>
+</header>
+
+<!-- ============================================================
+     PAINEL
+============================================================ -->
+<div class="rv-wrap">
+
+  <section class="rv-panel active" id="tab-painel">
+
+    <!-- Stats cards -->
+    <p class="rv-section-title"><span>//</span> visao geral</p>
+    <div class="rv-stats" id="js-stats"></div>
+
+    <!-- Graficos principais -->
+    <p class="rv-section-title"><span>//</span> candidaturas &amp; empresas</p>
+    <div class="rv-charts-grid">
+
+      <div class="rv-chart-box">
+        <p class="rv-chart-label">Candidaturas por mes</p>
+        <div class="rv-legend">
+          <span class="rv-legend-item">
+            <span class="rv-legend-dot" style="background:#22c55e"></span>Empregado
+          </span>
+          <span class="rv-legend-item">
+            <span class="rv-legend-dot" style="background:#eab308"></span>Desempregado
+          </span>
+        </div>
+        <canvas id="chart-mensal" height="220" data-rv-render="rvRenderCharts"></canvas>
+      </div>
+
+      <div class="rv-chart-box">
+        <p class="rv-chart-label">Empresas mais candidatadas</p>
+        <canvas id="chart-empresas" height="220" data-rv-render="rvRenderCharts"></canvas>
+      </div>
+
+    </div>
+
+    <!-- Vagas salvas (rapido acesso) -->
+    <div style="display:grid;gap:var(--s-4);grid-template-columns:1fr;">
+
+      <div>
+        <p class="rv-section-title"><span>//</span> vagas salvas — sem candidatura</p>
+        <div class="rv-mini-list" id="js-saved-mini"></div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+       VAGAS
+  ============================================================ -->
+  <section class="rv-panel" id="tab-vagas">
+
+    <p class="rv-section-title"><span>//</span> todas as vagas</p>
+
+    <div class="rv-filter" id="js-filter-bar">
+      <button class="rv-filter-btn active" data-filter="todas">Todas</button>
+      <button class="rv-filter-btn" data-filter="aplicada">Candidatadas</button>
+      <button class="rv-filter-btn" data-filter="salva">Salvas</button>
+      <button class="rv-filter-btn" data-filter="entrevista">Entrevista</button>
+      <button class="rv-filter-btn" data-filter="recusada">Recusadas</button>
+    </div>
+
+    <div class="rv-vagas-grid" id="js-vagas-grid"></div>
+
+  </section>
+
+  <!-- ============================================================
+       PROCESSOS
+  ============================================================ -->
+  <section class="rv-panel" id="tab-processos">
+    <p class="rv-section-title"><span>//</span> processos seletivos ativos</p>
+    <div id="js-processos-list"></div>
+  </section>
+
+  <!-- ============================================================
+       RECRUTADORES
+  ============================================================ -->
+  <section class="rv-panel" id="tab-recrutadores">
+    <p class="rv-section-title"><span>//</span> recrutadores &amp; entrevistas</p>
+    <div id="js-recrutadores-list"></div>
+  </section>
+
+</div><!-- /rv-wrap -->
+
+<!-- ============================================================
+     DRAWER DETALHE VAGA
+============================================================ -->
+<div class="rv-overlay" id="js-overlay" role="dialog" aria-modal="true" aria-label="Detalhe da vaga">
+  <div class="rv-drawer" id="js-drawer">
+    <div class="rv-drawer-head">
+      <div>
+        <p class="rv-drawer-empresa" id="js-d-empresa"></p>
+        <h2 class="rv-drawer-titulo" id="js-d-titulo"></h2>
+      </div>
+      <button class="rv-close-btn" id="js-close-drawer" aria-label="Fechar">
+        <i class="ri-close-line"></i>
+      </button>
+    </div>
+    <div id="js-drawer-body"></div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     SCRIPTS — APOLLO CDN JS carregado via core.js
+     rvalle-chart.js carregado inline abaixo
+============================================================ -->
+<script src="rvalle-chart.js"></script>
+
+<script>
+/* ============================================================
+   DADOS SIMULADOS — WordPress CPT (pt-BR)
+   CPT: vaga | CPT: processo | CPT: recrutador
+============================================================ */
+
+var RV = {
+
+  /* --- periodos de emprego para colorir o grafico --- */
+  periodos: [
+    { inicio: '2024-01', fim: '2024-02', status: 'desempregado' },
+    { inicio: '2024-03', fim: '2024-08', status: 'empregado' },
+    { inicio: '2024-09', fim: '2024-09', status: 'desempregado' },
+    { inicio: '2024-10', fim: null,      status: 'empregado' }
+  ],
+
+  /* === CPT: vaga === */
+  vagas: [
+    {
+      id: 1, titulo: 'Desenvolvedor Frontend Senior',
+      empresa: 'Nubank', local: 'Remoto', modalidade: 'PJ',
+      salario: 'R$ 10.000 – 14.000', status: 'entrevista', tipo: 'aplicada',
+      data: '2024-10-12', tags: ['React', 'TypeScript', 'CSS-in-JS', 'Node.js'],
+      recrutador_id: 1, processo_id: 1,
+      link: 'https://nubank.com.br/carreiras'
+    },
+    {
+      id: 2, titulo: 'Engenheiro Frontend',
+      empresa: 'iFood', local: 'Hibrido — Sao Paulo', modalidade: 'CLT',
+      salario: 'R$ 8.000 – 11.000', status: 'aplicada', tipo: 'aplicada',
+      data: '2024-10-20', tags: ['Vue.js', 'React', 'Design System'],
+      recrutador_id: 2, processo_id: 2,
+      link: 'https://carreiras.ifood.com.br'
+    },
+    {
+      id: 3, titulo: 'Dev Frontend — Pleno',
+      empresa: 'VTEX', local: 'Remoto', modalidade: 'CLT',
+      salario: 'R$ 7.000 – 9.500', status: 'aplicada', tipo: 'aplicada',
+      data: '2024-11-05', tags: ['VTEX IO', 'React', 'GraphQL'],
+      recrutador_id: 3, processo_id: 3,
+      link: 'https://careers.vtex.com'
+    },
+    {
+      id: 4, titulo: 'UI Engineer',
+      empresa: 'Nubank', local: 'Remoto', modalidade: 'PJ',
+      salario: 'R$ 12.000 – 16.000', status: 'recusada', tipo: 'aplicada',
+      data: '2024-08-03', tags: ['React', 'Figma', 'Storybook'],
+      recrutador_id: 4, processo_id: null, link: '#'
+    },
+    {
+      id: 5, titulo: 'Frontend Developer',
+      empresa: 'Stone', local: 'Rio de Janeiro — Hibrido', modalidade: 'CLT',
+      salario: 'R$ 9.000 – 13.000', status: 'salva', tipo: 'salva',
+      data: '2024-11-18', tags: ['React', 'Next.js'],
+      recrutador_id: null, processo_id: null, link: '#'
+    },
+    {
+      id: 6, titulo: 'Engenheiro de Software Frontend',
+      empresa: 'Mercado Livre', local: 'Remoto', modalidade: 'CLT',
+      salario: 'R$ 11.000 – 15.000', status: 'salva', tipo: 'salva',
+      data: '2024-11-20', tags: ['React', 'Node.js', 'AWS'],
+      recrutador_id: null, processo_id: null, link: '#'
+    },
+    {
+      id: 7, titulo: 'Frontend Senior',
+      empresa: 'Itau Unibanco', local: 'Hibrido — Sao Paulo', modalidade: 'CLT',
+      salario: 'R$ 10.000 – 14.000', status: 'recusada', tipo: 'aplicada',
+      data: '2024-05-10', tags: ['Angular', 'TypeScript', 'RxJS'],
+      recrutador_id: 5, processo_id: null, link: '#'
+    },
+    {
+      id: 8, titulo: 'Dev React Pleno',
+      empresa: 'Nubank', local: 'Remoto', modalidade: 'CLT',
+      salario: 'R$ 7.500 – 10.000', status: 'recusada', tipo: 'aplicada',
+      data: '2024-02-14', tags: ['React', 'Redux', 'Jest'],
+      recrutador_id: null, processo_id: null, link: '#'
+    },
+    {
+      id: 9, titulo: 'Frontend Engineer',
+      empresa: 'Creditas', local: 'Remoto', modalidade: 'CLT',
+      salario: 'R$ 8.000 – 11.000', status: 'aplicada', tipo: 'aplicada',
+      data: '2024-11-08', tags: ['React', 'TypeScript', 'Micro-frontend'],
+      recrutador_id: null, processo_id: null, link: '#'
+    },
+    {
+      id: 10, titulo: 'Dev Web Frontend',
+      empresa: 'iFood', local: 'Remoto', modalidade: 'PJ',
+      salario: 'R$ 7.000 – 9.000', status: 'recusada', tipo: 'aplicada',
+      data: '2024-07-22', tags: ['Vue.js', 'Nuxt.js'],
+      recrutador_id: null, processo_id: null, link: '#'
+    },
+    {
+      id: 11, titulo: 'Desenvolvedor Next.js',
+      empresa: 'RD Station', local: 'Remoto', modalidade: 'CLT',
+      salario: 'R$ 6.500 – 9.000', status: 'salva', tipo: 'salva',
+      data: '2024-11-22', tags: ['Next.js', 'React', 'SEO'],
+      recrutador_id: null, processo_id: null, link: '#'
+    },
+    {
+      id: 12, titulo: 'Desenvolvedor React Native',
+      empresa: 'Magazine Luiza', local: 'Remoto', modalidade: 'CLT',
+      salario: 'R$ 8.500 – 12.000', status: 'salva', tipo: 'salva',
+      data: '2024-11-25', tags: ['React Native', 'TypeScript', 'Mobile'],
+      recrutador_id: null, processo_id: null, link: '#'
+    }
+  ],
+
+  /* === CPT: processo === */
+  processos: [
+    {
+      id: 1, vaga_id: 1, empresa: 'Nubank', cargo: 'Desenvolvedor Frontend Senior',
+      etapas: [
+        {
+          nome: 'Candidatura enviada', status: 'done', data: '2024-10-12',
+          obs: null, screenshot: null
+        },
+        {
+          nome: 'Triagem RH', status: 'done', data: '2024-10-18',
+          obs: 'Conversa de 20 min com a Beatriz. Perguntou sobre experiencia com React e cultura remote-first. Otima impressao, muito acolhedora. Me pediu referencias.',
+          screenshot: null
+        },
+        {
+          nome: 'Teste Tecnico', status: 'done', data: '2024-10-25',
+          obs: 'Desafio de 3 horas: criar mini design system em React + TypeScript com acessibilidade. Entregue no prazo. Usaram Figma como referencia.',
+          screenshot: null
+        },
+        {
+          nome: 'Entrevista Tecnica', status: 'current', data: '2024-11-10',
+          obs: 'Agendada para 14h com dois engenheiros senior. Revisar: performance React, memo, useCallback, virtual DOM, arquitetura micro-frontend.',
+          screenshot: null
+        },
+        { nome: 'Entrevista com Gestor', status: 'pending', data: null, obs: null, screenshot: null },
+        { nome: 'Proposta', status: 'pending', data: null, obs: null, screenshot: null }
+      ]
+    },
+    {
+      id: 2, vaga_id: 2, empresa: 'iFood', cargo: 'Engenheiro Frontend',
+      etapas: [
+        { nome: 'Candidatura enviada', status: 'done', data: '2024-10-20', obs: null, screenshot: null },
+        {
+          nome: 'Triagem RH', status: 'done', data: '2024-10-28',
+          obs: 'Conversa rapida pelo Zoom. Gostaram do portfolio e do projeto apollo.rio.br. Falaram sobre stack atual: Vue 3 + Composition API.',
+          screenshot: null
+        },
+        { nome: 'Teste Tecnico', status: 'current', data: null, obs: 'Aguardando envio do desafio tecnico por email.', screenshot: null },
+        { nome: 'Entrevista Final', status: 'pending', data: null, obs: null, screenshot: null }
+      ]
+    },
+    {
+      id: 3, vaga_id: 3, empresa: 'VTEX', cargo: 'Dev Frontend Pleno',
+      etapas: [
+        { nome: 'Candidatura enviada', status: 'done', data: '2024-11-05', obs: null, screenshot: null },
+        {
+          nome: 'Triagem Automatica', status: 'current', data: '2024-11-07',
+          obs: 'Email de confirmacao recebido. Aguardando proxima etapa. Prazo estimado: 5 dias uteis.',
+          screenshot: null
+        },
+        { nome: 'Entrevista RH', status: 'pending', data: null, obs: null, screenshot: null },
+        { nome: 'Entrevista Tecnica', status: 'pending', data: null, obs: null, screenshot: null },
+        { nome: 'Proposta', status: 'pending', data: null, obs: null, screenshot: null }
+      ]
+    }
+  ],
+
+  /* === CPT: recrutador === */
+  recrutadores: [
+    {
+      id: 1, nome: 'Beatriz Lemos', empresa: 'Nubank',
+      cargo: 'Talent Acquisition',
+      email: 'beatriz.lemos@nubank.com.br',
+      linkedin: 'linkedin.com/in/beatrizlemos',
+      vaga_ids: [1, 4],
+      entrevistas: [
+        {
+          data: '2024-10-18', tipo: 'Triagem RH',
+          obs: 'Muito simpatica. Conversamos sobre cultura Nubank, autonomia dos times e trabalho remote-first. Deu dicas sobre o processo. Pediu referencias de ex-lider.',
+          screenshot: null
+        }
+      ]
+    },
+    {
+      id: 2, nome: 'Carlos Mendes', empresa: 'iFood',
+      cargo: 'Tech Recruiter',
+      email: 'carlos.mendes@ifood.com.br',
+      linkedin: 'linkedin.com/in/carlosmendes',
+      vaga_ids: [2, 10],
+      entrevistas: [
+        {
+          data: '2024-10-28', tipo: 'Triagem RH',
+          obs: 'Perguntou bastante sobre experiencia com times ageis e produto. Mencionou que a squad usa metodologia Shape Up. Boa conversa.',
+          screenshot: null
+        }
+      ]
+    },
+    {
+      id: 3, nome: 'Fernanda Azevedo', empresa: 'VTEX',
+      cargo: 'People Operations',
+      email: 'fernanda.azevedo@vtex.com',
+      linkedin: 'linkedin.com/in/fernandaazevedo',
+      vaga_ids: [3],
+      entrevistas: []
+    },
+    {
+      id: 4, nome: 'Marcos Oliveira', empresa: 'Nubank',
+      cargo: 'Senior Recruiter',
+      email: 'marcos.oliveira@nubank.com.br',
+      linkedin: 'linkedin.com/in/marcosoliveira',
+      vaga_ids: [4],
+      entrevistas: [
+        {
+          data: '2024-08-10', tipo: 'Entrevista RH',
+          obs: 'Processo cancelado internamente — vaga congelada por reestruturacao do time. Marcos foi proativo em avisar. Sugere tentar novamente no 1T25.',
+          screenshot: null
+        }
+      ]
+    },
+    {
+      id: 5, nome: 'Priscila Santos', empresa: 'Itau Unibanco',
+      cargo: 'HR Business Partner',
+      email: 'priscila.santos@itau.com.br',
+      linkedin: 'linkedin.com/in/priscilasantos',
+      vaga_ids: [7],
+      entrevistas: [
+        {
+          data: '2024-05-22', tipo: 'Entrevista Tecnica',
+          obs: 'Painel com 3 pessoas do time de arquitetura. Stack era Angular — fui honesto sobre preferir React. Boa troca tecnica mesmo assim. Nao avancei.',
+          screenshot: null
+        }
+      ]
+    }
+  ]
+};
+
+/* ============================================================
+   HELPERS
+============================================================ */
+var MESES_PT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+function fmtData(str) {
+  if (!str) return '\u2014';
+  var d = new Date(str + 'T12:00:00');
+  return d.getDate().toString().padStart(2,'0') + ' ' +
+         MESES_PT[d.getMonth()] + ' ' +
+         d.getFullYear();
+}
+
+function statusEmprego(anoMes) {
+  for (var i = 0; i < RV.periodos.length; i++) {
+    var p = RV.periodos[i];
+    if (p.inicio <= anoMes && (p.fim === null || p.fim >= anoMes)) return p.status;
+  }
+  return 'desempregado';
+}
+
+function initials(nome) {
+  return nome.split(' ').slice(0,2).map(function(n){ return n[0]; }).join('').toUpperCase();
+}
+
+/* ============================================================
+   STATUS BADGE HEADER
+============================================================ */
+(function() {
+  var now = new Date();
+  var ym  = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+  var s   = statusEmprego(ym);
+  var badge = document.getElementById('js-status-badge');
+  var txt   = document.getElementById('js-status-txt');
+  if (s === 'empregado') {
+    badge.className = 'rv-status-badge empregado';
+    txt.textContent = 'Empregado';
+  } else {
+    badge.className = 'rv-status-badge desempregado';
+    txt.textContent = 'Disponivel';
+  }
+}());
+
+/* ============================================================
+   STATS
+============================================================ */
+function renderStats() {
+  var total       = RV.vagas.length;
+  var aplicadas   = RV.vagas.filter(function(v){ return v.tipo === 'aplicada'; }).length;
+  var salvas      = RV.vagas.filter(function(v){ return v.tipo === 'salva'; }).length;
+  var entrevistas = RV.vagas.filter(function(v){ return v.status === 'entrevista'; }).length;
+  var procs       = RV.processos.length;
+  var empresas    = (function(){ var s = {}; RV.vagas.forEach(function(v){ s[v.empresa]=1; }); return Object.keys(s).length; }());
+  var taxa        = aplicadas > 0 ? Math.round((entrevistas / aplicadas) * 100) : 0;
+
+  var items = [
+    { v: aplicadas,    l: 'Candidaturas enviadas', ic: 'ri-send-plane-2-line' },
+    { v: salvas,       l: 'Vagas salvas',           ic: 'ri-bookmark-3-line'  },
+    { v: procs,        l: 'Processos ativos',       ic: 'ri-flow-chart'       },
+    { v: taxa + '%',   l: 'Taxa de entrevistas',    ic: 'ri-percent-line'     }
+  ];
+
+  document.getElementById('js-stats').innerHTML = items.map(function(it) {
+    return '<div class="rv-stat">' +
+      '<i class="' + it.ic + ' rv-stat-icon"></i>' +
+      '<div class="rv-stat-val">' + it.v + '</div>' +
+      '<div class="rv-stat-label">' + it.l + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+/* ============================================================
+   CHARTS
+============================================================ */
+function getMonthlyData() {
+  var counts = {};
+  RV.vagas.filter(function(v){ return v.tipo === 'aplicada'; }).forEach(function(v) {
+    var d = new Date(v.data + 'T12:00:00');
+    var k = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+    counts[k] = (counts[k] || 0) + 1;
+  });
+
+  var result = [];
+  for (var m = 1; m <= 11; m++) {
+    var k = '2024-' + String(m).padStart(2,'0');
+    result.push({ label: MESES_PT[m-1], count: counts[k] || 0, status: statusEmprego(k), key: k });
+  }
+  return result;
+}
+
+function getCompanyData() {
+  var freq = {};
+  RV.vagas.filter(function(v){ return v.tipo === 'aplicada'; }).forEach(function(v) {
+    freq[v.empresa] = (freq[v.empresa] || 0) + 1;
+  });
+  return Object.entries(freq)
+    .sort(function(a,b){ return b[1]-a[1]; })
+    .slice(0, 6)
+    .map(function(e){ return { empresa: e[0], count: e[1] }; });
+}
+
+function rvRenderCharts() {
+  if (typeof RValleChart === 'undefined') return;
+
+  RValleChart.bar('chart-mensal', getMonthlyData(), {
+    labelKey: 'label',
+    valueKey: 'count',
+    colorFn: function(d) { return d.status === 'empregado' ? '#22c55e' : '#eab308'; }
+  });
+
+  RValleChart.horizontal('chart-empresas', getCompanyData(), {
+    labelKey: 'empresa',
+    valueKey: 'count',
+    color: '#f45f00'
+  });
+}
+
+window.rvRenderCharts = rvRenderCharts;
+
+/* ============================================================
+   VAGAS SALVAS MINI LIST
+============================================================ */
+function renderSavedMini() {
+  var salvas = RV.vagas.filter(function(v){ return v.tipo === 'salva'; });
+  var el = document.getElementById('js-saved-mini');
+  if (!salvas.length) {
+    el.innerHTML = '<div class="rv-empty"><i class="ri-bookmark-line"></i>Nenhuma vaga salva ainda</div>';
+    return;
+  }
+  el.innerHTML = salvas.map(function(v) {
+    return '<div class="rv-mini-item">' +
+      '<div>' +
+        '<div class="rv-mini-empresa">' + v.empresa + '</div>' +
+        '<div class="rv-mini-cargo">' + v.titulo + '</div>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">' +
+        '<span class="rv-chip"><i class="ri-money-dollar-circle-line"></i>' + v.salario + '</span>' +
+        '<button class="rv-btn-ghost" style="padding:6px 10px;font-size:.72rem;" onclick="candidatar(' + v.id + ')">' +
+          '<i class="ri-send-plane-line"></i> Candidatar' +
+        '</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+/* ============================================================
+   VAGAS GRID
+============================================================ */
+var STATUS_MAP = {
+  aplicada:   { label: 'Candidatada',  cls: 'aplicada'   },
+  salva:      { label: 'Salva',        cls: 'salva'       },
+  entrevista: { label: 'Entrevista',   cls: 'entrevista'  },
+  recusada:   { label: 'Recusada',     cls: 'recusada'    },
+  oferta:     { label: 'Oferta',       cls: 'oferta'      }
+};
+
+function renderVagas(filtro) {
+  filtro = filtro || 'todas';
+  var lista = RV.vagas;
+  if (filtro !== 'todas') {
+    lista = lista.filter(function(v) {
+      if (filtro === 'aplicada')   return v.tipo === 'aplicada';
+      if (filtro === 'salva')      return v.tipo === 'salva';
+      if (filtro === 'entrevista') return v.status === 'entrevista';
+      if (filtro === 'recusada')   return v.status === 'recusada';
+      return true;
+    });
+  }
+
+  var el = document.getElementById('js-vagas-grid');
+  if (!lista.length) {
+    el.innerHTML = '<div class="rv-empty"><i class="ri-inbox-line"></i>Nenhuma vaga encontrada</div>';
+    return;
+  }
+
+  el.innerHTML = lista.map(function(v) {
+    var s = STATUS_MAP[v.status] || { label: v.status, cls: 'salva' };
+    return '<div class="rv-vaga-card" onclick="showVaga(' + v.id + ')">' +
+      '<div class="rv-vaga-top">' +
+        '<div>' +
+          '<div class="rv-vaga-empresa">' + v.empresa + '</div>' +
+          '<div class="rv-vaga-titulo">' + v.titulo + '</div>' +
+        '</div>' +
+        '<span class="rv-badge ' + s.cls + '">' + s.label + '</span>' +
+      '</div>' +
+      '<div class="rv-vaga-meta">' +
+        '<span><i class="ri-map-pin-line"></i>' + v.local + '</span>' +
+        '<span><i class="ri-money-dollar-circle-line"></i>' + v.salario + '</span>' +
+        '<span><i class="ri-calendar-line"></i>' + fmtData(v.data) + '</span>' +
+      '</div>' +
+      '<div class="rv-vaga-tags">' +
+        v.tags.map(function(t){ return '<span class="rv-tag">' + t + '</span>'; }).join('') +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+/* ============================================================
+   DRAWER DETALHE VAGA
+============================================================ */
+function showVaga(id) {
+  var v   = RV.vagas.find(function(x){ return x.id === id; });
+  var rec = v.recrutador_id ? RV.recrutadores.find(function(r){ return r.id === v.recrutador_id; }) : null;
+  var pro = v.processo_id   ? RV.processos.find(function(p){ return p.id === v.processo_id; }) : null;
+  var s   = STATUS_MAP[v.status] || { label: v.status, cls: 'salva' };
+
+  document.getElementById('js-d-empresa').textContent = v.empresa;
+  document.getElementById('js-d-titulo').textContent  = v.titulo;
+
+  var html = '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:var(--s-4);">' +
+    '<span class="rv-badge ' + s.cls + '">' + s.label + '</span>' +
+    '<span class="rv-chip">' + v.modalidade + '</span>' +
+  '</div>';
+
+  html += '<div style="margin-bottom:var(--s-4);">' +
+    '<div class="rv-detail-row"><span class="rv-detail-key">Local</span><span class="rv-detail-val">' + v.local + '</span></div>' +
+    '<div class="rv-detail-row"><span class="rv-detail-key">Salario</span><span class="rv-detail-val">' + v.salario + '</span></div>' +
+    '<div class="rv-detail-row"><span class="rv-detail-key">Modalidade</span><span class="rv-detail-val">' + v.modalidade + '</span></div>' +
+    '<div class="rv-detail-row"><span class="rv-detail-key">Data</span><span class="rv-detail-val">' + fmtData(v.data) + '</span></div>' +
+  '</div>';
+
+  if (rec) {
+    html += '<div style="background:var(--surface);border-radius:14px;padding:var(--s-3);margin-bottom:var(--s-4);">' +
+      '<p class="rv-subsec-title" style="margin-bottom:8px;">Recrutadora</p>' +
+      '<div style="font-weight:700;color:var(--txt-color-heading);font-size:.88rem;">' + rec.nome + '</div>' +
+      '<div style="font-size:.75rem;color:var(--muted);">' + rec.cargo + '</div>' +
+      '<a href="mailto:' + rec.email + '" class="rv-rec-email" style="font-size:.75rem;">' + rec.email + '</a>' +
+    '</div>';
+  }
+
+  if (pro) {
+    html += '<p class="rv-subsec-title" style="margin-bottom:var(--s-3);">Processo Seletivo</p>' +
+      '<div class="rv-timeline">' +
+      pro.etapas.map(function(e) {
+        var dotIcon = e.status === 'done' ? '<i class="ri-check-line"></i>' :
+                      e.status === 'current' ? '<i class="ri-loader-4-line"></i>' : '';
+        return '<div class="rv-etapa">' +
+          '<div class="rv-etapa-dot ' + e.status + '">' + dotIcon + '</div>' +
+          '<div class="rv-etapa-header">' +
+            '<span class="rv-etapa-nome">' + e.nome + '</span>' +
+          '</div>' +
+          (e.data ? '<div class="rv-etapa-data">' + fmtData(e.data) + '</div>' : '<div class="rv-etapa-data">Aguardando</div>') +
+          (e.obs ? '<div class="rv-etapa-obs">' + e.obs + '</div>' : '') +
+        '</div>';
+      }).join('') +
+      '</div>';
+  }
+
+  html += '<div style="margin-top:var(--s-4);">' +
+    '<a href="' + v.link + '" target="_blank" rel="noopener" class="rv-btn-primary" style="width:100%;text-decoration:none;">' +
+      '<i class="ri-external-link-line"></i> Ver vaga original' +
+    '</a>' +
+  '</div>';
+
+  document.getElementById('js-drawer-body').innerHTML = html;
+  document.getElementById('js-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+document.getElementById('js-overlay').addEventListener('click', function(e) {
+  if (e.target === e.currentTarget) closeDrawer();
+});
+
+document.getElementById('js-close-drawer').addEventListener('click', closeDrawer);
+
+function closeDrawer() {
+  document.getElementById('js-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ============================================================
+   PROCESSOS
+============================================================ */
+function renderProcessos() {
+  var el = document.getElementById('js-processos-list');
+  if (!RV.processos.length) {
+    el.innerHTML = '<div class="rv-empty"><i class="ri-flow-chart"></i>Nenhum processo ativo</div>';
+    return;
+  }
+
+  el.innerHTML = RV.processos.map(function(p) {
+    var done  = p.etapas.filter(function(e){ return e.status === 'done'; }).length;
+    var total = p.etapas.length;
+    var pct   = Math.round((done / total) * 100);
+
+    return '<div class="rv-processo-card">' +
+      '<div class="rv-processo-head">' +
+        '<div class="rv-processo-sub">' + p.empresa + '</div>' +
+        '<div class="rv-processo-nome">' + p.cargo + '</div>' +
+        '<div class="rv-progress">' +
+          '<div class="rv-progress-bar"><div class="rv-progress-fill" style="width:' + pct + '%"></div></div>' +
+          '<span class="rv-progress-txt">' + done + '/' + total + '</span>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="rv-timeline">' +
+        p.etapas.map(function(e, ei) {
+          var dotIcon = e.status === 'done' ? '<i class="ri-check-line"></i>' :
+                        e.status === 'current' ? '<i class="ri-time-line"></i>' : '';
+
+          var uploadId = 'up-' + p.id + '-' + ei;
+          var shotHtml = '';
+          if (e.screenshot) {
+            shotHtml = '<div class="rv-etapa-screenshot"><img src="' + e.screenshot + '" alt="Screenshot"></div>';
+          } else if (e.status === 'done') {
+            shotHtml = '<label class="rv-upload-zone" for="' + uploadId + '">' +
+              '<input type="file" id="' + uploadId + '" accept="image/*" ' +
+              'onchange="uploadEtapa(event,' + p.id + ',' + ei + ')">' +
+              '<i class="ri-image-add-line"></i>' +
+              '<span>Adicionar screenshot desta etapa</span>' +
+            '</label>';
+          }
+
+          return '<div class="rv-etapa">' +
+            '<div class="rv-etapa-dot ' + e.status + '">' + dotIcon + '</div>' +
+            '<div class="rv-etapa-header">' +
+              '<span class="rv-etapa-nome">' + e.nome + '</span>' +
+              (e.status === 'current' ? '<span class="rv-badge entrevista" style="font-size:.62rem;">Atual</span>' : '') +
+            '</div>' +
+            (e.data ? '<div class="rv-etapa-data"><i class="ri-calendar-line"></i> ' + fmtData(e.data) + '</div>' :
+                      '<div class="rv-etapa-data">Aguardando</div>') +
+            (e.obs ? '<div class="rv-etapa-obs">' + e.obs + '</div>' : '') +
+            shotHtml +
+          '</div>';
+        }).join('') +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function uploadEtapa(event, procId, etapaIdx) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var proc = RV.processos.find(function(p){ return p.id === procId; });
+    proc.etapas[etapaIdx].screenshot = e.target.result;
+    renderProcessos();
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ============================================================
+   RECRUTADORES
+============================================================ */
+function renderRecrutadores() {
+  var el = document.getElementById('js-recrutadores-list');
+  el.innerHTML = RV.recrutadores.map(function(r) {
+    var vagas = RV.vagas.filter(function(v){ return r.vaga_ids.indexOf(v.id) !== -1; });
+
+    var vagasHtml = '';
+    if (vagas.length) {
+      vagasHtml = '<div style="margin-bottom:var(--s-3);">' +
+        '<p class="rv-subsec-title">Vagas relacionadas</p>' +
+        vagas.map(function(v) {
+          var s = STATUS_MAP[v.status] || { label: v.status, cls: 'salva' };
+          return '<div class="rv-vaga-link-row">' +
+            '<span class="rv-vaga-link-nome">' + v.titulo + '</span>' +
+            '<span class="rv-badge ' + s.cls + '" style="font-size:.62rem;">' + s.label + '</span>' +
+          '</div>';
+        }).join('') +
+      '</div>';
+    }
+
+    var entHtml = '<div style="margin-bottom:var(--s-3);">' +
+      '<p class="rv-subsec-title">Entrevistas</p>';
+
+    if (r.entrevistas.length) {
+      entHtml += r.entrevistas.map(function(e) {
+        var upId = 'rec-' + r.id + '-' + e.data.replace(/-/g,'');
+        var shot = e.screenshot
+          ? '<div class="rv-etapa-screenshot" style="margin-top:var(--s-2)"><img src="' + e.screenshot + '" alt="Screenshot" style="border-radius:10px;"></div>'
+          : '<label class="rv-upload-zone" for="' + upId + '" style="margin-top:var(--s-2);">' +
+              '<input type="file" id="' + upId + '" accept="image/*" onchange="uploadEntrevista(event,' + r.id + ',\'' + e.data + '\')">' +
+              '<i class="ri-image-add-line"></i>' +
+              '<span>Screenshot da entrevista</span>' +
+            '</label>';
+
+        return '<div class="rv-entrevista-card">' +
+          '<div class="rv-entrevista-meta">' +
+            '<span class="rv-entrevista-tipo">' + e.tipo + '</span>' +
+            '<span class="rv-entrevista-data"><i class="ri-calendar-event-line"></i>' + fmtData(e.data) + '</span>' +
+          '</div>' +
+          '<div class="rv-entrevista-obs">' + e.obs + '</div>' +
+          shot +
+        '</div>';
+      }).join('');
+    } else {
+      entHtml += '<div style="color:var(--muted);font-size:.82rem;padding:8px 0;">Nenhuma entrevista registrada</div>';
+    }
+
+    entHtml += '<button class="rv-btn-primary" style="margin-top:var(--s-2);" onclick="addEntrevista(' + r.id + ')">' +
+      '<i class="ri-add-line"></i> Registrar entrevista</button></div>';
+
+    var linkedinHtml = r.linkedin
+      ? '<a href="https://' + r.linkedin + '" target="_blank" rel="noopener" ' +
+          'style="display:inline-flex;align-items:center;gap:5px;color:var(--primary);font-size:.8rem;text-decoration:none;">' +
+          '<i class="ri-linkedin-box-line"></i> LinkedIn</a>'
+      : '';
+
+    return '<div class="rv-rec-item" id="rec-' + r.id + '">' +
+      '<div class="rv-rec-header" onclick="toggleRec(' + r.id + ')" role="button" aria-expanded="false">' +
+        '<div class="rv-rec-avatar">' + initials(r.nome) + '</div>' +
+        '<div class="rv-rec-info">' +
+          '<div class="rv-rec-nome">' + r.nome + '</div>' +
+          '<div class="rv-rec-cargo">' + r.cargo + ' &middot; ' + r.empresa + '</div>' +
+          '<a href="mailto:' + r.email + '" class="rv-rec-email" onclick="event.stopPropagation()">' + r.email + '</a>' +
+        '</div>' +
+        '<i class="ri-arrow-down-s-line rv-rec-chevron"></i>' +
+      '</div>' +
+      '<div class="rv-rec-body">' +
+        '<div class="rv-rec-body-inner">' +
+          vagasHtml + entHtml + linkedinHtml +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function toggleRec(id) {
+  var el = document.getElementById('rec-' + id);
+  el.classList.toggle('open');
+  var hdr = el.querySelector('.rv-rec-header');
+  hdr.setAttribute('aria-expanded', el.classList.contains('open'));
+}
+
+function uploadEntrevista(event, recId, data) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var rec = RV.recrutadores.find(function(r){ return r.id === recId; });
+    var ent = rec.entrevistas.find(function(en){ return en.data === data; });
+    ent.screenshot = e.target.result;
+    renderRecrutadores();
+    document.getElementById('rec-' + recId).classList.add('open');
+  };
+  reader.readAsDataURL(file);
+}
+
+function addEntrevista(recId) {
+  var data = window.prompt('Data da entrevista (AAAA-MM-DD):');
+  if (!data) return;
+  var tipo = window.prompt('Tipo (ex: Triagem RH, Entrevista Tecnica, Entrevista Final):');
+  if (!tipo) return;
+  var obs  = window.prompt('Observacoes e anotacoes:');
+
+  var rec = RV.recrutadores.find(function(r){ return r.id === recId; });
+  rec.entrevistas.push({ data: data, tipo: tipo, obs: obs || '', screenshot: null });
+  renderRecrutadores();
+  document.getElementById('rec-' + recId).classList.add('open');
+}
+
+function candidatar(vagaId) {
+  var v = RV.vagas.find(function(x){ return x.id === vagaId; });
+  if (!v) return;
+  v.tipo   = 'aplicada';
+  v.status = 'aplicada';
+  v.data   = new Date().toISOString().slice(0,10);
+  renderSavedMini();
+  renderVagas();
+  renderStats();
+  alert('Candidatura registrada para: ' + v.titulo + ' — ' + v.empresa);
+}
+
+/* ============================================================
+   TABS
+============================================================ */
+document.querySelectorAll('.rv-tab').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.rv-tab').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.rv-panel').forEach(function(p){ p.classList.remove('active'); });
+    btn.classList.add('active');
+    var panel = document.getElementById('tab-' + btn.dataset.tab);
+    if (panel) panel.classList.add('active');
+  });
+});
+
+/* Filtros de vagas */
+document.querySelectorAll('.rv-filter-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.rv-filter-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    renderVagas(btn.dataset.filter);
+  });
+});
+
+/* ============================================================
+   INIT
+============================================================ */
+document.addEventListener('DOMContentLoaded', function() {
+  /* Forca tema claro */
+  document.documentElement.classList.remove('dark-mode');
+  document.documentElement.classList.add('light-mode');
+
+  renderStats();
+  renderSavedMini();
+  renderVagas();
+  renderProcessos();
+  renderRecrutadores();
+
+  /* Charts — aguardar rvalle-chart.js estar pronto */
+  function tryCharts(attempts) {
+    if (typeof RValleChart !== 'undefined') {
+      rvRenderCharts();
+    } else if (attempts > 0) {
+      setTimeout(function(){ tryCharts(attempts - 1); }, 120);
+    }
+  }
+  tryCharts(10);
+});
+
+/* ESC fecha drawer */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeDrawer();
+});
+</script>
+</body>
+</html>

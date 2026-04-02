@@ -1,0 +1,148 @@
+/* ═══════════════════════════════════════════════════════════
+   07 — PANEL 2: OVERLAY
+   Positioning overlay card with animated simulation.
+   Modal: frosted-glass backdrop + "Posicionar Assinatura" card.
+   ═══════════════════════════════════════════════════════════ */
+#sign-overlay {
+  position: absolute; inset: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: center;
+}
+#ov-bg { position: absolute; inset: 0; background: rgba(255,255,255,.88); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+
+/* overlay card */
+#ov-card {
+  position: relative; z-index: 1;
+  background: #fff; border: 1px solid var(--brd);
+  border-radius: var(--rlg); padding: 20px 18px 16px;
+  width: 230px; text-align: center;
+  box-shadow: var(--sh-card);
+  display: flex; flex-direction: column; align-items: center;
+  margin-top: -380px;
+}
+.ov-icon {
+  margin-top: -300px;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--sf2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: var(--ink);
+  margin-bottom: 10px;
+}
+.ov-title { font-size: 13px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 3px; }
+.ov-sub { font-family: var(--mono); font-size: 8px; color: var(--ghost); line-height: 1.7; margin-bottom: 12px; }
+
+/* simulation animation wrapper */
+.sim-wrap {
+  position: relative; width: 100%; height: 62px;
+  margin-bottom: 12px; border-radius: 8px;
+  background: var(--sf); overflow: hidden;
+}
+.sim-lines {
+  position: absolute; top: 7px; left: 9px; right: 9px;
+  display: flex; flex-direction: column; gap: 4px; opacity: .14;
+}
+.sim-line { height: 4px; background: var(--ink); border-radius: 2px; }
+.sim-line:nth-child(2) { width: 65%; }
+.sim-line:nth-child(3) { width: 45%; }
+
+/* animated rectangle expansion */
+.sim-rect {
+  position: absolute; left: 12%; top: 14%;
+  width: 0; height: 0;
+  background: var(--primary-l);
+  border: 1.5px solid var(--primary); border-radius: 2px;
+  opacity: 0;
+  animation: simr-ext 5s ease-in-out infinite;
+}
+@keyframes simr-ext {
+  0%,20%  { opacity:0; width:0; height:0 }
+  24%     { opacity:1; width:0; height:0 }
+  55%     { opacity:1; width:65%; height:62% }
+  72%     { opacity:1; width:65%; height:62% }
+  85%     { opacity:1; width:65%; height:62% }
+  95%,100%{ opacity:0; width:65%; height:62% }
+}
+
+/* P1 dot */
+.sim-dot {
+  position: absolute; left: 12%; top: 14%;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--primary); opacity: 0;
+  transform: translate(-50%,-50%) scale(0);
+  animation: simd 5s ease-in-out infinite;
+}
+@keyframes simd {
+  0%,18%  { opacity:0; transform:translate(-50%,-50%) scale(0) }
+  24%     { opacity:1; transform:translate(-50%,-50%) scale(1) }
+  82%     { opacity:1; transform:translate(-50%,-50%) scale(1) }
+  92%,100%{ opacity:0; transform:translate(-50%,-50%) scale(0) }
+}
+
+/* P2 dot */
+.sim-dot2 {
+  position: absolute; left: 77%; top: 76%;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--primary); opacity: 0;
+  transform: translate(-50%,-50%) scale(0);
+  animation: simd2 5s ease-in-out infinite;
+}
+@keyframes simd2 {
+  0%,50%  { opacity:0; transform:translate(-50%,-50%) scale(0) }
+  55%     { opacity:1; transform:translate(-50%,-50%) scale(1) }
+  82%     { opacity:1; transform:translate(-50%,-50%) scale(1) }
+  92%,100%{ opacity:0; transform:translate(-50%,-50%) scale(0) }
+}
+
+/* label inside animated rect */
+.sim-label {
+  position: absolute; left: 44.5%; top: 45%;
+  transform: translate(-50%,-50%);
+  font-size: 12px; font-weight: 700; color: var(--primary);
+  opacity: 0; pointer-events: none;
+  font-family: var(--ff);
+  animation: simlbl 5s ease-in-out infinite;
+}
+@keyframes simlbl {
+  0%,72% { opacity:0 }
+  75%    { opacity:0; transform:translate(-50%,-50%) scale(0.8) }
+  82%    { opacity:1; transform:translate(-50%,-50%) scale(1) }
+  92%    { opacity:1 }
+  100%   { opacity:0 }
+}
+
+/* animated hand pointer */
+.sim-hand {
+  position: absolute; font-size: 16px;
+  pointer-events: none; opacity: 0;
+  animation: simh-ext 5s ease-in-out infinite;
+}
+@keyframes simh-ext {
+  0%              { opacity:0; left:10%; top:11% }
+  8%              { opacity:1; left:10%; top:11%; transform:scale(1) }
+  16%             { transform:scale(.8) }
+  24%             { opacity:1; left:10%; top:11%; transform:scale(1) }
+  55%             { opacity:1; left:77%; top:76%; transform:scale(1) }
+  63%             { transform:scale(.8) }
+  72%             { opacity:1; left:77%; top:76%; transform:scale(1) }
+  85%             { opacity:1; left:77%; top:76%; transform:scale(1) }
+  95%,100%        { opacity:0 }
+}
+
+/* overlay buttons */
+#btn-iniciar {
+  width: 100%; padding: 10px; margin-bottom: 5px;
+  background: var(--ink); color: #fff; border-radius: var(--r);
+  font-family: var(--ff); font-size: 11.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: background .14s var(--ease);
+}
+#btn-iniciar:hover { background: #282828; }
+#btn-auto {
+  width: 100%; padding: 8px;
+  background: none; color: var(--ghost); border-radius: var(--r);
+  font-family: var(--ff); font-size: 11.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: background .14s var(--ease), color .14s;
+}
+#btn-auto:hover { background: var(--sf2); color: var(--ink); }

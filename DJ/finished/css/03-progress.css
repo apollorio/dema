@@ -1,0 +1,12 @@
+/* ═══════════════════════════════════════════════════════
+   03 · PROGRESS — Scroll progress bar
+   ═══════════════════════════════════════════════════════ */
+
+.dj-progress {
+  position: fixed; top: 0; left: 0;
+  height: 2px;
+  background: var(--dj-primary);
+  z-index: 9999; width: 0;
+  transition: width 75ms linear;
+  pointer-events: none;
+}

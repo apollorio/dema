@@ -1,0 +1,33 @@
+/* ═══════════════════════════════════════════════════════
+   06 · METRICS — Stats bar (Since, Collectives, Base, Label)
+   ═══════════════════════════════════════════════════════ */
+
+.dj-metrics {
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  padding: 28px var(--dj-pad-x);
+  background: var(--dj-bg-neutral);
+}
+
+.dj-metrics-grid {
+  max-width: var(--dj-max-width); margin: 0 auto;
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 20px; text-align: center;
+  font-family: var(--dj-ff-mono);
+}
+
+@media (min-width: 600px) {
+  .dj-metrics-grid { grid-template-columns: repeat(4, 1fr); gap: 0; }
+}
+
+.dj-metric-label {
+  font-size: 0.66rem; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--dj-txt-muted); margin-bottom: 6px;
+}
+
+.dj-metric-value {
+  font-size: 1.45rem; font-weight: 700;
+  color: var(--dj-black); letter-spacing: -0.03em;
+}
+
+.dj-metric-value.accent { color: var(--dj-primary); }

@@ -1,0 +1,16 @@
+/* ═══════════════════════════════════════════════════════════
+   03 — PANEL ENGINE
+   Fixed fullscreen panels with opacity/visibility switching.
+   Driven by page-layout.js CDN — adds .as-on to active panel.
+   ═══════════════════════════════════════════════════════════ */
+[data-panel] {
+  position: fixed; inset: 0;
+  width: 100dvw; height: 100dvh;
+  will-change: transform, opacity;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  visibility: hidden; opacity: 0; z-index: 1;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+[data-panel].as-on { z-index: 2; }
+[data-to], [data-back] { cursor: pointer; }

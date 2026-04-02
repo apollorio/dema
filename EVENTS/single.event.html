@@ -1,0 +1,863 @@
+﻿
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apollo Event | Sunset Theory</title>
+    
+    <!-- Mandatory CDN -->
+    <script src="https://cdn.apollo.rio.br/v1.0.0/core.js" fetchpriority="high"></script>
+    
+    <!-- Mandatory Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Space+Grotesk:wght@300..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    
+    <!-- Remix Icon -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <style>
+        /* --- MANDATORY BASE CSS BLOCK --- */
+        :root{
+            --ff-fun:"Shrikhand",cursive;
+            --ff-mono:"Space Mono",monospace;
+            --ff-main:"Space Grotesk",system-ui,-apple-system,sans-serif;
+            --txt-rgb:19,21,23;
+            --primary:#f45f00;
+            --bg: #ffffff;
+            --surface: #f4f4f5;
+            --border: #e4e4e7;
+            --black-1:#121214;
+            --radius-sm:8px;
+            --radius:16px;
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        /* --- CUSTOM THEME --- */
+        :root {
+            --primary-event: var(--primary); /* User customizable */
+            --max-w: 1280px;
+        }
+
+        /* --- RESET & BASE --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--black-1);
+            font-family: var(--ff-main);
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.5;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        /* Page Loader Curtain */
+        .page-loader {
+            position: fixed;
+            inset: 0;
+            background: var(--black-1);
+            z-index: 9999;
+            transform-origin: bottom;
+        }
+        
+        a { color: inherit; text-decoration: none; cursor: pointer; }
+        img { display: block; max-width: 100%; }
+        ul { list-style: none; }
+        
+        /* Typography */
+        h1, h2, h3, h4 { font-weight: 800; line-height: 0.95; color: var(--black-1); letter-spacing: -0.03em; }
+        .font-mono { font-family: var(--ff-mono); letter-spacing: -0.03em; }
+
+        .container {
+            width: 100%;
+            padding: 0 20px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* --- HERO (MOBILE FIRST) --- */
+        .hero {
+            padding-top: 100px;
+            padding-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background Animated Text */
+        .hero-bg-marquee {
+            position: absolute;
+            top: 10%;
+            left: 0;
+            font-size: 30vh;
+            font-weight: 900;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(0,0,0,0.06);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 0;
+            font-family: var(--ff-main);
+            line-height: 0.8;
+            opacity: 0.6;
+        }
+
+        .hero-meta-top {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+            position: relative; z-index: 2;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            height: 32px;
+            padding: 0 16px;
+            border-radius: 100px;
+            font-family: var(--ff-mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+          cursor:crosshair;
+        }
+
+        .pill.status { background: var(--black-1); color: white; }
+        .pill.cat { border: 0.3px solid var(--black-1); color: var(--black-9); background: transparent; }
+
+        /* HERO TITLE - The Main Event */
+        .hero-title-wrap {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 32px;
+        }
+
+        .hero-title {
+            font-size: 16vw; /* Massive on mobile */
+            text-transform: uppercase;
+            color: var(--black-1); /* Solid color for readability */
+            display: flex;
+            flex-direction: column;
+            /* Removed mix-blend-mode for readability */
+          cursor:crosshair;
+        }
+
+        .title-line {
+            display: block;cursor:crosshair;
+            overflow: hidden; /* For reveal animation */
+        }
+        
+        .title-word {
+            display: block;cursor:crosshair;
+            transform: translateY(120%); /* Start hidden */
+        }
+
+        .hero-info-grid {
+            display: grid;
+            gap: 24px;
+            position: relative; z-index: 2;
+            border-top: 1px solid var(--black-9);
+            padding-top: 24px;
+        }
+
+        .info-block {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-label {
+            font-family: var(--ff-mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #666;
+            letter-spacing: 0.1em;
+          cursor:crosshair;
+        }
+
+        .info-value {
+            font-size: 24px;
+            font-weight: 600;
+          cursor:crosshair;
+        }
+        
+        .info-value.date {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .hero-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .tag-bubble {
+            padding: 8px 16px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: 0.3s;
+          cursor:crosshair;
+        }
+        .tag-bubble:hover { background: var(--black-1); color: white; }
+
+        /* --- MEDIA SECTION --- */
+        .media-section {
+            margin-bottom: 60px;
+        }
+
+        .video-frame {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: black;
+            overflow: hidden;
+            border-radius: 0;
+            position: relative;
+        }
+        
+        .video-frame iframe {
+            width: 100%; height: 100%; opacity: 0.8;
+            transition: opacity 0.5s;
+        }
+        .video-frame:hover iframe { opacity: 1; }
+
+        /* --- CONTENT LAYOUT --- */
+        .main-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-bottom: 60px;
+        }
+
+        .content-col {
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+        }
+
+        /* Bio */
+        .event-bio {
+            font-size: 20px;
+            line-height: 1.5;
+            font-weight: 400;
+          padding: 0px 1.5rem 25px;
+          cursor:crosshair;
+        }
+
+        /* Gallery */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 60px;
+        }
+        .gallery-item {
+            aspect-ratio: 1/1;
+            overflow: hidden;
+            border-radius: var(--radius-sm);
+            background: #eee;
+        }
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: filter 0.3s;
+        }
+        .gallery-img:hover { filter: grayscale(0%); }
+        .gallery-item:nth-child(3) { grid-column: span 2; aspect-ratio: 2/1; }
+
+
+        /* Timetable */
+        .timetable-list {
+            border-top: 1px solid var(--border);
+        }
+        .tt-item {
+            display: grid;
+            grid-template-columns: 60px 1fr auto;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            transition: 0.3s;
+        }
+        .tt-item:hover { background: #fafafa; padding-left: 10px; padding-right: 10px; }
+
+        .tt-time { font-family: var(--ff-mono); font-size: 12px; color: #666; font-weight: 700; }
+        .tt-artist { display: flex; align-items: center; gap: 12px; }
+        .tt-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; filter: grayscale(100%); }
+        .tt-name { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+
+        /* --- ACTION BAR (Sticky/Fixed) --- */
+        .action-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        /* Ticket Widget - Requested Style */
+        .ticket-widget {
+            background: var(--surface);
+            padding: 32px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        
+        .ticket-header {
+            font-family: var(--ff-mono);
+            font-size: 19px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            display: block;
+            letter-spacing: 0.05em;
+            color: var(--black-9);
+            font-weight: 700;
+          opacity:.75;
+            text-align: left;
+        }
+        
+        .ticket-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 20px;
+            background: var(--black-1);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 8px;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+            margin: 0px;
+        }
+        
+        .ticket-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 0%; height: 100%;
+            background: var(--primary-event);
+            transition: 0.4s ease;
+            z-index: 1;
+        }
+        .ticket-btn span { position: relative; z-index: 2; }
+        .ticket-btn:hover::before { width: 100%; }
+
+        /* Secondary Button (Lista Amiga) */
+        .ticket-btn.secondary {
+            background: transparent;
+            border: 1px solid var(--black-1);
+            color: var(--black-1);
+            margin-top: 25px; /* Cool spacing */
+        }
+        .ticket-btn.secondary::before {
+            background: var(--black-1);
+        }
+        .ticket-btn.secondary:hover {
+            color: white;
+        }
+
+        .coupon-box {
+            border: 1px dashed var(--black-1);border-top: none;
+            padding: 12px;
+            font-family: var(--ff-mono);
+            font-size: 12px;
+            margin: 0 auto 24px;
+            cursor: pointer;
+            border-radius: 0 0 8px 8px;
+            background: white;
+          width:97%;opacity:.6;
+          text-transform: uppercase;
+        }
+        .coupon-box:hover { background: #f0f0f0; }
+
+      .coupon-on-event {
+        font-weight: 900;
+        font-size:13px;
+        font-family:system-ui;
+        display: inline-block;
+  color: transparent;
+  background-image: url("https://assets.apollo.rio.br/i/circular.svg");
+  background-color: var(--black-1);
+  background-size: 600px;
+  background-position: 50% 75%;
+  background-blend-mode: overlay;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+      }
+      
+        /* Location Mini */
+        .location-mini {
+            margin-top: 32px;
+          
+          z-index:1;
+        }
+        .loc-map-frame {
+            height: 380px;
+            background: #eee;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-top: 12px;
+            filter: grayscale(100%);
+            transition: 0.3s;
+          z-index:1;
+        }
+        .loc-map-frame:hover { filter: grayscale(0%); }
+        
+        .directions-box {
+            display: flex;
+          margin-top:-65px;
+            gap: 0px;
+        }
+        .dir-input {
+          flex: 1;
+          margin: 0 0 0 20px;
+          background: rgba(255,255,255,.13);
+          backdrop-filter: blur(16px) saturate(120%);
+          -webkit-backdrop-filter: blur(16px) saturate(120%);
+          border: 1px solid rgba(255, 255, 255, 0.25);
+          border: 1px solid var(--border);
+          border-right: none;
+          padding: 10px;
+          border-radius: 15px 0 0 15px;
+          font-family: var(--ff-mono);
+          font-size: 11px;
+          color: white;
+          z-index:9250;
+     }
+     .dir-input::placeholder {
+        color: white;
+       font-size: 13px;
+        opacity:.7;
+       letter-spacing:0.3px;
+          } 
+      
+        .dir-go {
+                    z-index:9250;
+            width: 40px;margin-right: 20px;padding:0px;
+            background: var(--black-1);
+            color: white;
+            border: none;
+            border-radius: 0px 15px 15px 0px;
+          font-size:26px;
+          cursor:grab;
+        }
+
+        /* --- event-footer IMAGE --- */
+        .event-footer-visual {
+            height: 80vh;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .event-footer-visual img {
+            width: 100%; height: 100%; object-fit: cover;
+            position: absolute; top: 0; left: 0; z-index: 1;
+        }
+        .event-footer-text h2 {
+            position: relative; z-index: 2;
+            color: white;
+            font-size: clamp(40px, 8vw, 80px);
+            font-weight: 800;
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1;
+            letter-spacing: -0.04em;
+            text-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        /* --- DESKTOP UPGRADES --- */
+        @media (min-width: 1024px) {
+            .container { max-width: 1280px; padding: 0 40px; }
+            
+            .hero-title { font-size: 140px; }
+            .hero-bg-marquee { font-size: 25vw; top: 0; }
+            
+            .main-layout {
+                flex-direction: row;
+                align-items: start;
+            }
+            .content-col {
+                flex: 1;
+                padding-right: 60px;
+            }
+            .action-sidebar {
+                width: 380px;
+                position: sticky;
+                top: 40px;
+            }
+            
+            .hero-info-grid {
+                grid-template-columns: repeat(4, auto);
+                justify-content: start;
+                gap: 60px;
+            }
+            
+            .bio-text { font-size: 28px; }
+        }
+      
+      .event-video-frame {
+            width: 100%;
+            height: 550px;
+        margin:0px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            position: relative;
+            background: var(--black-1);
+            border: 0.3px solid var(--border);
+        }
+
+          .event-video-frame iframe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            transform: translate(-50%, -50%) scale(1.28);
+            border: none;
+            pointer-events: none;
+        }
+
+              .event-video-frame::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 30% 40%, rgba(244, 95, 0, 0.06) 0%, transparent 60%),
+                linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.12) 100%);
+            animation: breathe 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+                margin:0px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Curtain Loader -->
+    <div class="page-loader"></div>
+
+    <div class="container">
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <!-- Background Text -->
+            <div class="hero-bg-marquee">SUNSET THEORY</div>
+
+            <div class="hero-meta-top">
+                <!-- Taxonomy: EVENT CATEGORY -->
+                <!-- Use this tag for the main category -->
+                <div class="pill status">UNDERGROUND</div>
+                
+                <!-- Taxonomy: EVENT TYPE & TAG -->
+                <!-- Use this for specific sub-types -->
+                <div class="pill cat">TECHNO / INDUSTRIAL</div>
+            </div>
+
+            <div class="hero-title-wrap">
+                <h1 class="hero-title">
+                    <span class="title-line"><span class="title-word">SUNSET</span></span>
+                    <span class="title-line"><span class="title-word">THEORY</span></span>
+                    <span class="title-line"><span class="title-word" style="color:var(--primary-event)">VOL.04</span></span>
+                </h1>
+            </div>
+
+            <div class="hero-info-grid">
+                <div class="info-block">
+                    <span class="info-label">Date</span>
+                    <span class="info-value date">24 FEV</span>
+                </div>
+                <div class="info-block">
+                    <span class="info-label">Hours</span>
+                    <span class="info-value">23:00 - 08:00 (+1)</span>
+                </div>
+                <div class="info-block">
+                    <span class="info-label">Location</span>
+                    <span class="info-value">Fabrika, Rio</span>
+                </div>
+                <div class="info-block">
+                    <span class="info-label">Sounds</span>
+                    <div class="hero-tags">
+                        <span class="tag-bubble">Industrial</span>
+                        <span class="tag-bubble">Hard Groove</span>
+                        <span class="tag-bubble">Hypnotic</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="container main-layout">
+        
+        <!-- LEFT COLUMN: Content -->
+        <div class="content-col">
+            
+            <!-- Video -->
+            <div class="media-section">
+                <div class="event-video-frame">
+                   <iframe 
+                src="https://www.youtube.com/embed/I5VCMnWbwcE?autoplay=1&mute=1&loop=1&playlist=I5VCMnWbwcE&controls=0&showinfo=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1"
+                allow="autoplay; encrypted-media"
+                allowfullscreen>
+            </iframe>
+                </div>
+            </div>
+
+            <!-- Bio -->
+            <div class="event-bio reveal-up">
+                Uma jornada sensorial pelas frequências mais cruas do techno. Sunset Theory retorna ao distrito industrial abandonado para entregar uma experiência incomparável. Espere som de alta fidelidade, iluminação imersiva e uma pista dedicada à dança. Esta edição apresenta um lineup curado focando no ressurgimento do hard groove.
+            </div>
+
+            <!-- Timetable -->
+            <div class="timetable-section reveal-up">
+                <h3 style="margin-bottom:24px; text-transform:uppercase;">Timetable</h3>
+                <div class="timetable-list">
+                    <!-- Item -->
+                    <div class="tt-item">
+                        <span class="tt-time">23:00</span>
+                        <div class="tt-artist">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80" class="tt-avatar" alt="DJ">
+                            <span class="tt-name">Marta Supernova</span>
+                        </div>
+                        <i class="ri-arrow-right-line" style="opacity:0.3"></i>
+                    </div>
+                    <!-- Item -->
+                    <div class="tt-item">
+                        <span class="tt-time">01:30</span>
+                        <div class="tt-artist">
+                            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&q=80" class="tt-avatar" alt="DJ">
+                            <span class="tt-name">Leo Janeiro</span>
+                        </div>
+                        <i class="ri-arrow-right-line" style="opacity:0.3"></i>
+                    </div>
+                    <!-- Item -->
+                    <div class="tt-item">
+                        <span class="tt-time">04:00</span>
+                        <div class="tt-artist">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" class="tt-avatar" alt="DJ">
+                            <span class="tt-name">DJ Hell</span>
+                        </div>
+                        <i class="ri-arrow-right-line" style="opacity:0.3"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gallery -->
+            <div class="gallery-grid">
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&q=80" class="gallery-img reveal-img" alt="Vibe"></div>
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80" class="gallery-img reveal-img" alt="Vibe"></div>
+                <div class="gallery-item" style="grid-column: span 2;"><img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1200&q=80" class="gallery-img wide reveal-img" alt="Vibe"></div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN: Action Center -->
+        <div class="action-sidebar">
+            
+            <!-- Ticket Widget -->
+            <div class="ticket-widget">
+                <span class="ticket-header">ACESSOS OFICIAIS</span>
+                
+                <!-- External Ticket Link -->
+                <a href="https://example.com/tickets" target="_blank" rel="noopener" class="ticket-btn">
+                    <span>COMPRAR INGRESSO</span>
+                </a>
+
+                
+                
+                <div class="coupon-box" title="Clique para copiar">
+                  Use our official coupon: <span class="coupon-on-event" id="coupon-event">APOLLO10</span>
+                </div>
+
+
+
+<!-- List Link (New) -->
+                <a href="https://example.com/list" target="_blank" rel="noopener" class="ticket-btn secondary">
+                    <span>LISTA AMIGA</span>
+                </a>
+            </div>
+
+            <!-- Location -->
+            <div class="location-mini">
+                <h3 style="font-size:20px;">Fabrika</h3>
+                <p style="font-size:14px; color:#666; margin-top:4px;">Estrada das Furnas, 1805 - Alto da Boa Vista</p>
+                
+                <div class="loc-map-frame">
+                    <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=-43.25,-23.00,-43.20,-22.95&layer=mapnik" width="100%" height="100%" frameborder="0"></iframe>
+                </div>
+
+                <form class="directions-box" action="https://www.google.com/maps/dir/" target="_blank">
+                    <input type="text" name="saddr" placeholder="Escreva aqui onde você está para mostrarmos o caminho" class="dir-input">
+                    <input type="hidden" name="daddr" value="Fabrika, Rio de Janeiro">
+                    <button type="submit" class="dir-go" title="Obter direções"><i class="ri-guide-line"></i></button>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- event-footer VISUAL -->
+    <div class="event-footer-visual">
+        <img src="https://images.unsplash.com/photo-1493225255756-d9584f8606e9?w=1600&q=80" alt="event-footer" class="parallax-event-footer">
+        <div class="event-footer-text">
+            <h2>See you on the floor</h2>
+        </div>
+    </div>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // --- PAGE LOAD SEQUENCE ---
+        const tl = gsap.timeline();
+
+        // 1. Lift Curtain
+        tl.to(".page-loader", {
+            scaleY: 0,
+            duration: 1,
+            ease: "power4.inOut"
+        });
+
+        // 2. Reveal Title Words
+        tl.to(".title-word", {
+            y: "0%",
+            duration: 1.2,
+            stagger: 0.1,
+            ease: "power3.out"
+        }, "-=0.5");
+
+        // 3. Reveal Meta & Tags
+        tl.from(".hero-top-meta, .hero-info-grid", {
+            y: 40,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: "power2.out"
+        }, "-=0.8");
+
+        // --- SCROLL ANIMATIONS ---
+        
+        // Marquee Scroll
+        gsap.to(".hero-bg-marquee", {
+            xPercent: -20,
+            ease: "none",
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "bottom top",
+                scrub: 1
+            }
+        });
+
+        // Text Reveal Up
+        gsap.utils.toArray('.reveal-up').forEach(elem => {
+            gsap.from(elem, {
+                scrollTrigger: {
+                    trigger: elem,
+                    start: "top 85%"
+                },
+                y: 50,
+                opacity: 0,
+                duration: 1,
+                ease: "power3.out"
+            });
+        });
+
+        // Image Parallax Effect
+        gsap.utils.toArray('.gallery-img').forEach(img => {
+            gsap.fromTo(img, 
+                { scale: 1.2 },
+                {
+                    scale: 1,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: img,
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: true
+                    }
+                }
+            );
+        });
+        
+        // event-footer Parallax
+        gsap.to(".parallax-event-footer", {
+            yPercent: 20,
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".event-footer-visual",
+                start: "top bottom",
+                end: "bottom top",
+                scrub: true
+            }
+        });
+
+    </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"6f9fe350d9f7425796d640adb85decb2","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+
+<!-- PHP: apollo-events/templates/partials/fab-menu.php -->
+<button class="nh-menu-fab" id="nhMenuFab" aria-label="Menu Apollo" aria-expanded="false" aria-haspopup="true">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="20" height="20" style="display:block;flex-shrink:0;pointer-events:none"><path d="M21 17C21 19.2091 19.2091 21 17 21C14.7909 21 13 19.2091 13 17C13 14.7909 14.7909 13 17 13C19.2091 13 21 14.7909 21 17ZM11 7C11 9.20914 9.20914 11 7 11C4.79086 11 3 9.20914 3 7C3 4.79086 4.79086 3 7 3C9.20914 3 11 4.79086 11 7ZM21 7C21 9.20914 19.2091 11 17 11C16.2584 11 15.5634 10.7972 14.9678 10.4453L10.4453 14.9678C10.7972 15.5634 11 16.2584 11 17C11 19.2091 9.20914 21 7 21C4.79086 21 3 19.2091 3 17C3 14.7909 4.79086 13 7 13C7.74116 13 8.43593 13.2022 9.03125 13.5537L13.5537 9.03125C13.2022 8.43593 13 7.74116 13 7C13 4.79086 14.7909 3 17 3C19.2091 3 21 4.79086 21 7Z"/></svg>
+</button>
+<div class="nh-menu-sheet" id="nhMenuSheet" role="menu" aria-label="Menu Apollo">
+  <span class="nh-sheet-label" style="display:block;padding:12px 20px 4px;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,0,0,.35);pointer-events:none">Neste evento</span>
+  <a href="#ingressos" class="nh-sheet-item nh-sheet-item--accent" role="menuitem"><i class="ri-ticket-line"></i>Ingressos</a>
+  <a href="#lineup"    class="nh-sheet-item" role="menuitem"><i class="ri-music-2-line"></i>Line-up</a>
+  <a href="#local"     class="nh-sheet-item" role="menuitem"><i class="ri-map-pin-2-line"></i>Local</a>
+  <a href="#galeria"   class="nh-sheet-item" role="menuitem"><i class="ri-image-line"></i>Galeria</a>
+  <div class="nh-sheet-divider" aria-hidden="true"></div>
+  <span class="nh-sheet-label" style="display:block;padding:12px 20px 4px;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(0,0,0,.35);pointer-events:none">Apollo</span>
+  <a href="/eventos" class="nh-sheet-item" role="menuitem"><i class="ri-calendar-event-line"></i>Eventos</a>
+  <a href="/djs" class="nh-sheet-item" role="menuitem"><i class="ri-music-2-line"></i>DJs &amp; Artistas</a>
+  <a href="/criativo" class="nh-sheet-item" role="menuitem"><i class="ri-map-pin-2-line"></i>Espaços</a>
+  <a href="/classificados" class="nh-sheet-item" role="menuitem"><i class="ri-price-tag-3-line"></i>Classificados</a>
+  <a href="/acomoda" class="nh-sheet-item" role="menuitem"><i class="ri-home-heart-line"></i>Acomoda::Rio</a>
+  <div class="nh-sheet-divider" aria-hidden="true"></div>
+  <a href="/acesso" class="nh-sheet-item nh-sheet-item--cta" role="menuitem"><i class="ri-login-circle-line"></i>Entrar / Cadastrar</a>
+</div>
+<script>
+(function(){
+  var fab=document.getElementById('nhMenuFab'),
+      sheet=document.getElementById('nhMenuSheet');
+  if(!fab||!sheet)return;
+  fab.addEventListener('click',function(e){
+    e.stopPropagation();
+    var open=sheet.classList.toggle('is-open');
+    fab.setAttribute('aria-expanded',open);
+    if(open&&typeof gsap!=='undefined'){
+      gsap.fromTo(sheet.querySelectorAll('.nh-sheet-item'),
+        {opacity:0,y:16},{opacity:1,y:0,stagger:.04,duration:.3,ease:'power2.out'});
+    }
+  });
+  document.addEventListener('click',function(e){
+    if(!sheet.contains(e.target)&&!fab.contains(e.target)){
+      sheet.classList.remove('is-open');fab.setAttribute('aria-expanded','false');
+    }
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){sheet.classList.remove('is-open');fab.setAttribute('aria-expanded','false');}
+  });
+  sheet.querySelectorAll('.nh-sheet-item').forEach(function(it){
+    it.addEventListener('click',function(){
+      sheet.classList.remove('is-open');fab.setAttribute('aria-expanded','false');
+    });
+  });
+})();
+</script>
+</body>
+</html>
