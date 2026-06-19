@@ -1,0 +1,363 @@
+{
+  "$schema": "apollo-dj-registry/v1",
+  "project": "Apollo DJ",
+  "version": "3.0.0",
+  "updated": "2026-06-19",
+  "design": {
+    "system": "Swiss Style",
+    "philosophy": "Luxury Flat Open Kitchen — strict minimalist, no decorative borders or shadows on hover",
+    "colors": {
+      "primary": "#FF9820",
+      "primary-rgb": "255,152,32",
+      "primary-bpm": "#f45f00",
+      "primary-bpm-rgb": "244,95,0",
+      "allowed": ["#FF9820", "#FF7A33", "#FFA066", "#FFBF00", "#121214", "#e4e4e7", "#e53935", "#000000", "#FFFFFF"],
+      "forbidden": ["blue", "cyan", "sky", "indigo", "teal", "green", "purple"],
+      "waveform": {
+        "bass": "#0055FF",
+        "mid": "#00CC44",
+        "high": "#FF2233",
+        "blend": "screen",
+        "note": "Hyperreal RGB — saturated, NOT additive white"
+      }
+    },
+    "fonts": {
+      "main": "Space Grotesk",
+      "mono": "Space Mono",
+      "display": "Syne",
+      "source": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Syne:wght@400..700&display=swap"
+    },
+    "icons": {
+      "library": "Remix Icon",
+      "version": "4.x",
+      "cdn": "https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.min.css"
+    },
+    "tokens": {
+      "radii": {
+        "xs": "6px",
+        "sm": "10px",
+        "md": "16px",
+        "lg": "24px",
+        "xl": "32px"
+      },
+      "easing": {
+        "default": "cubic-bezier(.25,1,.5,1)",
+        "bounce": "cubic-bezier(.175,.885,.32,1.275)"
+      }
+    }
+  },
+  "cdn": {
+    "core": "https://cdn.apollo.rio.br/v1.0.0/core.js",
+    "core-includes": ["GSAP v3.14.2", "Remix Icons", "Apollo Icons", "Popper", "jQuery"],
+    "htmx": "https://cdn.apollo.rio.br/v1.0.0/js/htmx.v2.0.8.js",
+    "alpine": "https://cdn.apollo.rio.br/v1.0.0/js/alpine.v.3.15.8.js",
+    "assets": "https://assets.apollo.rio.br/"
+  },
+  "components": [
+    {
+      "id": "navbar",
+      "name": "Navbar v8",
+      "type": "layout",
+      "path": "navbar/",
+      "status": "DONE",
+      "description": "Swiss Style navbar with topbar, 3 slide/dropdown panels (Nav left-slide, Apps dropdown, Profile right-slide), desktop sidebar, and content cards grid. Single panel open at a time. Dark mode toggle with localStorage persistence.",
+      "files": {
+        "html": "navbar/navbar.html",
+        "php": "navbar/navbar.php",
+        "css": ["navbar/navbar.css", "navbar/app-btn.navbar.css"],
+        "js": ["navbar/navbar.js", "navbar/app-btn.navbar.js"],
+        "data": "navbar/simulated.navbar.data.js"
+      },
+      "deps": ["core.js (CDN)"],
+      "api": {
+        "global": "window.ApolloNavbar",
+        "methods": ["open(panelId)", "close(panelId)", "toggle(panelId)"],
+        "renderer": "window.ApolloNavRenderer",
+        "rendererMethods": ["run()", "renderNav()", "renderApps()", "renderProfile()"],
+        "data": "window.ApolloNavData",
+        "dataShape": {
+          "NAV_LINKS": "8 navigation items (Discover, Events, DJs, Locals, Classifieds, Groups, Statistics, Journal)",
+          "APPS": "17 app items for bento grid",
+          "PROFILE": "Login state object (isLoggedIn: false)",
+          "CARDS": "6 content cards for main area"
+        }
+      }
+    },
+    {
+      "id": "dashboard",
+      "name": "Dashboard Apollo",
+      "type": "page",
+      "path": "DASH/",
+      "status": "DONE",
+      "description": "Full dashboard page with 'Luxury Flat Open Kitchen' design. Features topbar with clock/activity/apps/profile dropdowns, left sidebar, main content area with Alpine.js tab system (Overview/Analytics/Reports), amCharts 5 line series with Apollo amber/orange palette, SVG donut charts, activity feeds.",
+      "files": {
+        "html": "DASH/dashboard.apollo.html",
+        "css": "DASH/dashboard.apollo.css",
+        "js": "DASH/dashboard.apollo.js",
+        "data": "DASH/simulated.data4.dashboard.js",
+        "backup": "DASH/dashboard.apollo.bak.html",
+        "draft": "DASH/draft-building-theme-dash.html"
+      },
+      "deps": ["core.js (CDN)", "htmx.v2.0.8.js", "alpine.v.3.15.8.js", "amCharts 5"],
+      "api": {
+        "module": "ApolloDashboard",
+        "boot": "auto on DOMContentLoaded",
+        "classes": ["ThemeManager", "ClockManager", "InteractionManager", "ChartManager"],
+        "events": ["apolloThemeChanged"],
+        "data": "window.ApolloSimData",
+        "dataShape": {
+          "mainChart": "12 months of line chart data",
+          "donutStats": "3 SVG donut statistics (applications, shortlisted, on-hold)",
+          "acquisitions": "4-category stacked bar breakdown",
+          "applicants": "3 new applicant entries with Unsplash images",
+          "messages": "3 chat messages with Unsplash avatars",
+          "activity": "4 activity feed items with icons and HTML content"
+        }
+      },
+      "chart-theme": {
+        "allowed-colors": ["Amber #FF9820", "Coral #FF7A33", "Sunset #FFA066", "Gold #FFBF00", "Grayscale #121214-#e4e4e7", "Alert-red #e53935", "Black", "White"],
+        "forbidden-colors": ["Blue", "Cyan", "Sky", "Indigo", "Teal", "Green", "Purple"],
+        "gradient": "orange 100% at top to 0% transparent at X-axis",
+        "tooltips": "dark card + white text + mix-blend-mode:difference",
+        "bullets": "peaks (large triangle up), valleys (inverted triangle down), regular (small dot)"
+      }
+    },
+    {
+      "id": "sidebar-tree",
+      "name": "Sidebar Tree",
+      "type": "component",
+      "path": "DASH/",
+      "status": "DONE",
+      "description": "Interactive sidebar tree for DJ application with 3 sections: COMPUTADOR (file system folders: Downloads, Musicas, Coletanea + user folders), PLAYLISTS (special + grouped playlists with USB export toggle), PENDRIVE (USB drive selection dropdown). Single active selection across all sections. Dispatches sidebar-select custom event.",
+      "files": {
+        "css": "DASH/sidebar-tree.css",
+        "js": "DASH/sidebar-tree.js"
+      },
+      "deps": [],
+      "api": {
+        "global": "window.ApolloSidebarTree",
+        "methods": ["init(container)", "getEnabledExportPlaylists()", "getActiveItem()", "getSelectedPendrive()", "getState()"],
+        "events": ["sidebar-select"],
+        "data-sections": {
+          "computador": ["Downloads", "Musicas", "Todas as faixas (Coletanea)"],
+          "userFolders": ["Techno Sets", "Deep House"],
+          "playlists": ["Coletanea (special)", "Favoritas (special)"],
+          "groups": [{"label": "Sets Junho", "children": ["Warm Up", "Peak Time", "Closing"]}],
+          "pendrives": ["SanDisk 64GB (E:)", "Kingston 32GB (F:)"]
+        }
+      }
+    },
+    {
+      "id": "bpm-meter",
+      "name": "BPM Meter",
+      "type": "standalone-app",
+      "path": "BPM/",
+      "status": "DONE",
+      "description": "Real-time BPM detection tool for DJs and producers. Mobile-first PWA with mic input, audio file analysis, tap tempo. Features intro overlay, BPM hero display (96px monospace), confidence indicator. Dual architecture: readable dev version (bpm-meter.html) and obfuscated production build (index.html) with XOR-encrypted blobs and Service Worker security.",
+      "files": {
+        "dev-entry": "BPM/bpm-meter.html",
+        "prod-entry": "BPM/index.html",
+        "processor": "BPM/bpm-processor.js",
+        "wasm-mock": "BPM/bpm-core.wasm.js",
+        "encrypted-core": "BPM/bpm-core.blob.js",
+        "encrypted-assets": "BPM/bpm-assets.blob.js",
+        "manifest": "BPM/bpm-manifest.json",
+        "service-worker": "BPM/sw.js",
+        "docs": "BPM/README.md"
+      },
+      "deps": ["Remix Icons (CDN)", "Google Fonts (Space Grotesk, Space Mono)"],
+      "api": {
+        "worklet": "bpm-processor (AudioWorkletProcessor)",
+        "worklet-output": {
+          "bpm": "number (60-220, octave normalized)",
+          "phase": "number (0-3, beat phase within bar)",
+          "downbeat": "number (downbeat counter)",
+          "rms": "number (0-1, current RMS energy)",
+          "beat": "boolean (true on detected beat)"
+        },
+        "wasm-mock": "window.ApolloBPMWasm",
+        "wasm-methods": ["startMic()", "stopAnalysis()", "getBPM()", "getConfidence()", "malloc()", "free()", "version()"]
+      },
+      "security": {
+        "encryption": "XOR with static keys (APOLLO_BPM_MAX_2026, APOLLO_ASSETS_MAX_2026)",
+        "service-worker": "Blocks cross-origin requests (403), requires X-Apollo-Auth header for .wasm/.blob files (401)",
+        "cache": "apollo-bpm-max-v1.0.0"
+      },
+      "performance": {
+        "load-target": "< 2s",
+        "memory-target": "< 50MB RAM",
+        "accuracy-target": "+/- 1 BPM",
+        "tick-rate": "60Hz default (configurable via dynamicRate message)"
+      }
+    },
+    {
+      "id": "screen-software",
+      "name": "CDJ Screen Software Theme Previewer",
+      "type": "theme",
+      "path": "DASH/theme/screen-software/",
+      "status": "PLANNED",
+      "description": "CDJ screen software theme previewer that renders the Apollo DJ interface as it would appear on Pioneer CDJ-3000 / XDJ-RX3 hardware screens. Includes 3-band RGB waveform rendering with screen blend mode, deck view, and Coletanea library browser.",
+      "files": {
+        "html": "DASH/theme/screen-software/apolloDJ.v3.html"
+      },
+      "deps": ["sidebar-tree.js", "sidebar-tree.css", "Coletanea data"],
+      "reference-hardware": ["Pioneer CDJ-3000", "Pioneer XDJ-RX3", "Rekordbox"]
+    },
+    {
+      "id": "universal-css",
+      "name": "Universal Design System",
+      "type": "foundation",
+      "path": "universal.css",
+      "status": "DONE",
+      "description": "Apollo Universal Design System v3.2.0 (Production). Foundational CSS used across all Apollo pages: reset, dark mode overrides (ambient gradients with orange/violet), selection colors, range sliders, custom selects (.as2/.as3), icon buttons, toggle switches, calendar pickers, form foundation. WARNING: Never write directly inside the :root or html.dark-mode blocks (injected by core.js CDN).",
+      "files": {
+        "css": "universal.css",
+        "showcase": "universal-showcase.html.bak.html"
+      },
+      "deps": ["core.js (CDN) injects :root and html.dark-mode tokens"],
+      "provides": ["Global reset", "Dark mode component overrides", "Form foundation", "Custom selects", "Icon buttons", "Toggle switches", "Calendar pickers"]
+    },
+    {
+      "id": "dj-page",
+      "name": "DJ Artist Profile",
+      "type": "page",
+      "path": "DJ/",
+      "status": "IN PROGRESS",
+      "description": "DJ Artist Profile page (apollo.rio.br/dj/{slug}). Features full-viewport hero, bio, gigs listing, track cards (horizontal scroll + snap), testimonials carousel, EPK, photo gallery, booking form, timeline, floating action button. Built with ES modules and GSAP + ScrollTrigger animations. Demo data for 'Marta Supernova'.",
+      "files": {
+        "css": "DJ/dj-page.css",
+        "js": "DJ/dj-page.js",
+        "entry": "DJ/finished/js/dj.init.js",
+        "data": "DJ/finished/js/dj.data.js",
+        "modules": [
+          "DJ/finished/js/dj.animations.js",
+          "DJ/finished/js/dj.fab-menu.js",
+          "DJ/finished/js/dj.marquee.js",
+          "DJ/finished/js/dj.navbar.js",
+          "DJ/finished/js/dj.render-depoimentos.js",
+          "DJ/finished/js/dj.render-gigs.js",
+          "DJ/finished/js/dj.render-tracks.js",
+          "DJ/finished/js/dj.scroll-progress.js"
+        ],
+        "html-partials": [
+          "DJ/finished/html/hero.html",
+          "DJ/finished/html/bio.html",
+          "DJ/finished/html/agenda.html",
+          "DJ/finished/html/booking.html",
+          "DJ/finished/html/depoimentos.html",
+          "DJ/finished/html/epk.html",
+          "DJ/finished/html/footer.html",
+          "DJ/finished/html/gallery.html",
+          "DJ/finished/html/marquee.html",
+          "DJ/finished/html/metrics.html",
+          "DJ/finished/html/noise.html",
+          "DJ/finished/html/progress.html",
+          "DJ/finished/html/sounds.html",
+          "DJ/finished/html/fab-menu.html"
+        ],
+        "css-layers": [
+          "DJ/finished/css/01-tokens.css",
+          "DJ/finished/css/02-base.css",
+          "DJ/finished/css/03-progress.css",
+          "DJ/finished/css/04-navbar.css",
+          "DJ/finished/css/05-hero.css",
+          "DJ/finished/css/06-metrics.css",
+          "DJ/finished/css/07-gigs.css",
+          "DJ/finished/css/08-marquee.css",
+          "DJ/finished/css/09-tracks.css",
+          "DJ/finished/css/10-bio.css",
+          "DJ/finished/css/11-timeline.css",
+          "DJ/finished/css/12-epk.css",
+          "DJ/finished/css/13-gallery.css",
+          "DJ/finished/css/14-depoimentos.css",
+          "DJ/finished/css/15-booking.css",
+          "DJ/finished/css/16-footer.css",
+          "DJ/finished/css/17-sections.css",
+          "DJ/finished/css/18-fab-sheet.css",
+          "DJ/finished/css/19-animations.css"
+        ],
+        "php-partials": [
+          "DJ/finished/php/parts/dj-v3/bio.php",
+          "DJ/finished/php/parts/dj-v3/booking.php",
+          "DJ/finished/php/parts/dj-v3/agenda.php"
+        ]
+      },
+      "deps": ["universal.css", "GSAP + ScrollTrigger", "core.js (CDN)"],
+      "api": {
+        "modules": {
+          "dj.init.js": "Main entry point, imports and orchestrates all modules on DOMContentLoaded",
+          "dj.data.js": "exports { gigsData, tracksData, depoimentosData }",
+          "dj.animations.js": "exports { initAnimations }",
+          "dj.fab-menu.js": "exports { initFabMenu }",
+          "dj.marquee.js": "exports { initMarquee }",
+          "dj.navbar.js": "exports { initNavbar }",
+          "dj.render-depoimentos.js": "exports { renderDepoimentos }",
+          "dj.render-gigs.js": "exports { renderGigs }",
+          "dj.render-tracks.js": "exports { renderTracks }",
+          "dj.scroll-progress.js": "exports { initScrollProgress }"
+        }
+      }
+    }
+  ],
+  "waveform": {
+    "bands": 3,
+    "pipeline": "AudioBuffer -> FFT -> 3x BiquadFilter -> Canvas(screen blend)",
+    "colors": {
+      "bass": {
+        "hex": "#0055FF",
+        "freq": "20-250Hz",
+        "filter": "Lowpass 250Hz",
+        "opacity": 0.85,
+        "layer": "back",
+        "order": 1
+      },
+      "mid": {
+        "hex": "#00CC44",
+        "freq": "250-4000Hz",
+        "filter": "Bandpass 250Hz-4kHz",
+        "opacity": 0.75,
+        "layer": "middle",
+        "order": 2
+      },
+      "high": {
+        "hex": "#FF2233",
+        "freq": "4000-20000Hz",
+        "filter": "Highpass 4kHz",
+        "opacity": 0.90,
+        "layer": "front",
+        "order": 3
+      }
+    },
+    "blending": "globalCompositeOperation: screen — prevents additive white washout",
+    "rendering-steps": [
+      "Draw bass waveform (back, opacity 0.85)",
+      "Draw mid waveform (middle, opacity 0.75, blend: screen)",
+      "Draw high waveform (front, opacity 0.90, blend: screen)",
+      "Result: Hyperreal RGB (saturated, NOT washed white)"
+    ],
+    "reference": "Pioneer CDJ-3000 / XDJ-RX3 / Rekordbox Full Color waveform"
+  },
+  "bpm-detection": {
+    "algorithm": "Hybrid: RMS energy (0.5) + Spectral Flux (0.3) + Autocorrelation (0.2)",
+    "processor": "AudioWorkletProcessor (bpm-processor.js)",
+    "range": "60-220 BPM (octave normalized)",
+    "buffer": "2048 samples circular buffer for autocorrelation",
+    "threshold": "Adaptive EMA (exponential moving average), min 0.03, factor 0.35",
+    "gate": "120ms minimum interval between beats",
+    "smoothing": "EMA alpha 0.25",
+    "tick-rate": "60Hz default, configurable via dynamicRate postMessage",
+    "phase-tracking": "4-beat phase (0-3), downbeat counter on phase 0"
+  },
+  "sidebar-tree": {
+    "sections": ["COMPUTADOR", "PLAYLISTS", "PENDRIVE"],
+    "features": [
+      "Single active selection across all sections",
+      "USB export toggle per playlist (active by default)",
+      "Group folders expand/collapse",
+      "Visibility toggles per row and per section",
+      "Folder and playlist creation via prompt()",
+      "Pendrive dropdown for USB target selection"
+    ],
+    "events": ["sidebar-select (CustomEvent on row selection)"]
+  }
+}
