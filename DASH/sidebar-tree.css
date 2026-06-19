@@ -45,26 +45,29 @@
 
 /* ── TREE ROW (folder or playlist) ── */
 .sb-row {
-  display: flex; align-items: center;
+  display: flex; align-items: center; flex-wrap: nowrap;
   padding: 6px 12px;
   cursor: pointer;
   position: relative;
-  transition: background .15s var(--ease-default, ease);
-  border: none; box-shadow: none;
+  transition: background .15s var(--ease-default, ease), box-shadow .15s var(--ease-default, ease);
+  border: none !important; box-shadow: none;
   min-height: 32px;
   gap: 8px;
 }
 .sb-row:hover {
   background: rgba(var(--rgb-diff, 5,5,5), .03);
+  border: none !important; box-shadow: none;
 }
 .sb-row:focus-visible {
   background: rgba(var(--rgb-diff, 5,5,5), .03);
-  outline: none;
+  outline: none; border: none !important; box-shadow: none;
 }
 
-/* Active/selected state */
+/* Active/selected state — luxury inset accent, NEVER a border */
 .sb-row.is-active {
   background: rgba(var(--rgb-diff, 5,5,5), .05);
+  border: none !important;
+  box-shadow: inset 2px 0 0 var(--primary, #FF9820);
 }
 .sb-row.is-active .sb-row-icon {
   color: var(--primary, #FF9820);
@@ -94,14 +97,32 @@
   color: var(--txt-color, rgba(5,5,5,.76));
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   transition: color .2s;
+  display: flex; align-items: center; gap: 6px;
 }
 .sb-row:hover .sb-row-label {
   color: var(--txt-color-hover, rgba(5,5,5,.88));
 }
 
-/* Row right actions — visible on hover */
+/* Count badge — pill, never a border, never a shadow */
+.sb-row-label .ct {
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  min-width: 18px; height: 17px; padding: 0 5px;
+  border-radius: 999px;
+  background: rgba(var(--rgb-diff, 5,5,5), .06);
+  color: var(--muted, rgba(5,5,5,.40));
+  font-family: var(--ff-mono, "Space Mono", monospace);
+  font-size: .62rem; font-weight: 700; line-height: 1;
+  border: none !important; box-shadow: none !important;
+}
+.sb-row.is-active .ct {
+  background: rgba(var(--primary-rgb, 255,152,32), .14);
+  color: var(--primary, #FF9820);
+}
+
+/* Row right actions — visible on hover, always inline, never wraps */
 .sb-row-actions {
-  display: flex; align-items: center; gap: 2px;
+  display: flex; align-items: center; flex-wrap: nowrap; gap: 2px;
   margin-left: auto;
   opacity: 0;
   transition: opacity .15s;
@@ -141,15 +162,17 @@
 
 /* ── GROUP (collapsible folder of playlists) ── */
 .sb-group-hdr {
-  display: flex; align-items: center;
+  display: flex; align-items: center; flex-wrap: nowrap;
   padding: 6px 12px;
   cursor: pointer;
   gap: 6px;
   transition: background .15s;
   min-height: 32px;
+  border: none !important; box-shadow: none;
 }
 .sb-group-hdr:hover {
   background: rgba(var(--rgb-diff, 5,5,5), .03);
+  border: none !important; box-shadow: none;
 }
 .sb-group-chevron {
   width: 14px; height: 14px;

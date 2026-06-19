@@ -29,26 +29,26 @@
      ═══════════════════════════════════════════════════════════ */
   var DATA = {
     computador: [
-      { id: 'downloads',  label: 'Downloads',                icon: 'ri-download-2-line' },
-      { id: 'musicas',    label: 'Músicas',                   icon: 'ri-music-2-fill' },
-      { id: 'coletanea',  label: 'Todas as faixas (Coletânea)', icon: 'ri-folder-music-line' }
+      { id: 'downloads',  label: 'Downloads',                icon: 'ri-download-2-line', count: 8 },
+      { id: 'musicas',    label: 'Músicas',                   icon: 'ri-music-2-fill', count: 212 },
+      { id: 'coletanea',  label: 'Todas as faixas (Coletânea)', icon: 'ri-folder-music-line', count: 340 }
     ],
     userFolders: [
-      { id: 'folder-techno',  label: 'Techno Sets' },
-      { id: 'folder-house',   label: 'Deep House' }
+      { id: 'folder-techno',  label: 'Techno Sets', count: 24 },
+      { id: 'folder-house',   label: 'Deep House', count: 31 }
     ],
     playlists: [
-      { id: 'pl-coletanea', label: 'Coletânea',  icon: 'ri-folder-music-line', type: 'special' },
-      { id: 'pl-favoritas', label: 'Favoritas',   icon: 'ri-star-line',         type: 'special' }
+      { id: 'pl-coletanea', label: 'Coletânea',  icon: 'ri-folder-music-line', type: 'special', count: 340 },
+      { id: 'pl-favoritas', label: 'Favoritas',   icon: 'ri-star-line',         type: 'special', count: 3 }
     ],
     groups: [
       {
         id: 'grp-sets',
         label: 'Sets Junho',
         playlists: [
-          { id: 'pl-warm',    label: 'Warm Up' },
-          { id: 'pl-peak',    label: 'Peak Time' },
-          { id: 'pl-closing', label: 'Closing' }
+          { id: 'pl-warm',    label: 'Warm Up', count: 18 },
+          { id: 'pl-peak',    label: 'Peak Time', count: 22 },
+          { id: 'pl-closing', label: 'Closing', count: 14 }
         ]
       }
     ],
@@ -104,18 +104,18 @@
 
     // Built-in folders
     DATA.computador.forEach(function (f) {
-      sec.appendChild(createFolderRow(f.id, f.label, f.icon));
+      sec.appendChild(createFolderRow(f.id, f.label, f.icon, f.count));
     });
 
     // User-added folders
     DATA.userFolders.forEach(function (f) {
-      sec.appendChild(createFolderRow(f.id, f.label, 'ri-folder-3-line'));
+      sec.appendChild(createFolderRow(f.id, f.label, 'ri-folder-3-line', f.count));
     });
 
     return sec;
   }
 
-  function createFolderRow(id, label, icon) {
+  function createFolderRow(id, label, icon, count) {
     var row = document.createElement('div');
     row.className = 'sb-row';
     row.dataset.id = id;
@@ -123,7 +123,7 @@
     row.tabIndex = 0;
     row.innerHTML =
       '<span class="sb-row-icon"><i class="' + esc(icon) + '"></i></span>' +
-      '<span class="sb-row-label">' + esc(label) + '</span>' +
+      '<span class="sb-row-label">' + esc(label) + (count != null ? ' <span class="ct">' + esc(String(count)) + '</span>' : '') + '</span>' +
       '<span class="sb-row-actions">' +
         '<button class="vis-toggle" aria-label="Visibilidade"><i class="ri-eye-line"></i></button>' +
         '<button class="refresh-btn" aria-label="Atualizar"><i class="ri-refresh-fill"></i></button>' +
@@ -152,7 +152,7 @@
 
     // Special playlists
     DATA.playlists.forEach(function (p) {
-      sec.appendChild(createPlaylistRow(p.id, p.label, p.icon));
+      sec.appendChild(createPlaylistRow(p.id, p.label, p.icon, p.count));
     });
 
     // Groups
@@ -161,7 +161,7 @@
       var children = document.createElement('div');
       children.className = 'sb-group-children';
       g.playlists.forEach(function (p) {
-        children.appendChild(createPlaylistRow(p.id, p.label, 'ri-play-list-fill'));
+        children.appendChild(createPlaylistRow(p.id, p.label, 'ri-play-list-fill', p.count));
       });
       sec.appendChild(children);
     });
@@ -169,7 +169,7 @@
     return sec;
   }
 
-  function createPlaylistRow(id, label, icon) {
+  function createPlaylistRow(id, label, icon, count) {
     var isActive = state.usbExport[id] !== false;
     var row = document.createElement('div');
     row.className = 'sb-row';
@@ -178,7 +178,7 @@
     row.tabIndex = 0;
     row.innerHTML =
       '<span class="sb-row-icon"><i class="' + esc(icon) + '"></i></span>' +
-      '<span class="sb-row-label">' + esc(label) + '</span>' +
+      '<span class="sb-row-label">' + esc(label) + (count != null ? ' <span class="ct">' + esc(String(count)) + '</span>' : '') + '</span>' +
       '<span class="sb-row-actions">' +
         '<button class="vis-toggle" aria-label="Visibilidade"><i class="ri-eye-line"></i></button>' +
         '<button class="usb-toggle' + (isActive ? '' : ' is-excluded') + '" aria-label="Exportar USB">' +
@@ -195,7 +195,7 @@
     hdr.innerHTML =
       '<span class="sb-group-chevron"><i class="ri-arrow-right-s-line"></i></span>' +
       '<span class="sb-row-icon"><i class="ri-album-fill"></i></span>' +
-      '<span class="sb-row-label">' + esc(g.label) + '</span>';
+      '<span class="sb-row-label">' + esc(g.label) + ' <span class="ct">' + g.playlists.length + '</span></span>';
     return hdr;
   }
 
