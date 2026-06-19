@@ -1,0 +1,145 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, interactive-widget=overlays-content">
+<title>Apollo Navbar v8 — Swiss Style</title>
+<script>window.onerror=function(m,s){if(s&&s.includes('apollo.rio.br'))return true;return false};</script>
+
+<!-- META PWA -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="format-detection" content="telephone=no">
+<meta name="apple-mobile-web-app-title" content="Apollo">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#050505" media="(prefers-color-scheme: dark)">
+
+<!-- FONTS + REMIX-ICON + APOLLO-ICON + GSAP v3.14.2 BUNDLE + POPPER + JQUERY-->
+<script src="https://cdn.apollo.rio.br/v1.0.0/core.js?v=0V" fetchpriority="high"></script>
+
+<!-- STYLESHEETS -->
+<link rel="stylesheet" href="navbar.css">
+<link rel="stylesheet" href="app-btn.navbar.css">
+
+</head>
+<body>
+
+<!-- PRELOADER-->
+<div id="preloader">
+  <div class="preloader-bar"></div>
+  <span class="preloader-label">apollo::rio</span>
+</div>
+
+<div class="ov" id="ov" aria-hidden="true"></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PANEL 1: NAV - Left slide (STARTS CLOSED)
+     Burger #bm toggles this panel.
+     Width: 290px desktop | 100vw mobile
+     ═══════════════════════════════════════════════════════════ -->
+<nav class="pn pn-l" id="pn-nav" aria-label="Navegação" role="dialog" aria-modal="true">
+  <div class="ph">
+    <span class="pt">Navegação</span>
+    <button class="px" data-x aria-label="Fechar"><i class="ri-close-line"></i></button>
+  </div>
+  <div class="pb">
+    <ul id="nav-list"><!-- rendered by app-btn.navbar.js --></ul>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PANEL 2: APPS - Bento grid (drop down)
+     Button #ic-apps toggles this panel.
+     Width: min(568px, 92vw) desktop | 100vw mobile
+     ═══════════════════════════════════════════════════════════ -->
+<div class="pn pn-d pp" id="pn-apps" role="dialog" aria-modal="true" aria-label="Aplicativos">
+  <div class="pn-in">
+    <div class="pb">
+      <button class="px" data-x aria-label="Fechar"><i class="ri-arrow-up-line"></i></button>
+      <span class="pt">Aplicativos</span>
+      <div class="bento-apps" id="bento-apps"><!-- rendered by app-btn.navbar.js --></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PANEL 3: PROFILE / LOGIN - Right slide
+     Button #ic-pf toggles this panel.
+     Width: 290px desktop | 100vw mobile
+     Contains login form (user, pass, forgot, register)
+     ═══════════════════════════════════════════════════════════ -->
+<div class="pn pn-r" id="pn-pf" role="dialog" aria-modal="true" aria-label="Login">
+  <div class="pb">
+    <span class="pt">Login</span>
+    <button class="px" data-x aria-label="Fechar"><i class="ri-arrow-right-line"></i></button>
+    <div class="pm" id="pf-menu"><!-- rendered by app-btn.navbar.js (login form) --></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TOPBAR — NO background, NO border, NO backdrop-filter
+     3 burger menus: Nav (left), Apps (right), Profile (right)
+     ═══════════════════════════════════════════════════════════ -->
+<header class="tb" role="banner">
+  <div class="tl">
+    <!-- Burger → Arrow transform button (Nav panel) -->
+    <a href="#" class="ab" id="bm" data-p="pn-nav" aria-label="Abrir navegação" aria-expanded="false" role="button">
+      <b></b>
+    </a>
+    <!-- Apollo logo -->
+    <div class="brand" aria-label="Apollo Rio">
+      <i class="apollo" aria-hidden="true"></i>
+      <span>apollo::rio</span>
+    </div>
+  </div>
+  <div class="tr">
+    <span class="clk" id="clk" aria-live="off">--:--</span>
+
+    <!-- APPS BUTTON -->
+    <button class="ic ic-svg" id="ic-apps" data-p="pn-apps" aria-label="Aplicativos" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="19" height="19">
+        <path d="M21 17C21 19.2091 19.2091 21 17 21C14.7909 21 13 19.2091 13 17C13 14.7909 14.7909 13 17 13C19.2091 13 21 14.7909 21 17ZM11 7C11 9.20914 9.20914 11 7 11C4.79086 11 3 9.20914 3 7C3 4.79086 4.79086 3 7 3C9.20914 3 11 4.79086 11 7ZM21 7C21 9.20914 19.2091 11 17 11C16.2584 11 15.5634 10.7972 14.9678 10.4453L10.4453 14.9678C10.7972 15.5634 11 16.2584 11 17C11 19.2091 9.20914 21 7 21C4.79086 21 3 19.2091 3 17C3 14.7909 4.79086 13 7 13C7.74116 13 8.43593 13.2022 9.03125 13.5537L13.5537 9.03125C13.2022 8.43593 13 7.74116 13 7C13 4.79086 14.7909 3 17 3C19.2091 3 21 4.79086 21 7Z"></path>
+      </svg>
+    </button>
+
+    <!-- PROFILE / LOGIN BUTTON -->
+    <button class="ic ic-svg" id="ic-pf" data-p="pn-pf" aria-label="Login" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="19" height="19">
+        <path d="M4 22C4 17.5817 7.58172 14 12 14C16.4183 14 20 17.5817 20 22H18C18 18.6863 15.3137 16 12 16C8.68629 16 6 18.6863 6 22H4ZM12 13C8.685 13 6 10.315 6 7C6 3.685 8.685 1 12 1C15.315 1 18 3.685 18 7C18 10.315 15.315 13 12 13ZM12 11C14.21 11 16 9.21 16 7C16 4.79 14.21 3 12 3C9.79 3 8 4.79 8 7C8 9.21 9.79 11 12 11Z"></path>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SHELL — Main content area
+     ═══════════════════════════════════════════════════════════ -->
+<div class="shell">
+  <div class="row">
+
+    <!-- Desktop sidebar (auto-mirrored from nav data by JS) -->
+    <aside class="da" aria-label="Navegação lateral">
+      <ul><!-- rendered by app-btn.navbar.js --></ul>
+    </aside>
+
+    <main class="main" id="main-content">
+      <div class="mh">
+        <h1>Apollo Navbar v8</h1>
+        <div class="sb">
+          <i class="ri-search-line" aria-hidden="true"></i>
+          <input type="text" placeholder="Buscar..." aria-label="Buscar">
+        </div>
+      </div>
+      <div class="cg" id="cards-grid"><!-- populated by app-btn.navbar.js --></div>
+    </main>
+
+  </div>
+</div>
+
+<!-- SCRIPTS (order matters) -->
+<!-- 1. Data layer -->
+<script src="simulated.navbar.data.js"></script>
+<!-- 2. Renderer (app-btn) - builds DOM from data -->
+<script src="app-btn.navbar.js"></script>
+<!-- 3. Core engine - boots Panel, DM, Clock, BurgerArrow -->
+<script src="navbar.js"></script>
+</body>
+</html>

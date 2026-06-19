@@ -1,0 +1,268 @@
+/*
+ * sidebar-tree.css — Apollo DJ Sidebar Tree v1
+ * Sections: COMPUTADOR, PLAYLISTS, PENDRIVE
+ * Clean luxury minimalist — no decorative borders or shadows on hover
+ */
+
+/* ── TREE CONTAINER ── */
+.sb-tree {
+  display: flex; flex-direction: column; gap: 0;
+  font-family: var(--ff-main, "Space Grotesk", system-ui, sans-serif);
+  font-size: .84rem;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ── SECTION ── */
+.sb-section { margin-bottom: 4px; }
+
+.sb-section-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px 6px;
+  cursor: default;
+}
+.sb-section-label {
+  font-family: var(--ff-mono, "Space Mono", monospace);
+  font-size: .62rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .10em;
+  color: var(--muted, rgba(5,5,5,.40));
+}
+.sb-section-actions {
+  display: flex; align-items: center; gap: 2px;
+}
+.sb-section-actions button {
+  width: 24px; height: 24px; border-radius: var(--r-xs, 6px);
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; color: var(--muted, rgba(5,5,5,.40));
+  border: none; box-shadow: none !important;
+  cursor: pointer; transition: color .2s, background .2s;
+  padding: 0; font-size: .85rem;
+}
+.sb-section-actions button:hover {
+  background: rgba(var(--rgb-diff, 5,5,5), .03);
+  color: var(--txt-color-hover, rgba(5,5,5,.88));
+}
+
+/* ── TREE ROW (folder or playlist) ── */
+.sb-row {
+  display: flex; align-items: center; flex-wrap: nowrap;
+  padding: 6px 12px;
+  cursor: pointer;
+  position: relative;
+  transition: background .15s var(--ease-default, ease), box-shadow .15s var(--ease-default, ease);
+  border: none !important; box-shadow: none;
+  min-height: 32px;
+  gap: 8px;
+}
+.sb-row:hover {
+  background: rgba(var(--rgb-diff, 5,5,5), .03);
+  border: none !important; box-shadow: none;
+}
+.sb-row:focus-visible {
+  background: rgba(var(--rgb-diff, 5,5,5), .03);
+  outline: none; border: none !important; box-shadow: none;
+}
+
+/* Active/selected state — luxury inset accent, NEVER a border */
+.sb-row.is-active {
+  background: rgba(var(--rgb-diff, 5,5,5), .05);
+  border: none !important;
+  box-shadow: inset 2px 0 0 var(--primary, #FF9820);
+}
+.sb-row.is-active .sb-row-icon {
+  color: var(--primary, #FF9820);
+}
+.sb-row.is-active .sb-row-label {
+  color: var(--txt-color-hover, rgba(5,5,5,.88));
+  font-weight: 600;
+}
+
+/* Row icon */
+.sb-row-icon {
+  width: 18px; height: 18px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 1rem;
+  color: var(--muted, rgba(5,5,5,.40));
+  transition: color .2s;
+}
+.sb-row:hover .sb-row-icon {
+  color: var(--txt-color, rgba(5,5,5,.76));
+}
+
+/* Row label */
+.sb-row-label {
+  flex: 1; min-width: 0;
+  font-size: .84rem; font-weight: 500;
+  color: var(--txt-color, rgba(5,5,5,.76));
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  transition: color .2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.sb-row:hover .sb-row-label {
+  color: var(--txt-color-hover, rgba(5,5,5,.88));
+}
+
+/* Count badge — pill, never a border, never a shadow */
+.sb-row-label .ct {
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  min-width: 18px; height: 17px; padding: 0 5px;
+  border-radius: 999px;
+  background: rgba(var(--rgb-diff, 5,5,5), .06);
+  color: var(--muted, rgba(5,5,5,.40));
+  font-family: var(--ff-mono, "Space Mono", monospace);
+  font-size: .62rem; font-weight: 700; line-height: 1;
+  border: none !important; box-shadow: none !important;
+}
+.sb-row.is-active .ct {
+  background: rgba(var(--primary-rgb, 255,152,32), .14);
+  color: var(--primary, #FF9820);
+}
+
+/* Row right actions — visible on hover, always inline, never wraps */
+.sb-row-actions {
+  display: flex; align-items: center; flex-wrap: nowrap; gap: 2px;
+  margin-left: auto;
+  opacity: 0;
+  transition: opacity .15s;
+  flex-shrink: 0;
+}
+.sb-row:hover .sb-row-actions {
+  opacity: 1;
+}
+
+.sb-row-actions button {
+  width: 22px; height: 22px; border-radius: var(--r-xs, 6px);
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; color: var(--muted, rgba(5,5,5,.40));
+  border: none; box-shadow: none !important;
+  cursor: pointer; transition: color .15s;
+  padding: 0; font-size: .82rem;
+}
+.sb-row-actions button:hover {
+  color: var(--txt-color-hover, rgba(5,5,5,.88));
+}
+.sb-row-actions button:active {
+  color: var(--primary, #FF9820);
+}
+
+/* USB toggle states */
+.sb-row-actions .usb-toggle.is-excluded i {
+  color: rgba(var(--rgb-diff, 5,5,5), .18);
+}
+.sb-row-actions .usb-toggle:not(.is-excluded) i {
+  color: var(--primary, #FF9820);
+}
+
+/* Visibility toggle */
+.sb-row-actions .vis-toggle.is-hidden i {
+  color: rgba(var(--rgb-diff, 5,5,5), .15);
+}
+
+/* ── GROUP (collapsible folder of playlists) ── */
+.sb-group-hdr {
+  display: flex; align-items: center; flex-wrap: nowrap;
+  padding: 6px 12px;
+  cursor: pointer;
+  gap: 6px;
+  transition: background .15s;
+  min-height: 32px;
+  border: none !important; box-shadow: none;
+}
+.sb-group-hdr:hover {
+  background: rgba(var(--rgb-diff, 5,5,5), .03);
+  border: none !important; box-shadow: none;
+}
+.sb-group-chevron {
+  width: 14px; height: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .7rem;
+  color: var(--muted, rgba(5,5,5,.40));
+  transition: transform .2s var(--ease-default, ease);
+  flex-shrink: 0;
+}
+.sb-group-hdr.is-open .sb-group-chevron {
+  transform: rotate(90deg);
+}
+.sb-group-hdr .sb-row-icon {
+  font-size: .95rem;
+}
+.sb-group-children {
+  display: none;
+  padding-left: 20px;
+}
+.sb-group-hdr.is-open + .sb-group-children {
+  display: block;
+}
+
+/* ── PENDRIVE SECTION ── */
+.sb-pendrive-select {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 12px;
+}
+.sb-pendrive-select select {
+  flex: 1;
+  appearance: none; -webkit-appearance: none;
+  background: transparent;
+  border: none; border-bottom: 1px solid var(--border, rgba(5,5,5,.18));
+  padding: 6px 0;
+  font-family: var(--ff-main, "Space Grotesk", system-ui, sans-serif);
+  font-size: .82rem;
+  color: var(--txt-color, rgba(5,5,5,.76));
+  cursor: pointer; outline: none;
+  transition: border-color .25s;
+}
+.sb-pendrive-select select:focus {
+  border-bottom-color: var(--primary, #FF9820);
+}
+.sb-pendrive-select .sb-row-icon {
+  color: var(--muted);
+}
+
+/* ── SEPARATOR ── */
+.sb-sep {
+  height: 1px;
+  background: rgba(var(--rgb-diff, 5,5,5), .04);
+  margin: 4px 12px;
+}
+
+/* ── ADD DROPDOWN ── */
+.sb-add-drop {
+  position: absolute; top: 100%; right: 0;
+  min-width: 160px;
+  background: rgba(var(--rgb-theme, 255,255,255), .95);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: var(--r-sm, 10px);
+  padding: 4px;
+  z-index: 200;
+  opacity: 0; visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity .2s, transform .2s, visibility 0s .2s;
+}
+.sb-add-drop.is-open {
+  opacity: 1; visibility: visible;
+  transform: translateY(0);
+  transition: opacity .2s, transform .2s, visibility 0s 0s;
+}
+.sb-add-drop button {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; padding: 8px 12px;
+  font-size: .8rem; font-weight: 500;
+  color: var(--txt-color, rgba(5,5,5,.76));
+  background: transparent; border: none;
+  border-radius: var(--r-xs, 6px);
+  cursor: pointer; transition: background .15s;
+  box-shadow: none !important;
+}
+.sb-add-drop button:hover {
+  background: rgba(var(--rgb-diff, 5,5,5), .03);
+  color: var(--txt-color-hover, rgba(5,5,5,.88));
+}
+.sb-add-drop button i {
+  font-size: .9rem; color: var(--muted);
+}
+html.dark-mode .sb-add-drop {
+  background: rgba(8,8,12,.92);
+}

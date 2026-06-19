@@ -3476,5 +3476,60 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 </script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     NAVBAR v8 SHOWCASE SECTION
+     Swiss Style: Black + White + Orange
+     3 Panels: Nav (290px), Apps (min(568px,92vw)), Profile/Login (290px)
+     Topbar: transparent — no background, no border, no backdrop-filter
+     ═══════════════════════════════════════════════════════════════ -->
+<style>
+.navbar-showcase { margin-top: 80px; padding: 40px 0; border-top: 1px solid var(--border); }
+.navbar-showcase h2 { font-family: var(--ff-s, Syne, sans-serif); font-size: 2rem; margin-bottom: 8px; }
+.navbar-showcase .showcase-desc { font-family: var(--ff-mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 32px; }
+.navbar-demo-frame { position: relative; width: 100%; height: 600px; border: 1px solid var(--border); border-radius: var(--r, 20px); overflow: hidden; background: var(--bg); }
+.navbar-demo-frame iframe { width: 100%; height: 100%; border: none; }
+.navbar-spec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 32px; }
+.navbar-spec-card { background: var(--white-3, rgba(5,5,5,.04)); border-radius: var(--r-lg, 24px); padding: 20px; }
+.navbar-spec-card h4 { font-family: var(--ff-mono); font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: var(--primary); margin-bottom: 8px; }
+.navbar-spec-card p { font-size: .84rem; color: var(--txt-color); line-height: 1.55; }
+.navbar-spec-card code { font-family: var(--ff-mono); font-size: .72rem; background: var(--white-4, rgba(5,5,5,.06)); padding: 2px 6px; border-radius: 4px; }
+</style>
+
+<div class="apollo-wrapper navbar-showcase">
+  <h2>Navbar v8 — Swiss Style</h2>
+  <p class="showcase-desc">Black + White + Orange (#FF9820) · 3 Panels · Transparent Topbar · Mobile First</p>
+
+  <div class="navbar-demo-frame">
+    <iframe src="navbar/navbar.html" title="Apollo Navbar v8 Preview"></iframe>
+  </div>
+
+  <div class="navbar-spec-grid">
+    <div class="navbar-spec-card">
+      <h4>Topbar</h4>
+      <p>Transparent — <code>background: none</code>, <code>backdrop-filter: none</code>, <code>border: none</code>, <code>box-shadow: none</code>. Height: <code>52px</code>.</p>
+    </div>
+    <div class="navbar-spec-card">
+      <h4>Panel 1: Nav</h4>
+      <p>Left slide panel. Width: <code>290px</code> desktop, <code>100vw</code> mobile. Dark background <code>rgba(--rgb-diff, .96)</code>. Staggered nav item animations. Close button visible.</p>
+    </div>
+    <div class="navbar-spec-card">
+      <h4>Panel 2: Apps</h4>
+      <p>Drop-down panel. Width: <code>min(568px, 92vw)</code> desktop, <code>100vw</code> mobile. Bento grid with 3-4 columns. Staggered scale-in animations.</p>
+    </div>
+    <div class="navbar-spec-card">
+      <h4>Panel 3: Login</h4>
+      <p>Right slide panel. Width: <code>290px</code> desktop, <code>100vw</code> mobile. Login form with floating labels, forgot password link, register button.</p>
+    </div>
+    <div class="navbar-spec-card">
+      <h4>Burger Button</h4>
+      <p>3-line to arrow transform via CSS. Mix-blend-mode difference when active. <code>z-index: 99999999</code> when open. Desktop: hidden when sidebar visible (1024px+).</p>
+    </div>
+    <div class="navbar-spec-card">
+      <h4>Design Tokens</h4>
+      <p><code>--primary: #FF9820</code>, <code>--ff-main: Space Grotesk</code>, <code>--ff-mono: Space Mono</code>, <code>--ff-s: Syne</code>. All panels start CLOSED. Only one open at a time.</p>
+    </div>
+  </div>
+</div>
 </body>
 </html>

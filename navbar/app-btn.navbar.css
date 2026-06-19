@@ -1,0 +1,97 @@
+/*
+ * app-btn.navbar.css — Apollo Navbar v8
+ * Bento apps grid · app cell styles · icon-centric layout
+ */
+
+.bento-apps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 4px 0 16px;
+}
+@media (min-width: 400px) {
+  .bento-apps { grid-template-columns: repeat(4, 1fr); }
+}
+@media (min-width: 768px) {
+  .bento-apps { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+}
+
+.bi {
+  container-type: inline-size;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 8px; aspect-ratio: 1;
+  border-radius: var(--r-lg);
+  position: relative; cursor: pointer;
+  overflow: hidden;
+  padding: var(--item-padding, 16px);
+  background: var(--bg-item, var(--white-3));
+  color: var(--color-item, var(--txt-color-hover));
+  text-decoration: none;
+  border: 1px solid rgba(5, 5, 5, 0.04);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.4),
+    0 4px 12px -4px rgba(5, 5, 5, 0.03),
+    0 12px 24px -8px rgba(5, 5, 5, 0.04);
+  transition:
+    background .4s var(--ease-default),
+    transform .6s var(--ease-snappy),
+    filter .4s var(--ease-default),
+    box-shadow .4s var(--ease-default);
+  -webkit-tap-highlight-color: transparent;
+}
+.bi:hover {
+  background: var(--bg-hover, var(--white-4));
+}
+.bi:active {
+  transform: scale(.985);
+  filter: brightness(1.03);
+  background: var(--bg-hover, var(--white-4));
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.4),
+    0 0 15px rgba(255, 255, 255, 0.8),
+    0 2px 6px -2px rgba(5, 5, 5, 0.02);
+}
+.bi > i {
+  font-size: 1.45rem; pointer-events: none; flex-shrink: 0;
+  line-height: 0.9; display: flex; align-items: center;
+  transition: transform .3s var(--ease-snappy);
+}
+.bi:hover > i { transform: translateY(-2px); }
+.bi .bl {
+  font-size: .78rem; font-weight: 700; text-align: center;
+  color: inherit; pointer-events: none;
+  max-width: calc(100% - 4px);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  line-height: 1.15; opacity: .95;
+}
+
+.pn.on .bi {
+  opacity: 0; transform: scale(.90) translateY(10px);
+  animation: bcIn .48s var(--e) forwards;
+}
+@keyframes bcIn { to { opacity: 1; transform: scale(1) translateY(0); } }
+.pn.on .bi:nth-child(1)  { animation-delay: .04s; }
+.pn.on .bi:nth-child(2)  { animation-delay: .07s; }
+.pn.on .bi:nth-child(3)  { animation-delay: .10s; }
+.pn.on .bi:nth-child(4)  { animation-delay: .13s; }
+.pn.on .bi:nth-child(5)  { animation-delay: .16s; }
+.pn.on .bi:nth-child(6)  { animation-delay: .19s; }
+.pn.on .bi:nth-child(7)  { animation-delay: .22s; }
+.pn.on .bi:nth-child(8)  { animation-delay: .25s; }
+.pn.on .bi:nth-child(9)  { animation-delay: .28s; }
+.pn.on .bi:nth-child(10) { animation-delay: .31s; }
+.pn.on .bi:nth-child(11) { animation-delay: .34s; }
+.pn.on .bi:nth-child(12) { animation-delay: .37s; }
+
+.bi-new {
+  position: absolute; top: 6px; right: 6px;
+  padding: 1px 5px;
+  font-family: var(--ff-mono);
+  font-size: .5rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .08em;
+  background: var(--primary);
+  color: #fff; border-radius: var(--r-xs);
+}

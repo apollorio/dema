@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apollo DJ · Screen Software Theme Previewer v3</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.min.css">
+  <!-- Shared sidebar tree component (Coletânea library) -->
+  <link rel="stylesheet" href="../../sidebar-tree.css">
+  <!-- Single external stylesheet — NO inline <style> allowed -->
+  <link rel="stylesheet" href="apollo.universal.css">
+</head>
+<body>
+
+<div class="screen">
+  <div class="screen-body">
+
+    <!-- Sidebar Tree — shared Coletânea library component, aligned with backend -->
+    <aside class="sidebar-panel">
+      <div id="sidebar-mount"></div>
+    </aside>
+
+    <div class="deck-panel">
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <span class="deck-label">DECK 1</span>
+    <span>Apollo DJ v3 &middot; Screen Software</span>
+    <div class="status-icons">
+      <i class="ri-wifi-line active"></i>
+      <i class="ri-usb-line active"></i>
+      <i class="ri-hard-drive-3-line"></i>
+    </div>
+  </div>
+
+  <!-- Track Info -->
+  <div class="track-info">
+    <div class="track-meta">
+      <div class="track-artist">Dema Collective</div>
+      <div class="track-title">Hyperion (Apollo Extended Mix)</div>
+    </div>
+    <div class="track-stats">
+      <div class="bpm-display" id="bpm-display">128.00</div>
+      <div class="bpm-label">BPM</div>
+    </div>
+  </div>
+
+  <!-- Time + Key -->
+  <div class="time-key-row">
+    <div class="time-group">
+      <span class="time-elapsed" id="time-elapsed">00:00</span>
+      <span class="time-remaining" id="time-remaining">-06:46</span>
+    </div>
+    <div class="key-badge">
+      <span class="key-label">Key</span>
+      <span class="key-value">8B</span>
+    </div>
+  </div>
+
+  <!-- Waveform Section -->
+  <div class="waveform-section">
+    <div class="waveform-main-wrap">
+      <canvas id="waveform-main"></canvas>
+      <div class="playhead"></div>
+      <div class="beat-flash" id="beat-flash"></div>
+    </div>
+    <div class="waveform-overview-wrap">
+      <canvas id="waveform-overview"></canvas>
+      <div class="overview-position" id="overview-position"></div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls-row">
+    <div class="ctrl-left">
+      <div class="ctrl-item">
+        <span class="ctrl-label">Loop</span>
+        <span class="ctrl-value on">4 BEAT</span>
+      </div>
+      <div class="ctrl-item">
+        <span class="ctrl-label">Quantize</span>
+        <span class="ctrl-value on">ON</span>
+      </div>
+      <div class="ctrl-item">
+        <span class="ctrl-label">Sync</span>
+        <span class="ctrl-value master">MASTER</span>
+      </div>
+    </div>
+
+    <div class="jog-wrap">
+      <div class="jog-wheel" id="jog-wheel">
+        <div class="jog-ring-marks" id="jog-ring-marks"></div>
+        <div class="jog-marker" id="jog-marker"></div>
+        <div class="jog-inner">
+          <div class="jog-dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ctrl-right">
+      <div class="pitch-display"><span class="sign">+</span>0.00%</div>
+      <div class="pitch-label">Pitch</div>
+      <div class="phase-meter">
+        <div class="phase-meter-fill"></div>
+      </div>
+      <div class="pitch-label">Phase</div>
+    </div>
+  </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="bottom-bar">
+    <span class="apollo-brand">Apollo</span>
+    <span>Colet&acirc;nea Library &middot; USB 1</span>
+    <span>44.1 kHz &middot; 16 bit</span>
+  </div>
+</div>
+
+<!-- v3 Biblioteca modules (replaces v2 coletanea-lib.js monolith) -->
+<script src="biblioteca-tree-lux.js"></script>
+<script src="biblioteca-tree-ext.js"></script>
+<script src="biblioteca-dnd.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // ── CONSTANTS ──
+  const BPM = 128;
+  const BEAT_MS = 60000 / BPM; // ~468.75ms
+  const TOTAL_SECONDS = 406; // 6:46
+  const SAMPLE_RATE = 100; // waveform samples per second of track
+  const TOTAL_SAMPLES = TOTAL_SECONDS * SAMPLE_RATE;
+  const SCROLL_SPEED = SAMPLE_RATE; // samples per second of real-time playback
+
+  const COLORS = {
+    bass: '#0055FF',
+    mid: '#00CC44',
+    high: '#FF2233',
+    bassRGB: [0, 85, 255],
+    midRGB: [0, 204, 68],
+    highRGB: [255, 34, 51],
+  };
+
+  const OPACITY = { bass: 0.85, mid: 0.75, high: 0.90 };
+
+  // ── WAVEFORM DATA GENERATION ──
+  function seededRandom(seed) {
+    let s = seed;
+    return function () {
+      s = (s * 16807 + 0) % 2147483647;
+      return (s - 1) / 2147483646;
+    };
+  }
+
+  function generateBand(length, config) {
+    const { baseFreqs, noiseAmount, envelope, rng } = config;
+    const data = new Float32Array(length);
+
+    for (let i = 0; i < length; i++) {
+      const t = i / SAMPLE_RATE;
+      let val = 0;
+
+      // Sum multiple sine waves at different frequencies
+      for (let f = 0; f < baseFreqs.length; f++) {
+        const freq = baseFreqs[f].freq;
+        const amp = baseFreqs[f].amp;
+        const phase = baseFreqs[f].phase || 0;
+        val += Math.sin(2 * Math.PI * freq * t + phase) * amp;
+      }
+
+      // Add noise
+      val += (rng() - 0.5) * 2 * noiseAmount;
+
+      // Apply structural envelope (simulates song sections)
+      const pos = i / length;
+      let env = 1;
+
+      // Intro build (first 8%)
+      if (pos < 0.08) {
+        env = pos / 0.08;
+        env = env * env; // quadratic ease-in
+      }
+      // Breakdown 1 (~30-38%)
+      else if (pos > 0.30 && pos < 0.38) {
+        const bp = (pos - 0.30) / 0.08;
+        env = 1 - 0.6 * Math.sin(Math.PI * bp);
+      }
+      // Build-up after breakdown (~38-42%)
+      else if (pos >= 0.38 && pos < 0.42) {
+        const bp = (pos - 0.38) / 0.04;
+        env = 0.4 + 0.6 * bp * bp;
+      }
+      // Breakdown 2 (~65-72%)
+      else if (pos > 0.65 && pos < 0.72) {
+        const bp = (pos - 0.65) / 0.07;
+        env = 1 - 0.5 * Math.sin(Math.PI * bp);
+      }
+      // Outro (last 10%)
+      else if (pos > 0.90) {
+        const op = (pos - 0.90) / 0.10;
+        env = 1 - op * op;
+      }
+
+      // Apply custom per-band envelope modifier
+      if (envelope) env *= envelope(pos, t);
+
+      val = Math.abs(val) * env;
+
+      // Add beat emphasis (quantized energy bumps)
+      const beatPos = (t * BPM / 60) % 1;
+      const beatKick = Math.exp(-beatPos * 8);
+
+      val *= (1 + beatKick * 0.3);
+
+      // Clamp
+      data[i] = Math.min(Math.max(val, 0), 1);
+    }
+
+    // Normalize to 0-1
+    let max = 0;
+    for (let i = 0; i < length; i++) {
+      if (data[i] > max) max = data[i];
+    }
+    if (max > 0) {
+      for (let i = 0; i < length; i++) {
+        data[i] /= max;
+      }
+    }
+
+    return data;
+  }
+
+  const rng1 = seededRandom(42);
+  const rng2 = seededRandom(137);
+  const rng3 = seededRandom(2023);
+
+  const bassData = generateBand(TOTAL_SAMPLES, {
+    baseFreqs: [
+      { freq: 0.8, amp: 1.0, phase: 0 },
+      { freq: 1.7, amp: 0.5, phase: 1.2 },
+      { freq: 0.3, amp: 0.7, phase: 0.5 },
+      { freq: 3.1, amp: 0.2, phase: 2.1 },
+    ],
+    noiseAmount: 0.15,
+    rng: rng1,
+    envelope: function (pos, t) {
+      // Bass is strong on beat, with kick pattern
+      const beat4 = (t * BPM / 60 / 4) % 1;
+      return 0.7 + 0.3 * Math.exp(-beat4 * 3);
+    },
+  });
+
+  const midData = generateBand(TOTAL_SAMPLES, {
+    baseFreqs: [
+      { freq: 2.5, amp: 0.8, phase: 0.3 },
+      { freq: 5.2, amp: 0.4, phase: 1.8 },
+      { freq: 1.1, amp: 0.6, phase: 0 },
+      { freq: 8.3, amp: 0.2, phase: 0.9 },
+      { freq: 3.7, amp: 0.35, phase: 2.5 },
+    ],
+    noiseAmount: 0.2,
+    rng: rng2,
+    envelope: function (pos) {
+      // Mid energy varies with song sections
+      if (pos > 0.30 && pos < 0.36) return 0.3; // breakdown dip
+      if (pos > 0.65 && pos < 0.70) return 0.4;
+      return 0.8 + 0.2 * Math.sin(pos * Math.PI * 6);
+    },
+  });
+
+  const highData = generateBand(TOTAL_SAMPLES, {
+    baseFreqs: [
+      { freq: 7.3, amp: 0.6, phase: 0 },
+      { freq: 13.1, amp: 0.35, phase: 1.1 },
+      { freq: 4.8, amp: 0.5, phase: 2.3 },
+      { freq: 19.7, amp: 0.15, phase: 0.7 },
+      { freq: 11.0, amp: 0.25, phase: 3.0 },
+      { freq: 23.5, amp: 0.1, phase: 1.5 },
+    ],
+    noiseAmount: 0.35,
+    rng: rng3,
+    envelope: function (pos, t) {
+      // Hi-hats: off-beat emphasis
+      const beat = (t * BPM / 60) % 1;
+      const hihat = beat > 0.4 && beat < 0.6 ? 1.3 : 0.8;
+      // Vocal-like sections
+      if (pos > 0.15 && pos < 0.28) return hihat * 1.2;
+      if (pos > 0.42 && pos < 0.60) return hihat * 1.1;
+      return hihat * 0.9;
+    },
+  });
+
+  // ── CANVAS SETUP ──
+  const mainCanvas = document.getElementById('waveform-main');
+  const overviewCanvas = document.getElementById('waveform-overview');
+  const mainCtx = mainCanvas.getContext('2d');
+  const overviewCtx = overviewCanvas.getContext('2d');
+
+  let mainW, mainH, overW, overH;
+  let dpr = window.devicePixelRatio || 1;
+
+  function resizeCanvases() {
+    dpr = window.devicePixelRatio || 1;
+
+    const mainRect = mainCanvas.parentElement.getBoundingClientRect();
+    mainW = mainRect.width;
+    mainH = mainRect.height;
+    mainCanvas.width = mainW * dpr;
+    mainCanvas.height = mainH * dpr;
+    mainCanvas.style.width = mainW + 'px';
+    mainCanvas.style.height = mainH + 'px';
+
+    const overRect = overviewCanvas.parentElement.getBoundingClientRect();
+    overW = overRect.width;
+    overH = overRect.height;
+    overviewCanvas.width = overW * dpr;
+    overviewCanvas.height = overH * dpr;
+    overviewCanvas.style.width = overW + 'px';
+    overviewCanvas.style.height = overH + 'px';
+
+    drawOverview();
+  }
+
+  // ── DRAW SINGLE BAND WAVEFORM ──
+  function drawBand(ctx, data, startSample, samplesVisible, w, h, color, colorRGB, opacity, glowSize) {
+    const centerY = h / 2;
+    const halfH = h * 0.45;
+
+    ctx.save();
+    ctx.globalAlpha = opacity;
+
+    // Glow
+    if (glowSize > 0) {
+      ctx.shadowColor = color;
+      ctx.shadowBlur = glowSize;
+    }
+
+    ctx.fillStyle = color;
+    ctx.beginPath();
+
+    // Top half (positive)
+    ctx.moveTo(0, centerY);
+    for (let x = 0; x < w; x++) {
+      const sampleIdx = Math.floor(startSample + (x / w) * samplesVisible);
+      const clampedIdx = Math.max(0, Math.min(sampleIdx, TOTAL_SAMPLES - 1));
+      const val = data[clampedIdx] || 0;
+      const y = centerY - val * halfH;
+      ctx.lineTo(x, y);
+    }
+    ctx.lineTo(w, centerY);
+
+    // Bottom half (mirrored)
+    for (let x = w - 1; x >= 0; x--) {
+      const sampleIdx = Math.floor(startSample + (x / w) * samplesVisible);
+      const clampedIdx = Math.max(0, Math.min(sampleIdx, TOTAL_SAMPLES - 1));
+      const val = data[clampedIdx] || 0;
+      const y = centerY + val * halfH;
+      ctx.lineTo(x, y);
+    }
+
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  // ── DRAW BEAT GRID ──
+  function drawBeatGrid(ctx, startSample, samplesVisible, w, h) {
+    const samplesPerBeat = SAMPLE_RATE * 60 / BPM;
+    const firstBeat = Math.ceil(startSample / samplesPerBeat);
+    const lastBeat = Math.floor((startSample + samplesVisible) / samplesPerBeat);
+
+    ctx.save();
+    for (let beat = firstBeat; beat <= lastBeat; beat++) {
+      const samplePos = beat * samplesPerBeat;
+      const x = ((samplePos - startSample) / samplesVisible) * w;
+
+      const isBar = beat % 4 === 0;
+      const is16 = beat % 16 === 0;
+
+      if (is16) {
+        ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+        ctx.lineWidth = 1;
+      } else if (isBar) {
+        ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+        ctx.lineWidth = 1;
+      } else {
+        ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+        ctx.lineWidth = 0.5;
+      }
+
+      ctx.beginPath();
+      ctx.moveTo(Math.round(x) + 0.5, 0);
+      ctx.lineTo(Math.round(x) + 0.5, h);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  // ── DRAW MAIN WAVEFORM ──
+  function drawMainWaveform(playbackSample) {
+    const w = mainW * dpr;
+    const h = mainH * dpr;
+    const samplesVisible = SAMPLE_RATE * 6; // 6 seconds visible window
+
+    // Center on playhead (playhead is at center of screen)
+    const startSample = playbackSample - samplesVisible / 2;
+
+    mainCtx.clearRect(0, 0, w, h);
+
+    // Background
+    mainCtx.fillStyle = '#0A0A0A';
+    mainCtx.fillRect(0, 0, w, h);
+
+    // Center line
+    mainCtx.strokeStyle = 'rgba(255,255,255,0.04)';
+    mainCtx.lineWidth = 1;
+    mainCtx.beginPath();
+    mainCtx.moveTo(0, h / 2);
+    mainCtx.lineTo(w, h / 2);
+    mainCtx.stroke();
+
+    // Beat grid (behind waveform)
+    drawBeatGrid(mainCtx, startSample, samplesVisible, w, h);
+
+    // 3-Band Waveform with screen compositing
+    mainCtx.save();
+    mainCtx.globalCompositeOperation = 'screen';
+
+    // Layer 1: BASS (back, tallest)
+    drawBand(mainCtx, bassData, startSample, samplesVisible, w, h,
+      COLORS.bass, COLORS.bassRGB, OPACITY.bass, 6 * dpr);
+
+    // Layer 2: MID (middle)
+    drawBand(mainCtx, midData, startSample, samplesVisible, w, h,
+      COLORS.mid, COLORS.midRGB, OPACITY.mid, 4 * dpr);
+
+    // Layer 3: HIGH (front, smallest)
+    drawBand(mainCtx, highData, startSample, samplesVisible, w, h,
+      COLORS.high, COLORS.highRGB, OPACITY.high, 3 * dpr);
+
+    mainCtx.restore();
+  }
+
+  // ── DRAW OVERVIEW WAVEFORM ──
+  function drawOverview() {
+    const w = overW * dpr;
+    const h = overH * dpr;
+
+    overviewCtx.clearRect(0, 0, w, h);
+    overviewCtx.fillStyle = '#080808';
+    overviewCtx.fillRect(0, 0, w, h);
+
+    // Downsample for overview - draw as bars
+    const barCount = Math.floor(w / (2 * dpr));
+    const samplesPerBar = TOTAL_SAMPLES / barCount;
+    const barWidth = w / barCount;
+    const centerY = h / 2;
+    const halfH = h * 0.4;
+
+    overviewCtx.save();
+    overviewCtx.globalCompositeOperation = 'screen';
+
+    // Draw each band as colored bars
+    const bands = [
+      { data: bassData, color: COLORS.bass, opacity: 0.7 },
+      { data: midData, color: COLORS.mid, opacity: 0.6 },
+      { data: highData, color: COLORS.high, opacity: 0.75 },
+    ];
+
+    for (const band of bands) {
+      overviewCtx.globalAlpha = band.opacity;
+      overviewCtx.fillStyle = band.color;
+
+      for (let i = 0; i < barCount; i++) {
+        const sIdx = Math.floor(i * samplesPerBar);
+        // Average a few samples
+        let sum = 0;
+        const count = Math.min(4, Math.floor(samplesPerBar));
+        for (let j = 0; j < count; j++) {
+          const idx = Math.min(sIdx + j * Math.floor(samplesPerBar / count), TOTAL_SAMPLES - 1);
+          sum += band.data[idx];
+        }
+        const val = sum / count;
+
+        const barH = val * halfH;
+        const x = i * barWidth;
+        overviewCtx.fillRect(x, centerY - barH, Math.max(barWidth - 0.5, 0.5), barH * 2);
+      }
+    }
+
+    overviewCtx.restore();
+  }
+
+  // ── UPDATE OVERVIEW POSITION INDICATOR ──
+  function updateOverviewPosition(playbackSample) {
+    const el = document.getElementById('overview-position');
+    const fraction = playbackSample / TOTAL_SAMPLES;
+    const viewFraction = (SAMPLE_RATE * 6) / TOTAL_SAMPLES; // 6 seconds window
+
+    const left = Math.max(0, (fraction - viewFraction / 2)) * 100;
+    const width = Math.min(viewFraction * 100, 100);
+
+    el.style.left = left + '%';
+    el.style.width = width + '%';
+  }
+
+  // ── TIME FORMATTING ──
+  function formatTime(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  }
+
+  // ── JOG WHEEL ──
+  const jogMarker = document.getElementById('jog-marker');
+
+  // Generate ring marks
+  (function () {
+    const container = document.getElementById('jog-ring-marks');
+    for (let i = 0; i < 32; i++) {
+      const mark = document.createElement('div');
+      mark.className = 'jog-ring-mark';
+      mark.style.transform = 'rotate(' + (i * 360 / 32) + 'deg)';
+      container.appendChild(mark);
+    }
+  })();
+
+  // ── BPM PULSE ──
+  const bpmEl = document.getElementById('bpm-display');
+  const beatFlash = document.getElementById('beat-flash');
+
+  // ── ANIMATION LOOP ──
+  let startTime = null;
+  let lastBeatTime = 0;
+
+  function animate(timestamp) {
+    if (!startTime) startTime = timestamp;
+    const elapsed = (timestamp - startTime) / 1000; // seconds
+
+    // Playback position in samples (loop the track)
+    const playbackTime = elapsed % TOTAL_SECONDS;
+    const playbackSample = playbackTime * SAMPLE_RATE;
+
+    // Draw main waveform
+    drawMainWaveform(playbackSample);
+
+    // Update overview position
+    updateOverviewPosition(playbackSample);
+
+    // Update time displays
+    document.getElementById('time-elapsed').textContent = formatTime(playbackTime);
+    const remaining = TOTAL_SECONDS - playbackTime;
+    document.getElementById('time-remaining').textContent = '-' + formatTime(remaining);
+
+    // Beat detection for visual effects
+    const beatNumber = Math.floor(playbackTime * BPM / 60);
+    const beatPhase = (playbackTime * BPM / 60) % 1;
+    const currentBeatTime = Math.floor(playbackTime / (60 / BPM));
+
+    if (currentBeatTime !== lastBeatTime) {
+      lastBeatTime = currentBeatTime;
+
+      // BPM pulse
+      bpmEl.classList.add('pulse');
+      setTimeout(function () { bpmEl.classList.remove('pulse'); }, 100);
+
+      // Beat flash (subtle, only on downbeats of bar)
+      if (beatNumber % 4 === 0) {
+        beatFlash.classList.add('on');
+        setTimeout(function () { beatFlash.classList.remove('on'); }, 60);
+      }
+    }
+
+    // Jog wheel rotation
+    const jogAngle = (playbackTime * 360 / (60 / BPM * 4)) % 360; // one rotation per 4 beats
+    jogMarker.style.transform = 'translateX(-50%) rotate(' + jogAngle + 'deg)';
+    jogMarker.style.transformOrigin = '50% 39px';
+
+    requestAnimationFrame(animate);
+  }
+
+  // ── INIT ──
+  window.addEventListener('resize', resizeCanvases);
+  resizeCanvases();
+  requestAnimationFrame(animate);
+
+  // Mount v3 Biblioteca tree (replaces v2 coletanea-lib.js)
+  if (window.BibliotecaTreeExt) {
+    window.BibliotecaTreeExt.init('#sidebar-mount');
+    if (window.BibliotecaDnd) {
+      window.BibliotecaDnd.enableDnd(document.querySelector('#sidebar-mount'));
+    }
+  }
+
+})();
+</script>
+
+</body>
+</html>
